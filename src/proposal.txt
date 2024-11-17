@@ -1,0 +1,35 @@
+Manager
+Approve user registration - manager & staff & resident
+Search, update, delete user account
+Fix / update the rate
+
+Staff
+To register individual login account
+To update individual login account
+Make payment for resident
+Generate receipt
+
+Resident
+To register individual login account
+To update individual login account
+View payment records
+
+Assumption:
+1. Password must have at least 8 character, 1 UPPERCASE, 1 lowercase, 1 Special Character
+2. All ID, Username, Contact_Number, Email must be unique
+3. Same gender cannot live in the same room
+4. Every input has validation
+5. New manager can only be approved by old manager/s
+6. Only manager can approve new manager,staff and resident
+
+Manager_Registration: Username, Password, Name, Contact_Number, Email
+Staff_Registration: Username, Password, Name, Contact_Number, Email
+Resident_Registration: Username, Password, Name, Gender, Room_No, Contact_Number, Email
+Manager_Info: ManagerID, Username, Password, Name, Contact_Number, Email
+Staff_Info: StaffID, Username, Password, Name, Contact_Number, Email
+Resident_Info: ResidentID, Username, Password, Name, Gender, Room_No, Contact_Number, Email, Overdue_Amount
+
+Login_Records: RecordID, UserID(StaffID / ResidentID), Datetime
+Payment_Records: RecordID, Datetime, Amount, ResidentID, StaffID
+
+**Room_Info: Room_No, Room_Type(Single Room, Double Sharing Room, Triple Sharing Room), Fees(900, 700, 400)

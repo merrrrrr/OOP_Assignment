@@ -1,33 +1,147 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 import java.time.LocalDateTime;
 
 
 public class Main {
     public static void main(String[] args) throws IOException {
+
+        system: while (true) {
+            Scanner sc = new Scanner(System.in);
+            byte userType = 0;
+
+            mainPage:
+            while (true) {
+                System.out.println("Welcome to APU Hostel Management Fees Payment System!");
+                System.out.println("1. Login");
+                System.out.println("2. Register");
+                System.out.println("3. Exit");
+                System.out.print(": ");
+                byte loginRegister = sc.nextByte();
+
+
+                switch (loginRegister) {
+                    case 1:
+                        userType = getUserType();
+                        if (userType == 1) {
+                            System.out.println("Manager Login");
+                            break mainPage;
+                        } else if (userType == 2) {
+                            System.out.println("Staff Login");
+                            break mainPage;
+                        } else if (userType == 3) {
+                            System.out.println("Resident Login");
+                            break mainPage;
+                        } else {
+                            System.out.println("Wrong Input. Please try again.");
+                        }
+
+                        break;
+
+                    case 2:
+                        userType = getUserType();
+                        if (userType == 1) {
+                            Manager m = new Manager();
+                            m.register();
+                            break mainPage;
+                        } else if (userType == 2) {
+                            System.out.println("Staff Register");
+                            break mainPage;
+                        } else if (userType == 3) {
+                            System.out.println("Resident Register");
+                            break mainPage;
+                        } else {
+                            System.out.println("Wrong Input. Please try again.");
+                        }
+
+                        break;
+
+                    case 3:
+                        System.out.println("Thank you for using APU Hostel Management Fees Payment System!");
+                        break;
+
+                    default:
+                        System.out.println("Wrong input. Please try again.");
+                        break;
+
+                }
+            }
+
+            if (userType == 1) {
+                managerPage:
+                while (true) {
+                    System.out.println("Manager Page");
+                    System.out.println("1. Approve User Registration");
+                    System.out.println("2. Search User Account");
+                    System.out.println("3. Update User Account");
+                    System.out.println("4. Delete User Account");
+                    System.out.println("5. Update Rental Rate");
+                    System.out.println("6. Log Out");
+                    System.out.println(": ");
+                    int managerAction = sc.nextByte();
+
+                    switch (managerAction) {
+                        case 1:
+                            System.out.println("1. Approve User Registration");
+                            break;
+
+                        case 2:
+                            System.out.println("2. Search User Account");
+                            break;
+
+                        case 3:
+                            System.out.println("3. Update User Account");
+                            break;
+
+                        case 4:
+                            System.out.println("4. Delete User Account");
+                            break;
+
+                        case 5:
+                            System.out.println("5. Update Rental Rate");
+                            break;
+
+                        case 6:
+                            System.out.println("6. Log Out");
+                            break managerPage;
+
+                        default:
+                            System.out.println("Wrong Input. Please try again.");
+
+                    }
+
+                }
+            } else if (userType == 2) {
+                staffPage:
+                while (true) {
+                    System.out.println("Staff Page");
+                    System.out.println("1. Make Payment for Resident");
+                    System.out.println("2. Generate Receipt");
+                }
+
+            } else if (userType == 3) {
+                residentPage:
+                while (true) {
+                    System.out.println("Resident Page");
+                    System.out.println("1. View Payment records");
+                }
+            }
+
+
+        }
+    }
+
+    public static byte getUserType() {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Enter 1 for Manager");
-        System.out.println("Enter 2 for Staff");
-        System.out.println("Enter 3 for Resident");
+        System.out.println("1. Manager");
+        System.out.println("2. Staff");
+        System.out.println("3. Resident");
+        System.out.println("4. Back");
         System.out.print("User Type: ");
-        byte user_type = sc.nextByte();
+        byte userType = sc.nextByte();
 
-
-        if (user_type == 1) {
-            Manager m = new Manager();
-            m.register();
-        } else if (user_type == 2) {
-            Staff s = new Staff();
-            s.register();
-        } else if (user_type == 3) {
-            Resident r = new Resident();
-            r.register();
-        }
-
-
+        return userType;
     }
 }
 
@@ -37,19 +151,19 @@ class Manager {
     private String password;
     private String name;
     private String contactNumber;
-    private String gender;
+    private String email;
 
 
     public Manager() {
     }
 
-    public Manager(String id, String username, String password, String name, String contactNumber, String gender) {
+    public Manager(String id, String username, String password, String name, String contactNumber, String email) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
         this.contactNumber = contactNumber;
-        this.gender = gender;
+        this.email = email;
     }
 
     public String getId() {
@@ -92,16 +206,16 @@ class Manager {
         this.contactNumber = contactNumber;
     }
 
-    public String getGender() {
-        return gender;
+    public String getEmail() {
+        return email;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String toString() {
-        return "Manager{id = " + id + ", username = " + username + ", password = " + password + ", name = " + name + ", contactNumber = " + contactNumber + ", gender = " + gender + "}";
+        return "Manager{id = " + id + ", username = " + username + ", password = " + password + ", name = " + name + ", contactNumber = " + contactNumber + ", email = " + email + "}";
     }
 
     Scanner sc = new Scanner(System.in);
@@ -119,122 +233,204 @@ class Manager {
         String email = sc.nextLine();
 
         FileWriter fw = new FileWriter("C:\\Users\\Mervin Ooi\\IdeaProjects\\OOP Assignment\\src\\Resident_Registration.txt", true);
+
         String register = (username + "," + password + "," + name + "," + contactNumber + "," + email);
         fw.write(register);
     }
 
+    public void login() throws IOException {
+        BufferedReader manager_info = new BufferedReader(new FileReader("C:\\Users\\Mervin Ooi\\IdeaProjects\\OOP Assignment\\src\\Manager_Info.txt"));
 
-    public void approveManager() {
+        System.out.println("Username: ");
+        String userEnteredUsername = sc.next();
+        System.out.println("Password: ");
+        String userEnteredPassword = sc.next();
+
+        String lines;
+        boolean login = true;
+
+        while(((lines = manager_info.readLine()) != null)) {
+            String[] line = lines.split(",");
+            String id = line[0];
+            String username = line[1];
+            String password = line[2];
+            String name = line[3];
+            String contactNumber = line[4];
+            String email = line[5];
+
+            if (username.equals(userEnteredUsername) && password.equals(userEnteredPassword)) {
+                System.out.println("Welcome! " + name);
+                Manager m = new Manager();
+                m.setId(id);
+                m.setUsername(username);
+                m.setPassword(password);
+                m.setName(contactNumber);
+                m.setEmail(email);
+
+            }
+        }
+    }
+
+    public void approveUser() throws IOException {
+
+        System.out.println("1. Approve Manager");
+        System.out.println("2. Approve Staff");
+        System.out.println("3. Approve Resident");
+        byte approve = sc.nextByte();
+
+        switch (approve) {
+            case 1:
+                BufferedReader managerRegistration = new BufferedReader(new FileReader("C:\\Users\\Mervin Ooi\\IdeaProjects\\OOP Assignment\\src\\Manager_Registration.txt"));
+
+                String lines;
+
+
+                while(((lines = managerRegistration.readLine()) != null)) {
+                    String[] line = lines.split(",");
+                    String username = line[0];
+                    String password = line[1];
+                    String name = line[2];
+                    String contactNumber = line[3];
+                    String email = line[4];
+                    System.out.println("Username: " + username + "\nPassword: " + password + "\nName: " + name + "\nContact Number: " + contactNumber + "\nEmail: " + email + "\n");
+                }
+
+                System.out.println("Enter username: ");
+
+                break;
+
+            case 2:
+                BufferedReader staffRegistration = new BufferedReader(new FileReader("C:\\Users\\Mervin Ooi\\IdeaProjects\\OOP Assignment\\src\\Staff_Registration.txt"));
+                break;
+
+            case 3:
+                BufferedReader residentRegistration = new BufferedReader(new FileReader("C:\\Users\\Mervin Ooi\\IdeaProjects\\OOP Assignment\\src\\Resident_Registration.txt"));
+                break;
+
+            default:
+
+
+        }
+
+        System.out.println("Username: ");
 
     }
 
-    public void approveStaff() {
+    public void searchUser() {
 
     }
 
-
-    public void approveResident() {
+    public void updateUser() {
 
     }
+
+    public void deleteUser() {
+
+    }
+
+    public void updateRate() {
+
+    }
+
 
 }
 
 
 
-    class Staff {
-        private String id;
-        private String username;
-        private String password;
-        private String name;
-        private String contactNumber;
-        private String email;
+class Staff {
+    private String id;
+    private String username;
+    private String password;
+    private String name;
+    private String contactNumber;
+    private String email;
 
-        public Staff() {
-        }
-
-
-        public Staff(String id, String username, String password, String name, String contactNumber, String email) {
-            this.id = id;
-            this.username = username;
-            this.password = password;
-            this.name = name;
-            this.contactNumber = contactNumber;
-            this.email = email;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getContactNumber() {
-            return contactNumber;
-        }
-
-        public void setContactNumber(String contactNumber) {
-            this.contactNumber = contactNumber;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String toString() {
-            return "Staff{id = " + id + ", username = " + username + ", password = " + password + ", name = " + name + ", contactNumber = " + contactNumber + ", email = " + email + "}";
-        }
-
-        Scanner sc = new Scanner(System.in);
-
-        public void register() throws IOException {
-            System.out.print("Username: ");
-            String username = sc.nextLine();
-            System.out.print("Password: ");
-            String password = sc.nextLine();
-            System.out.print("Name: ");
-            String name = sc.nextLine();
-            System.out.print("Contact Number: ");
-            String contactNumber = sc.nextLine();
-            System.out.print("Email: ");
-            String email = sc.nextLine();
-
-            FileWriter fw = new FileWriter("C:\\Users\\Mervin Ooi\\IdeaProjects\\OOP Assignment\\src\\Resident_Registration.txt", true);
-            String register = (username + "," + password  + "," + name  + "," + contactNumber + "," +  email);
-            fw.write(register);
-
-            fw.close();
-        }
+    public Staff() {
     }
+
+
+    public Staff(String id, String username, String password, String name, String contactNumber, String email) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.contactNumber = contactNumber;
+        this.email = email;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String toString() {
+        return "Staff{id = " + id + ", username = " + username + ", password = " + password + ", name = " + name + ", contactNumber = " + contactNumber + ", email = " + email + "}";
+    }
+
+    Scanner sc = new Scanner(System.in);
+
+    public void register() throws IOException {
+        System.out.print("Username: ");
+        String username = sc.nextLine();
+        System.out.print("Password: ");
+        String password = sc.nextLine();
+        System.out.print("Name: ");
+        String name = sc.nextLine();
+        System.out.print("Contact Number: ");
+        String contactNumber = sc.nextLine();
+        System.out.print("Email: ");
+        String email = sc.nextLine();
+
+        FileWriter fw = new FileWriter("C:\\Users\\Mervin Ooi\\IdeaProjects\\OOP Assignment\\src\\Resident_Registration.txt", true);
+        String register = (username + "," + password  + "," + name  + "," + contactNumber + "," +  email);
+        fw.write(register);
+
+        fw.close();
+    }
+}
 
 
 class Resident {

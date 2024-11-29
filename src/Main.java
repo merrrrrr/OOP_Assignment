@@ -1,6 +1,6 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
-import java.time.LocalDateTime;
 
 
 public class Main {
@@ -23,17 +23,30 @@ public class Main {
                 switch (loginRegister) {
                     case 1:
                         userType = getUserType();
-                        if (userType == 1) {
-                            System.out.println("Manager Login");
-                            break mainPage;
-                        } else if (userType == 2) {
-                            System.out.println("Staff Login");
-                            break mainPage;
-                        } else if (userType == 3) {
-                            System.out.println("Resident Login");
-                            break mainPage;
-                        } else {
-                            System.out.println("Wrong Input. Please try again.");
+                        loginLoop:
+                        while (true) {
+                            if (userType == 1) {
+                                Manager manager = new Manager();
+                                System.out.println("Manager Login");
+                                boolean login = manager.login();
+                                if (login == true) {
+                                    break mainPage;
+                                } else {
+                                    System.out.println("Invalid Username or Password");
+                                    continue;
+                                }
+
+                            } else if (userType == 2) {
+                                System.out.println("Staff Login");
+                                break mainPage;
+                            } else if (userType == 3) {
+                                System.out.println("Resident Login");
+                                break mainPage;
+                            } else if (userType == 4) {
+                                break;
+                            } else {
+                                System.out.println("Wrong Input. Please try again.");
+                            }
                         }
 
                         break;
@@ -43,22 +56,23 @@ public class Main {
                         if (userType == 1) {
                             Manager m = new Manager();
                             m.register();
-                            break mainPage;
+                            break;
                         } else if (userType == 2) {
                             System.out.println("Staff Register");
-                            break mainPage;
+                            break;
                         } else if (userType == 3) {
                             System.out.println("Resident Register");
-                            break mainPage;
+                            break;
+                        } else if (userType == 4) {
+                            break;
                         } else {
                             System.out.println("Wrong Input. Please try again.");
+                            break;
                         }
-
-                        break;
 
                     case 3:
                         System.out.println("Thank you for using APU Hostel Management Fees Payment System!");
-                        break;
+                        break system;
 
                     default:
                         System.out.println("Wrong input. Please try again.");
@@ -77,12 +91,13 @@ public class Main {
                     System.out.println("4. Delete User Account");
                     System.out.println("5. Update Rental Rate");
                     System.out.println("6. Log Out");
-                    System.out.println(": ");
-                    int managerAction = sc.nextByte();
+                    System.out.print(": ");
+                    int managerAction = sc.nextInt();
 
                     switch (managerAction) {
                         case 1:
-                            System.out.println("1. Approve User Registration");
+                            Manager manager = new Manager();
+                            manager.approveUser();
                             break;
 
                         case 2:
@@ -117,6 +132,7 @@ public class Main {
                     System.out.println("Staff Page");
                     System.out.println("1. Make Payment for Resident");
                     System.out.println("2. Generate Receipt");
+                    break;
                 }
 
             } else if (userType == 3) {
@@ -124,6 +140,7 @@ public class Main {
                 while (true) {
                     System.out.println("Resident Page");
                     System.out.println("1. View Payment records");
+                    break;
                 }
             }
 
@@ -143,7 +160,10 @@ public class Main {
 
         return userType;
     }
+
+
 }
+
 
 class Manager {
     private String id;
@@ -152,7 +172,6 @@ class Manager {
     private String name;
     private String contactNumber;
     private String email;
-
 
     public Manager() {
     }
@@ -214,8 +233,16 @@ class Manager {
         this.email = email;
     }
 
+    @Override
     public String toString() {
-        return "Manager{id = " + id + ", username = " + username + ", password = " + password + ", name = " + name + ", contactNumber = " + contactNumber + ", email = " + email + "}";
+        return "Manager{" +
+                "email='" + email + '\'' +
+                ", contactNumber='" + contactNumber + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", username='" + username + '\'' +
+                ", id='" + id + '\'' +
+                '}';
     }
 
     Scanner sc = new Scanner(System.in);
@@ -223,6 +250,18 @@ class Manager {
     public void register() throws IOException {
         System.out.print("Username: ");
         String username = sc.nextLine();
+        String lines;
+
+//        BufferedReader managerInfo = new BufferedReader(new FileReader("Manager_Info.txt"));
+//        while(((lines = managerInfo.readLine()) != null)) {
+//            String[] line = lines.split(",");
+//            if (line[0].equals(username)) {
+//                System.out.println("This username has been used. Please enter other username.");
+//                break;
+//            }
+//
+//        }
+
         System.out.print("Password: ");
         String password = sc.nextLine();
         System.out.print("Name: ");
@@ -232,24 +271,34 @@ class Manager {
         System.out.print("Email: ");
         String email = sc.nextLine();
 
-        FileWriter fw = new FileWriter("C:\\Users\\Mervin Ooi\\IdeaProjects\\OOP Assignment\\src\\Resident_Registration.txt", true);
+        BufferedReader managerRegistration = new BufferedReader(new FileReader("Manager_Registration.txt"));
+        BufferedWriter managerRegistrationWriter = new BufferedWriter(new FileWriter("Manager_Registration.txt", true));
+
+        if (managerRegistration.read() != -1) {
+            managerRegistrationWriter.newLine();
+        }
 
         String register = (username + "," + password + "," + name + "," + contactNumber + "," + email);
-        fw.write(register);
+        managerRegistrationWriter.write(register);
+        System.out.println("Your registration request has been sent to manager for approval.");
+
+        managerRegistrationWriter.close();
+
+//        managerInfo.close();
     }
 
-    public void login() throws IOException {
-        BufferedReader manager_info = new BufferedReader(new FileReader("C:\\Users\\Mervin Ooi\\IdeaProjects\\OOP Assignment\\src\\Manager_Info.txt"));
+    public boolean login() throws IOException {
+        BufferedReader managerInfo = new BufferedReader(new FileReader("Manager_Info.txt"));
 
-        System.out.println("Username: ");
+        System.out.print("Username: ");
         String userEnteredUsername = sc.next();
-        System.out.println("Password: ");
+        System.out.print("Password: ");
         String userEnteredPassword = sc.next();
 
         String lines;
-        boolean login = true;
+        boolean login = false;
 
-        while(((lines = manager_info.readLine()) != null)) {
+        while (((lines = managerInfo.readLine()) != null)) {
             String[] line = lines.split(",");
             String id = line[0];
             String username = line[1];
@@ -260,59 +309,107 @@ class Manager {
 
             if (username.equals(userEnteredUsername) && password.equals(userEnteredPassword)) {
                 System.out.println("Welcome! " + name);
-                Manager m = new Manager();
-                m.setId(id);
-                m.setUsername(username);
-                m.setPassword(password);
-                m.setName(contactNumber);
-                m.setEmail(email);
+                return true;
+//                Manager m = new Manager();
+//                m.setId(id);
+//                m.setUsername(username);
+//                m.setPassword(password);
+//                m.setName(contactNumber);
+//                m.setEmail(email);
 
             }
         }
+
+        managerInfo.close();
+        return false;
     }
 
     public void approveUser() throws IOException {
 
+        String lines;
+        ArrayList<String> registerList = new ArrayList();
         System.out.println("1. Approve Manager");
         System.out.println("2. Approve Staff");
         System.out.println("3. Approve Resident");
+        System.out.print(": ");
         byte approve = sc.nextByte();
 
         switch (approve) {
             case 1:
-                BufferedReader managerRegistration = new BufferedReader(new FileReader("C:\\Users\\Mervin Ooi\\IdeaProjects\\OOP Assignment\\src\\Manager_Registration.txt"));
+                BufferedReader managerRegistration = new BufferedReader(new FileReader("Manager_Registration.txt"));
+                BufferedReader managerInfo = new BufferedReader(new FileReader("Manager_Info.txt"));
+                BufferedWriter managerRegistrationWriter = new BufferedWriter(new FileWriter("Manager_Registration.txt"));
+                BufferedWriter managerInfoWriter = new BufferedWriter(new FileWriter("Manager_Info.txt", true));
 
-                String lines;
+                System.out.print("Enter username: ");
+                String approveUser = sc.nextLine();
 
+                int length = 0;
 
-                while(((lines = managerRegistration.readLine()) != null)) {
+                while (managerInfo.readLine() != null) {
+                    length++;       // Count Line
+                }
+
+                while (((lines = managerRegistration.readLine()) != null)) {
                     String[] line = lines.split(",");
                     String username = line[0];
                     String password = line[1];
                     String name = line[2];
                     String contactNumber = line[3];
                     String email = line[4];
+
                     System.out.println("Username: " + username + "\nPassword: " + password + "\nName: " + name + "\nContact Number: " + contactNumber + "\nEmail: " + email + "\n");
+                    registerList.add(lines);
+
+                    if (username.equals(approveUser)) {
+                        if (length < 10) {
+                            String id = "M000" + length;     // Create ID
+                        } else if (length < 100) {
+                            String id = "M00" + length;
+                        } else if (length < 1000) {
+                            String id = "M0" + length;
+                        } else if (length < 10000) {
+                            String id = "M" + length;
+                        } else {
+                            System.out.println("Amount of user has reached maximum. Please remove inactive user.");
+                        }
+
+                        managerInfoWriter.write(id + "," + username + "," + password + "," + name + "," + contactNumber + "," + email);
+                        System.out.println("This user has been approved successfully!");
+
+                        for (String s : registerList) {
+                            if (s.equals(username + "," + password + "," + name + "," + contactNumber + "," + email)) {
+                                registerList.remove(s);
+                            }
+                        }
+                    }
+
+                    managerRegistrationWriter.write(String.valueOf(registerList));
                 }
 
-                System.out.println("Enter username: ");
+                managerRegistration.close();
+                managerInfo.close();
+                managerRegistrationWriter.close();
+                managerInfoWriter.close();
 
                 break;
 
             case 2:
-                BufferedReader staffRegistration = new BufferedReader(new FileReader("C:\\Users\\Mervin Ooi\\IdeaProjects\\OOP Assignment\\src\\Staff_Registration.txt"));
+                BufferedReader staffRegistration = new BufferedReader(new FileReader("Staff_Registration.txt"));
+
+                staffRegistration.close();
                 break;
 
             case 3:
-                BufferedReader residentRegistration = new BufferedReader(new FileReader("C:\\Users\\Mervin Ooi\\IdeaProjects\\OOP Assignment\\src\\Resident_Registration.txt"));
+                BufferedReader residentRegistration = new BufferedReader(new FileReader("Resident_Registration.txt"));
+
+                residentRegistration.close();
                 break;
 
             default:
 
 
         }
-
-        System.out.println("Username: ");
 
     }
 

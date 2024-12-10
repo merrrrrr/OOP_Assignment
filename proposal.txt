@@ -1,6 +1,8 @@
 Manager
 Approve user registration - manager & staff & resident
 Search, update, delete user account
+** Print all user information
+** Filter and Sort
 Fix / update the rate
 
 Staff

@@ -51,8 +51,7 @@ public class Main {
                                 if (login == true) {
                                     break mainPage;
                                 } else {
-                                    System.out.println("Invalid Username or Password");
-                                    continue;
+                                    System.out.println("Invalid Username or Password.");
                                 }
                             } else if (userType == 4) {
                                 break;
@@ -72,16 +71,16 @@ public class Main {
                         } else if (userType == 2) {
                             Staff s = new Staff();
                             s.register();
-                            break;
+
                         } else if (userType == 3) {
                             Resident r = new Resident();
                             r.register();
-                            break;
+
                         } else if (userType == 4) {
                             break;
                         } else {
                             System.out.println("Wrong Input. Please try again.");
-                            break;
+
                         }
 
                     case 3:
@@ -117,7 +116,7 @@ public class Main {
                             break;
 
                         case 2:
-                            System.out.println("2. Search User Account");
+                            manager.searchUser();
                             break;
 
                         case 3:
@@ -143,6 +142,7 @@ public class Main {
 
                 }
             } else if (userType == 2) {
+                Staff staff = new Staff();
                 staffPage:
                 while (true) {
                     System.out.println("Staff Page");
@@ -150,12 +150,12 @@ public class Main {
                     System.out.println("2. Make Payment for Resident");
                     System.out.println("3. Generate Receipt");
                     System.out.println("4. Log Out");
-                    System.out.println(": ");
+                    System.out.println("Please enter your choice: ");
                     int staffAction = sc.nextInt();
 
                     switch (staffAction) {
                         case 1:
-                            System.out.println("1. Update individual login account");
+                            staff.modify();
                             break;
 
                         case 2:
@@ -173,10 +173,11 @@ public class Main {
                         default:
                             System.out.println("Wrong Input. Please try again.");
                     }
-                    break;
+
                 }
 
             } else if (userType == 3) {
+                Resident resident = new Resident();
                 residentPage:
                 while (true) {
                     System.out.println("Resident Page");
@@ -188,7 +189,7 @@ public class Main {
 
                     switch (residentAction) {
                         case 1:
-                            System.out.println("1. Update individual login account");
+                            resident.modify();
                             break;
 
                         case 2:

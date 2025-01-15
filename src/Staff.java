@@ -1,9 +1,19 @@
 import java.io.*;
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Staff extends User{
+public class Staff extends User {
+    private String username;
+    private String password;
 
     public Staff() {
+        this.username = "staff";
+        this.password = "password";
     }
 
     public Staff(String id, String username, String password, String name, String contactNumber, String email) {
@@ -44,34 +54,103 @@ public class Staff extends User{
     }
 
     public boolean login() throws IOException {
-        BufferedReader staffInfo = new BufferedReader(new FileReader("Staff_Info.txt"));
+        try (BufferedReader staffInfo = new BufferedReader(new FileReader("Staff_Info.txt"))) {
+            System.out.print("Username: ");
+            String userEnteredUsername = sc.next().trim();
+            sc.nextLine(); // Consume newline
+            System.out.print("Password: ");
+            String userEnteredPassword = sc.next().trim();
+            sc.nextLine(); // Consume newline
 
-        System.out.print("Username: ");
-        String userEnteredUsername = sc.next();
-        sc.nextLine(); // Consume newline
-        System.out.print("Password: ");
-        String userEnteredPassword = sc.next();
-        sc.nextLine(); // Consume newline
+            String lines;
+            boolean login = false;
 
-        String lines;
-        boolean login = false;
+            while ((lines = staffInfo.readLine()) != null) {
+                String[] line = lines.split(",");
+                if (line.length < 6) {
+                    continue; // Skip lines that do not have the expected number of fields
+                }
+                String username = line[1].trim();
+                String password = line[2].trim();
 
-        while (((lines = staffInfo.readLine()) != null)) {
-            String[] line = lines.split(",");
-            String id = line[0];
-            String username = line[1];
-            String password = line[2];
-            String name = line[3];
-            String contactNumber = line[4];
-            String email = line[5];
-
-            if (username.equals(userEnteredUsername) && password.equals(userEnteredPassword)) {
-                System.out.println("Welcome! " + name);
-                return true;
+                if (username.equals(userEnteredUsername) && password.equals(userEnteredPassword)) {
+                    System.out.println("Welcome! " + line[3].trim());
+                    this.username = username; // Set the logged-in username
+                    this.password = password; // Set the logged-in password
+                    login = true;
+                    break;
+                }
             }
-        }
 
-        staffInfo.close();
-        return false;
+            if (!login) {
+                System.out.println("Invalid Username or Password.");
+            }
+
+            return login;
+        }
+    }
+
+    public void modify() {
+        try {
+            List<String> lines = new ArrayList<>();
+            try (BufferedReader reader = new BufferedReader(new FileReader("Staff_Info.txt"))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    lines.add(line);
+                }
+            }
+
+            boolean login = false;
+            for (int i = 0; i < lines.size(); i++) {
+                String[] details = lines.get(i).split(",");
+                if (details.length < 6) {
+                    continue;
+                }
+
+                String username = details[1].trim();
+                String password = details[2].trim();
+
+                if (details[1].equals(username) && details[2].equals(password)) {
+                    System.out.print("New Username (enter 'e' to skip): ");
+                    String newUsername = sc.nextLine().trim();
+                    if (newUsername.equals("e")) newUsername = details[1];
+
+                    System.out.print("New Password (enter 'e' to skip): ");
+                    String newPassword = sc.nextLine().trim();
+                    if (newPassword.equals("e")) newPassword = details[2];
+
+                    System.out.print("New Name (enter 'e' to skip): ");
+                    String newName = sc.nextLine().trim();
+                    if (newName.equals("e")) newName = details[3];
+
+                    System.out.print("New Contact Number (enter 'e' to skip): ");
+                    String newContactNumber = sc.nextLine().trim();
+                    if (newContactNumber.equals("e")) newContactNumber = details[4];
+
+                    System.out.print("New Email (enter 'e' to skip): ");
+                    String newEmail = sc.nextLine().trim();
+                    if (newEmail.equals("e")) newEmail = details[5];
+
+                    lines.set(i, details[0] + "," + newUsername + "," + newPassword + "," + newName + "," + newContactNumber + "," + newEmail);
+                    login = true;
+                    break;
+                }
+            }
+
+            if (login) {
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter("Staff_Info.txt"))) {
+                    for (String line : lines) {
+                        writer.write(line);
+                        writer.newLine();
+                    }
+                }
+                System.out.println("Information updated successfully.");
+            } else {
+                System.out.println("User not found or invalid credentials.");
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error modifying the file: " + e.getMessage());
+        }
     }
 }

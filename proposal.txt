@@ -26,12 +26,13 @@ Assumption:
 
 Manager_Registration: Username, Password, Name, Contact_Number, Email
 Staff_Registration: Username, Password, Name, Contact_Number, Email
-Resident_Registration: Username, Password, Name, Gender, Room_No, Contact_Number, Email
+Resident_Registration: Username, Password, Name, Gender, Room_Type, Contact_Number, Email
 Manager_Info: ManagerID, Username, Password, Name, Contact_Number, Email
 Staff_Info: StaffID, Username, Password, Name, Contact_Number, Email
 Resident_Info: ResidentID, Username, Password, Name, Gender, Room_No, Contact_Number, Email, Overdue_Amount
 
-Login_Records: RecordID, UserID(StaffID / ResidentID), Datetime
-Payment_Records: RecordID, Datetime, Amount, ResidentID, StaffID
+Login_Records: LoginRecordID, UserID(StaffID / ResidentID), Datetime
+Payment_Records: PaymentRecordID, Datetime, Amount, ResidentID, StaffID
 
-**Room_Info: Room_No, Room_Type(Single Room, Double Sharing Room, Triple Sharing Room), Fees(900, 700, 400)
+**Room_Info: Room_No, Room_Type, Availability
+**Room_Type: Room_Type(Single Room, Double Sharing Room, Triple Sharing Room), Fees(900, 700, 400)

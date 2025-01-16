@@ -1,17 +1,14 @@
 import java.io.*;
-import java.util.Scanner;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Resident extends User {
     private String gender;
-    private String roomNumber;
+    private String roomType;
     private String username;
     private int overdueAmount;
+    private boolean isLoggedIn = false;
     private Scanner sc = new Scanner(System.in);
 
     public Resident() {
@@ -30,10 +27,10 @@ public class Resident extends User {
         }
     }
 
-    public Resident(String id, String username, String password, String name, String gender, String roomNumber, String contactNumber, String email, int overdueAmount) {
+    public Resident(String id, String username, String password, String name, String gender, String roomType, String contactNumber, String email, int overdueAmount) {
         super(id, username, password, name, contactNumber, email);
         this.gender = gender;
-        this.roomNumber = roomNumber;
+        this.roomType = roomType;
         this.overdueAmount = overdueAmount;
     }
 
@@ -44,7 +41,7 @@ public class Resident extends User {
                 ", password=" + getPassword() +
                 ", name=" + getName() +
                 ", gender=" + gender +
-                ", roomNumber=" + roomNumber +
+                ", roomType=" + roomType +
                 ", contactNumber=" + getContactNumber() +
                 ", email=" + getEmail() +
                 ", overdueAmount=" + overdueAmount + "}";
@@ -61,13 +58,13 @@ public class Resident extends User {
             System.out.print("Gender: ");
             String gender = sc.nextLine().trim();
             System.out.print("Room Type: ");
-            String roomNumber = sc.nextLine().trim();
+            String roomType = sc.nextLine().trim();
             System.out.print("Contact Number: ");
             String contactNumber = sc.nextLine().trim();
             System.out.print("Email: ");
             String email = sc.nextLine().trim();
 
-            String register = username + "," + password + "," + name + "," + gender + "," + roomNumber + "," + contactNumber + "," + email;
+            String register = username + "," + password + "," + name + "," + gender + "," + roomType + "," + contactNumber + "," + email;
             writer.write(register);
             writer.newLine();
             System.out.println("Your registration request has been sent to the manager for approval.");
@@ -92,11 +89,14 @@ public class Resident extends User {
 
                     if (inputUsername.equals(storedUsername) && inputPassword.equals(storedPassword)) {
                         System.out.println("Welcome " + userDetails[3].trim() + "!");
+                        this.username = storedUsername;
+                        this.setPassword(storedPassword);
+                        this.isLoggedIn = true; // Set isLoggedIn to true
                         return true;
                     }
                 }
             }
-            System.out.println("Invalid username or password.");
+
         } catch (IOException e) {
             System.err.println("Error during login: " + e.getMessage());
         }
@@ -104,7 +104,13 @@ public class Resident extends User {
     }
 
     public void modify() {
+        if (!isLoggedIn) { // Check if the user is logged in
+            System.out.println("You need to log in first.");
+            return;
+        }
+
         try {
+            // Load all resident data from the file
             List<String> lines = new ArrayList<>();
             try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
                 String line;
@@ -113,68 +119,153 @@ public class Resident extends User {
                 }
             }
 
-            boolean login = false;
+            boolean userFound = false;
             for (int i = 0; i < lines.size(); i++) {
                 String[] details = lines.get(i).split(",");
-                if (details.length < 9) {
-                    continue;
-                }
+                if (details.length >= 9 && details[1].equals(this.username) && details[2].equals(this.getPassword())) {
+                    System.out.println("Welcome, " + details[3] + "! Modify your details below. Enter 'e' to skip a field.");
 
-                String username = details[1].trim();
-                String password = details[2].trim();
-
-                if (username.equals(this.username) && password.equals(this.getPassword())) {
-                    System.out.println("Update Information Page");
-
-                    System.out.print("New Username (enter 'e' to skip): ");
+                    System.out.print("New Username: ");
                     String newUsername = sc.nextLine().trim();
-                    if (newUsername.equals("e")) newUsername = username;
+                    if (newUsername.equals("e")) newUsername = details[1];
 
-                    System.out.print("New Password (enter 'e' to skip): ");
+                    System.out.print("New Password: ");
                     String newPassword = sc.nextLine().trim();
-                    if (newPassword.equals("e")) newPassword = password;
+                    if (newPassword.equals("e")) newPassword = details[2];
 
-                    System.out.print("New Name (enter 'e' to skip): ");
+                    System.out.print("New Name: ");
                     String newName = sc.nextLine().trim();
                     if (newName.equals("e")) newName = details[3];
 
-                    System.out.print("New Gender (enter 'e' to skip): ");
+                    System.out.print("New Gender: ");
                     String newGender = sc.nextLine().trim();
                     if (newGender.equals("e")) newGender = details[4];
 
-                    System.out.print("New Contact Number (enter 'e' to skip): ");
+                    System.out.print("New Contact Number: ");
                     String newContactNumber = sc.nextLine().trim();
                     if (newContactNumber.equals("e")) newContactNumber = details[6];
 
-                    System.out.print("New Email (enter 'e' to skip): ");
+                    System.out.print("New Email: ");
                     String newEmail = sc.nextLine().trim();
                     if (newEmail.equals("e")) newEmail = details[7];
 
-                    int overdueAmount = Integer.parseInt(details[8].trim());
+                    String overdueAmount = details[8]; // Overdue amount remains unchanged
 
                     // Update the record
-                    lines.set(i, details[0] + "," + newUsername + "," + newPassword + "," + newName + "," +
-                            newGender + "," + details[5] + "," + newContactNumber + "," + newEmail + "," + overdueAmount);
-                    login = true;
+                    lines.set(i, String.join(",", details[0], newUsername, newPassword, newName, newGender,
+                            details[5], newContactNumber, newEmail, overdueAmount));
+                    userFound = true;
                     break;
                 }
             }
 
-            // Write updated lines back to the file
-            if (login) {
+            if (userFound) {
+                // Write updated data back to the file
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter("Resident_Info.txt"))) {
                     for (String line : lines) {
                         writer.write(line);
                         writer.newLine();
                     }
                 }
-                System.out.println("Information updated successfully.");
+                System.out.println("Your details have been updated successfully!");
             } else {
-                System.out.println("User not found or invalid credentials.");
+                System.out.println("Invalid username or password. Please try again.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error during modification: " + e.getMessage());
+        }
+    }
+
+    public void viewOverdueAmount() {
+        if (!isLoggedIn) { // Check if the user is logged in
+            System.out.println("You need to log in first.");
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] userDetails = line.split(",");
+                if (userDetails.length >= 9 && userDetails[1].equals(this.username)) {
+                    System.out.println("Your overdue amount is: " + userDetails[8]);
+                    return;
+                }
+            }
+            System.out.println("User not found.");
+        } catch (IOException e) {
+            System.err.println("Error reading resident info: " + e.getMessage());
+        }
+    }
+
+    public void viewPaymentRecords() {
+        if (!isLoggedIn) { // Check if the user is logged in
+            System.out.println("You need to log in first.");
+            return;
+        }
+
+    }
+
+    public void changingRoom() {
+        if (!isLoggedIn) { // Check if the user is logged in
+            System.out.println("You need to log in first.");
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
+            String line;
+            List<String> lines = new ArrayList<>();
+            String currentRoomType = null;
+            String residentId = null;
+
+            while ((line = reader.readLine()) != null) {
+                String[] userDetails = line.split(",");
+                if (userDetails.length >= 9 && userDetails[1].equals(this.username)) {
+                    currentRoomType = userDetails[5];
+                    residentId = userDetails[0];
+                }
+                lines.add(line);
+            }
+
+            if (currentRoomType == null) {
+                System.out.println("User not found.");
+                return;
+            }
+
+            System.out.println("Current Room Type: " + currentRoomType);
+            System.out.println("Choose new room type:");
+            System.out.println("1. Single Room");
+            System.out.println("2. Double Sharing Room");
+            System.out.println("3. Triple Sharing Room");
+            System.out.print("Enter your choice: ");
+            int choice = sc.nextInt();
+            sc.nextLine(); // Consume newline
+
+            String newRoomType;
+            switch (choice) {
+                case 1:
+                    newRoomType = "Single Room";
+                    break;
+                case 2:
+                    newRoomType = "Double Sharing Room";
+                    break;
+                case 3:
+                    newRoomType = "Triple Sharing Room";
+                    break;
+                default:
+                    System.out.println("Invalid choice.");
+                    return;
+            }
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("Change_Room.txt", true))) {
+                writer.write(residentId + "," + "From " + currentRoomType + " to " + newRoomType);
+                writer.newLine();
+                System.out.println("Your room change request has been submitted for approval.");
+            } catch (IOException e) {
+                System.err.println("Error writing to Change_Room.txt: " + e.getMessage());
             }
 
         } catch (IOException e) {
-            System.err.println("Error modifying the file: " + e.getMessage());
+            System.err.println("Error reading Resident_Info.txt: " + e.getMessage());
         }
     }
 }

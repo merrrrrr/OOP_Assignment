@@ -143,68 +143,11 @@ public class Main {
                 }
             } else if (userType == 2) {
                 Staff staff = new Staff();
-                staffPage:
-                while (true) {
-                    System.out.println("Staff Page");
-                    System.out.println("1. Update individual login account");
-                    System.out.println("2. Make Payment for Resident");
-                    System.out.println("3. Generate Receipt");
-                    System.out.println("4. Log Out");
-                    System.out.println("Please enter your choice: ");
-                    int staffAction = sc.nextInt();
-
-                    switch (staffAction) {
-                        case 1:
-                            staff.modify();
-                            break;
-
-                        case 2:
-                            System.out.println("2. Make Payment for Resident");
-                            break;
-
-                        case 3:
-                            System.out.println("3. Generate Receipt");
-                            break;
-
-                        case 4:
-                            System.out.println("4. Log Out");
-                            break staffPage;
-
-                        default:
-                            System.out.println("Wrong Input. Please try again.");
-                    }
-
-                }
+                staffPage(staff);
 
             } else if (userType == 3) {
                 Resident resident = new Resident();
-                residentPage:
-                while (true) {
-                    System.out.println("Resident Page");
-                    System.out.println("1. Update individual login account");
-                    System.out.println("2. View Payment records");
-                    System.out.println("3. Log Out");
-                    System.out.print(": ");
-                    int residentAction = sc.nextInt();
-
-                    switch (residentAction) {
-                        case 1:
-                            resident.modify();
-                            break;
-
-                        case 2:
-                            System.out.println("2. View Payment records");
-                            break;
-
-                        case 3:
-                            System.out.println("3. Log Out");
-                            break residentPage;
-
-                        default:
-                            System.out.println("Wrong Input. Please try again.");
-                    }
-                    break;
-                }
+                residentPage(resident);
             }
         }
     }
@@ -221,4 +164,75 @@ public class Main {
 
         return userType;
     }
+    public static void residentPage(Resident resident) {
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println("Resident Page");
+            System.out.println("1. Update individual login account");
+            System.out.println("2. View Payment records");
+            System.out.println("3. View Overdue Amount");
+            System.out.println("4. Request Change of Room Type");
+            System.out.println("5. Log Out");
+            System.out.print("Please enter your choice: ");
+            int residentAction = sc.nextInt();
+
+            switch (residentAction) {
+                case 1:
+                    resident.modify();
+                    break;
+                case 2:
+                    resident.viewPaymentRecords();
+                    break;
+                case 3:
+                    resident.viewOverdueAmount();
+                    break;
+
+                case 4:
+                    resident.changingRoom();
+                    break;
+
+                case 5:
+                    return;
+                default:
+                    System.out.println("Wrong Input. Please try again.");
+            }
+        }
+    }
+
+    public static void staffPage(Staff staff) {
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println("Staff Page");
+            System.out.println("1. Update individual login account");
+            System.out.println("2. Make Payment for Resident");
+            System.out.println("3. Generate Receipt");
+            System.out.println("4. Accept Resident Room Type Change Request");
+            System.out.println("5. Log Out");
+            System.out.print("Please enter your choice: ");
+            int staffAction = sc.nextInt();
+
+            switch (staffAction) {
+                case 1:
+                    staff.modify();
+                    break;
+                case 2:
+                    System.out.println("2. Make Payment for Resident");
+                    staff.makePaymentForResident();
+                    break;
+                case 3:
+                    System.out.println("3. Generate Receipt");
+                    staff.generateReceipt();
+                    break;
+
+                case 4:
+                    staff.acceptRoomChange();
+                    break;
+                case 5:
+                    System.out.println("4. Log Out");
+                    return;
+                default:
+                    System.out.println("Wrong Input. Please try again.");
+            }
+        }
+        }
 }

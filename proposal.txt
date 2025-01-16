@@ -9,7 +9,16 @@ Staff
 To register individual login account
 To update individual login account
 Make payment for resident
-Generate receipt
+Generate receipt (1. Hostel Name
+                  2. Receipt Number
+                  3. Date of Issue
+                  5. Resident Name
+                  6. Room Number
+                  7. Room Type
+                  8. Amount Paid
+                  9. Outstanding Amount
+                  10. Staff in charge)
+
 
 Resident
 To register individual login account

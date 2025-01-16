@@ -38,10 +38,10 @@ public class Main {
                                 System.out.println("Staff Login");
                                 boolean login = staff.login();
                                 if (login == true) {
+                                    staffPage(staff);
                                     break mainPage;
                                 } else {
                                     System.out.println("Invalid Username or Password");
-                                    continue;
                                 }
 
                             } else if (userType == 3) {
@@ -49,6 +49,7 @@ public class Main {
                                 System.out.println("Resident Login");
                                 boolean login = resident.login();
                                 if (login == true) {
+                                    residentPage(resident);
                                     break mainPage;
                                 } else {
                                     System.out.println("Invalid Username or Password.");
@@ -163,6 +164,7 @@ public class Main {
 
         return userType;
     }
+
     public static void residentPage(Resident resident) {
         Scanner sc = new Scanner(System.in);
         while (true) {
@@ -198,40 +200,40 @@ public class Main {
         }
     }
 
-    public static void staffPage(Staff staff) {
-        Scanner sc = new Scanner(System.in);
-        while (true) {
-            System.out.println("Staff Page");
-            System.out.println("1. Update individual login account");
-            System.out.println("2. Make Payment for Resident");
-            System.out.println("3. Generate Receipt");
-            System.out.println("4. Accept Resident Room Type Change Request");
-            System.out.println("5. Log Out");
-            System.out.print("Please enter your choice: ");
-            int staffAction = sc.nextInt();
+        public static void staffPage(Staff staff) {
+            Scanner sc = new Scanner(System.in);
+            while (true) {
+                System.out.println("Staff Page");
+                System.out.println("1. Update individual login account");
+                System.out.println("2. Make Payment for Resident");
+                System.out.println("3. Generate Receipt");
+                System.out.println("4. Accept Resident Room Type Change Request");
+                System.out.println("5. Log Out");
+                System.out.print("Please enter your choice: ");
+                int staffAction = sc.nextInt();
 
-            switch (staffAction) {
-                case 1:
-                    staff.modify();
-                    break;
-                case 2:
-                    System.out.println("2. Make Payment for Resident");
-                    staff.makePaymentForResident();
-                    break;
-                case 3:
-                    System.out.println("3. Generate Receipt");
-                    staff.generateReceipt();
-                    break;
+                switch (staffAction) {
+                    case 1:
+                        staff.modify();
+                        break;
+                    case 2:
+                        System.out.println("2. Make Payment for Resident");
+                        staff.makePaymentForResident();
+                        break;
+                    case 3:
+                        System.out.println("3. Generate Receipt");
+                        staff.generateReceipt();
+                        break;
 
-                case 4:
-                    staff.acceptRoomChange();
-                    break;
-                case 5:
-                    System.out.println("4. Log Out");
-                    return;
-                default:
-                    System.out.println("Wrong Input. Please try again.");
+                    case 4:
+                        staff.acceptRoomChange();
+                        break;
+                    case 5:
+                        System.out.println("4. Log Out");
+                        return;
+                    default:
+                        System.out.println("Wrong Input. Please try again.");
             }
         }
-        }
+    }
 }

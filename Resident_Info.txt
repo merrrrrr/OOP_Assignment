@@ -1,0 +1,3 @@
+R01,fukit,1118,yep,female,222,0123456789,fukit@gmail.com,RM400
+R02,weijian,1111,wong,female,333,01119211211,weijian@gmail.com,RM400.0
+R03,khong,kcl,nig,female,Double Sharing Room,0199999999,khong@gmail.com,RM300.0

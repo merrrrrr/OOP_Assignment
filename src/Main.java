@@ -111,7 +111,6 @@ public class Main {
 
                     switch (managerAction) {
                         case 1:
-
                             manager.approveUser();
                             break;
 

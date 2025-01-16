@@ -763,7 +763,7 @@ public class Manager extends User{
                             String email = line[7];
                             String overdueAmount = line[8];
 
-                            if (id.contains(searchID)) {
+                            if (id.contains(searchUsername)) {
                                 System.out.println("Result" + ++result);
                                 System.out.println("ID: " + id);
                                 System.out.println("Username: " + username);
@@ -806,7 +806,7 @@ public class Manager extends User{
                             String email = line[7];
                             String overdueAmount = line[8];
 
-                            if (id.contains(searchID)) {
+                            if (id.contains(searchName)) {
                                 System.out.println("Result" + ++result);
                                 System.out.println("ID: " + id);
                                 System.out.println("Username: " + username);

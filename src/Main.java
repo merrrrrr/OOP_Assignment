@@ -1,8 +1,14 @@
+import javax.swing.*;
 import java.io.*;
 import java.util.Scanner;
 
 
 public class Main {
+    private JPanel panel1;
+    private JButton managerButton;
+    private JButton staffButton;
+    private JButton userButton;
+
     public static void main(String[] args) throws IOException {
         system: while (true) {
             Scanner sc = new Scanner(System.in);
@@ -153,6 +159,8 @@ public class Main {
 
         return userType;
     }
+
+
     public static void residentPage(Resident resident) {
         Scanner sc = new Scanner(System.in);
         while (true) {
@@ -223,5 +231,6 @@ public class Main {
                     System.out.println("Wrong Input. Please try again.");
             }
         }
-        }
+    }
+
 }

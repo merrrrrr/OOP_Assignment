@@ -320,6 +320,24 @@ public class Staff extends User {
             }
             System.out.println("Payment has been processed successfully!");
 
+            // Generate receipt
+            String receiptNumber = generateReceiptNumber();
+            String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+            String residentName = selectedResidentDetails[3];
+            String roomNumber = selectedResidentDetails[7];
+            String roomType = selectedResidentDetails[6];
+            String amountPaid = "RM" + paymentAmount;
+            String outstandingAmount = selectedResidentDetails[8];
+            String staffInCharge = this.username;
+
+            String receiptRecord = String.join(",", receiptNumber, dateTime, residentName, roomNumber, roomType, amountPaid, outstandingAmount, staffInCharge);
+
+            try (BufferedWriter receiptWriter = new BufferedWriter(new FileWriter("Receipt.txt", true))) {
+                receiptWriter.write(receiptRecord);
+                receiptWriter.newLine();
+            }
+            System.out.println("Receipt has been generated successfully!");
+
         } catch (IOException | NumberFormatException e) {
             System.err.println("Error processing payment: " + e.getMessage());
         }
@@ -335,7 +353,7 @@ public class Staff extends User {
 
         try {
             List<String> lines = new ArrayList<>();
-            try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
+            try (BufferedReader reader = new BufferedReader(new FileReader("Receipt.txt"))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     lines.add(line);
@@ -343,18 +361,18 @@ public class Staff extends User {
             }
 
             if (lines.isEmpty()) {
-                System.out.println("No residents found.");
+                System.out.println("No receipts found.");
                 return;
             }
 
             while (true) {
-                System.out.println("Residents:");
+                System.out.println("Receipts:");
                 for (int i = 0; i < lines.size(); i++) {
                     String[] details = lines.get(i).split(",");
-                    System.out.println((i + 1) + ". " + details[1] + " - " + details[3] + " (Balance: " + details[8] + ")");
+                    System.out.println((i + 1) + ". " + details[2].trim() + " - " + details[3].trim() + " (Amount Paid: " + details[5].trim() + ")");
                 }
 
-                System.out.print("Enter the number of the resident to generate receipt: ");
+                System.out.print("Enter the number of the receipt to view: ");
                 int choice = Integer.parseInt(sc.nextLine().trim());
 
                 if (choice < 1 || choice > lines.size()) {
@@ -362,18 +380,21 @@ public class Staff extends User {
                     return;
                 }
 
-                String[] selectedResidentDetails = lines.get(choice - 1).split(",");
-                System.out.println("Generating receipt for " + selectedResidentDetails[1] + " - " + selectedResidentDetails[3] + " (Balance: " + selectedResidentDetails[8] + ")");
-                System.out.println("----------------------------------------");
-                System.out.println("Name: " + selectedResidentDetails[3]);
-                System.out.println("Contact number: " + selectedResidentDetails[4]);
-                System.out.println("Email: " + selectedResidentDetails[5]);
-                System.out.println("Room type: " + selectedResidentDetails[6]);
-                System.out.println("Room number: " + selectedResidentDetails[7]);
-                System.out.println("Receipt generate datetime: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+                String[] selectedReceiptDetails = lines.get(choice - 1).split(",");
+                System.out.println("Generating receipt for " + selectedReceiptDetails[2].trim() + " - " + selectedReceiptDetails[3].trim());
+                System.out.println("-----------------Receipt-----------------");
+                System.out.println(" Asia Pacific University Hostel ");
+                System.out.println("Receipt Number: " + selectedReceiptDetails[0].trim());
+                System.out.println("Receipt generate datetime: " + selectedReceiptDetails[1].trim());
+                System.out.println("Name: " + selectedReceiptDetails[2].trim());
+                System.out.println("Room number: " + selectedReceiptDetails[3].trim());
+                System.out.println("Room type: " + selectedReceiptDetails[4].trim());
+                System.out.println("Amount Paid: " + selectedReceiptDetails[5].trim());
+                System.out.println("Outstanding Amount: " + selectedReceiptDetails[6].trim());
+                System.out.println("Staff in Charge: " + selectedReceiptDetails[7].trim());
                 System.out.println("Receipt has been generated successfully!");
-
-                System.out.print("Would you like to (1) generate another receipt or (2) go back to the staff page? ");
+                System.out.println("-----------------------------------------");
+                System.out.print("Would you like to (1) view another receipt or (2) go back to the staff page? ");
                 int nextAction = Integer.parseInt(sc.nextLine().trim());
 
                 if (nextAction == 2) {
@@ -386,5 +407,22 @@ public class Staff extends User {
         } catch (IOException | NumberFormatException e) {
             System.err.println("Error generating receipt: " + e.getMessage());
         }
+    }
+    private String generateReceiptNumber() {
+        int maxReceiptNumber = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader("Receipt.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                String receiptNumber = details[0].substring(3); // Remove "REC" prefix
+                int receiptNum = Integer.parseInt(receiptNumber);
+                if (receiptNum > maxReceiptNumber) {
+                    maxReceiptNumber = receiptNum;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading receipt file: " + e.getMessage());
+        }
+        return String.format("REC%03d", maxReceiptNumber + 1);
     }
 }

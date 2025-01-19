@@ -11,7 +11,6 @@ public class Manager extends User{
         super(id, username, password, name, contactNumber, email);
     }
 
-
     @Override
     public String toString() {
         return "Manager{id = " + getId()
@@ -25,20 +24,9 @@ public class Manager extends User{
     Scanner sc = new Scanner(System.in);
 
     public void register() throws IOException {
+        String lines;
         System.out.print("Username: ");
         String username = sc.nextLine();
-        String lines;
-
-//        BufferedReader managerInfo = new BufferedReader(new FileReader("Manager_Info.txt"));
-//        while(((lines = managerInfo.readLine()) != null)) {
-//            String[] line = lines.split(",");
-//            if (line[0].equals(username)) {
-//                System.out.println("This username has been used. Please enter other username.");
-//                break;
-//            }
-//
-//        }
-
         System.out.print("Password: ");
         String password = sc.nextLine();
         System.out.print("Name: ");
@@ -343,7 +331,7 @@ public class Manager extends User{
 
     }
 
-    public void searchUser() throws IOException {
+    public void searchEditDelete() throws IOException {
         System.out.println("1. Search Manager");
         System.out.println("2. Search Staff");
         System.out.println("3. Search Resident");
@@ -357,502 +345,181 @@ public class Manager extends User{
         System.out.println("Please enter the search type: ");
         int searchType = sc.nextInt();
 
+        String fileName = "";
         switch (userType) {
             case 1:
-                switch (searchType) {
-                    case 1:
-                        System.out.println("Search staff by any: ");
-                        String searchAny = sc.next();
-                        BufferedReader managerInfo = new BufferedReader(new FileReader("Manager_Info.txt"));
-                        String lines;
-                        int result = 0;
-                        boolean userFound = false;
-
-                        while ((lines = managerInfo.readLine()) != null) {
-                            if (lines.contains(searchAny)) {
-                                String[] line = lines.split(",");
-                                String id = line[0];
-                                String username = line[1];
-                                String password = line[2];
-                                String name = line[3];
-                                String contactNumber = line[4];
-                                String email = line[5];
-
-                                System.out.println("Result" + ++result);
-                                System.out.println("ID: " + id);
-                                System.out.println("Username: " + username);
-                                System.out.println("Password: " + password);
-                                System.out.println("Name: " + name);
-                                System.out.println("Contact Number: " + contactNumber);
-                                System.out.println("Email: " + email);
-                                userFound = true;
-                                break;
-
-                            } else {
-                                System.out.println("Username not found.");
-                            }
-
-                        }
-
-                    case 2:
-                        System.out.print("Search Manager by ID: ");
-                        String searchID = sc.next();
-
-                        managerInfo = new BufferedReader(new FileReader("Manager_Info.txt"));
-                        result = 0;
-                        userFound = false;
-
-                        while ((lines = managerInfo.readLine()) != null) {
-                            String[] line = lines.split(",");
-                            String id = line[0];
-                            String username = line[1];
-                            String password = line[2];
-                            String name = line[3];
-                            String contactNumber = line[4];
-                            String email = line[5];
-
-                            if (id.contains(searchID)) {
-                                System.out.println("Result" + ++result);
-                                System.out.println("ID: " + id);
-                                System.out.println("Username: " + username);
-                                System.out.println("Password: " + password);
-                                System.out.println("Name: " + name);
-                                System.out.println("Contact Number: " + contactNumber);
-                                System.out.println("Email: " + email);
-                                userFound = true;
-                                break;
-                            } else {
-                                System.out.println("ID not found.");
-                            }
-                        }
-
-                        System.out.println(result + " result(s) found.");
-
-                        managerInfo.close();
-                        break;
-
-                    case 3:
-                        System.out.print("Search Manager by Username: ");
-                        String searchUsername = sc.next();
-
-                        managerInfo = new BufferedReader(new FileReader("Manager_Info.txt"));
-                        result = 0;
-                        userFound = false;
-
-                        while ((lines = managerInfo.readLine()) != null) {
-                            String[] line = lines.split(",");
-                            String id = line[0];
-                            String username = line[1];
-                            String password = line[2];
-                            String name = line[3];
-                            String contactNumber = line[4];
-                            String email = line[5];
-
-                            if (username.contains(searchUsername)) {
-                                System.out.println("Result" + ++result);
-                                System.out.println("ID: " + id);
-                                System.out.println("Username: " + username);
-                                System.out.println("Password: " + password);
-                                System.out.println("Name: " + name);
-                                System.out.println("Contact Number: " + contactNumber);
-                                System.out.println("Email: " + email);
-                                userFound = true;
-                                break;
-                            } else {
-                                System.out.println("Username not found.");
-                            }
-                        }
-
-                        System.out.println(result + " result(s) found.");
-                        managerInfo.close();
-
-                        break;
-
-                    case 4:
-                        System.out.println("Search Manager by Name: ");
-                        String searchName = sc.next();
-                        managerInfo = new BufferedReader(new FileReader("Manager_Info.txt"));
-                        result = 0;
-                        userFound = false;
-
-                        while ((lines = managerInfo.readLine()) != null) {
-                            String[] line = lines.split(",");
-                            String id = line[0];
-                            String username = line[1];
-                            String password = line[2];
-                            String name = line[3];
-                            String contactNumber = line[4];
-                            String email = line[5];
-
-                            if (username.contains(searchName)) {
-                                System.out.println("Result" + ++result);
-                                System.out.println("ID: " + id);
-                                System.out.println("Username: " + username);
-                                System.out.println("Password: " + password);
-                                System.out.println("Name: " + name);
-                                System.out.println("Contact Number: " + contactNumber);
-                                System.out.println("Email: " + email);
-                                userFound = true;
-                                break;
-                            } else {
-                                System.out.println("Username not found.");
-                            }
-                        }
-
-                        System.out.println(result + " result(s) found.");
-                        managerInfo.close();
-                        break;
-
-                    default:
-                        System.out.println("Wrong input. Please try again.");
-                        break;
-                }
+                fileName = "Manager_Info.txt";
                 break;
-
             case 2:
-                switch (searchType) {
-                    case 1:
-                        System.out.println("Search staff by any: ");
-                        String searchAny = sc.next();
-                        BufferedReader staffInfo = new BufferedReader(new FileReader("Staff_Info.txt"));
-                        String lines;
-                        int result = 0;
-                        boolean userFound = false;
-
-                        while ((lines = staffInfo.readLine()) != null) {
-                            if (lines.contains(searchAny)) {
-                                String[] line = lines.split(",");
-                                String id = line[0];
-                                String username = line[1];
-                                String password = line[2];
-                                String name = line[3];
-                                String contactNumber = line[4];
-                                String email = line[5];
-
-                                System.out.println("Result" + ++result);
-                                System.out.println("ID: " + id);
-                                System.out.println("Username: " + username);
-                                System.out.println("Password: " + password);
-                                System.out.println("Name: " + name);
-                                System.out.println("Contact Number: " + contactNumber);
-                                System.out.println("Email: " + email);
-                                userFound = true;
-                                break;
-
-                            } else {
-                                System.out.println("Username not found.");
-                            }
-
-                        }
-
-                    case 2:
-                        System.out.print("Search Staff by ID: ");
-                        String searchID = sc.next();
-
-                        staffInfo = new BufferedReader(new FileReader("Staff_Info.txt"));
-                        result = 0;
-                        userFound = false;
-
-                        while ((lines = staffInfo.readLine()) != null) {
-                            String[] line = lines.split(",");
-                            String id = line[0];
-                            String username = line[1];
-                            String password = line[2];
-                            String name = line[3];
-                            String contactNumber = line[4];
-                            String email = line[5];
-
-                            if (id.contains(searchID)) {
-                                System.out.println("Result" + ++result);
-                                System.out.println("ID: " + id);
-                                System.out.println("Username: " + username);
-                                System.out.println("Password: " + password);
-                                System.out.println("Name: " + name);
-                                System.out.println("Contact Number: " + contactNumber);
-                                System.out.println("Email: " + email);
-                                userFound = true;
-                                break;
-                            } else {
-                                System.out.println("ID not found.");
-                            }
-                        }
-
-                        System.out.println(result + " result(s) found.");
-
-                        staffInfo.close();
-                        break;
-
-                    case 3:
-                        System.out.print("Search Staff by Username: ");
-                        String searchUsername = sc.next();
-
-                        staffInfo = new BufferedReader(new FileReader("Staff_Info.txt"));
-                        result = 0;
-                        userFound = false;
-
-                        while ((lines = staffInfo.readLine()) != null) {
-                            String[] line = lines.split(",");
-                            String id = line[0];
-                            String username = line[1];
-                            String password = line[2];
-                            String name = line[3];
-                            String contactNumber = line[4];
-                            String email = line[5];
-
-                            if (username.contains(searchUsername)) {
-                                System.out.println("Result" + ++result);
-                                System.out.println("ID: " + id);
-                                System.out.println("Username: " + username);
-                                System.out.println("Password: " + password);
-                                System.out.println("Name: " + name);
-                                System.out.println("Contact Number: " + contactNumber);
-                                System.out.println("Email: " + email);
-                                userFound = true;
-                                break;
-                            } else {
-                                System.out.println("Username not found.");
-                            }
-                        }
-
-                        System.out.println(result + " result(s) found.");
-                        staffInfo.close();
-
-                        break;
-
-                    case 4:
-                        System.out.println("Search Staff by Name: ");
-                        String searchName = sc.next();
-                        staffInfo = new BufferedReader(new FileReader("Staff_Info.txt"));
-                        result = 0;
-                        userFound = false;
-
-                        while ((lines = staffInfo.readLine()) != null) {
-                            String[] line = lines.split(",");
-                            String id = line[0];
-                            String username = line[1];
-                            String password = line[2];
-                            String name = line[3];
-                            String contactNumber = line[4];
-                            String email = line[5];
-
-                            if (username.contains(searchName)) {
-                                System.out.println("Result" + ++result);
-                                System.out.println("ID: " + id);
-                                System.out.println("Username: " + username);
-                                System.out.println("Password: " + password);
-                                System.out.println("Name: " + name);
-                                System.out.println("Contact Number: " + contactNumber);
-                                System.out.println("Email: " + email);
-                                userFound = true;
-                                break;
-                            } else {
-                                System.out.println("Username not found.");
-                            }
-                        }
-
-                        System.out.println(result + " result(s) found.");
-                        staffInfo.close();
-                        break;
-                    default:
-                        System.out.println("Wrong input. Please try again.");
-                        break;
-                }
+                fileName = "Staff_Info.txt";
                 break;
             case 3:
-                switch (searchType) {
-                    case 1:
-                        System.out.println("Search resident by any: ");
-                        String searchAny = sc.next();
-                        BufferedReader residentInfo = new BufferedReader(new FileReader("Resident_Info.txt"));
-                        String lines;
-                        int result = 0;
-                        boolean userFound = false;
-
-                        while ((lines = residentInfo.readLine()) != null) {
-                            if (lines.contains(searchAny)) {
-                                String[] line = lines.split(",");
-                                String id = line[0];
-                                String username = line[1];
-                                String password = line[2];
-                                String name = line[3];
-                                String gender = line[4];
-                                String roomNumber = line[5];
-                                String contactNumber = line[6];
-                                String email = line[7];
-                                String overdueAmount = line[8];
-
-                                System.out.println("Result" + ++result);
-                                System.out.println("ID: " + id);
-                                System.out.println("Username: " + username);
-                                System.out.println("Password: " + password);
-                                System.out.println("Name: " + name);
-                                System.out.println("Gender: " + gender);
-                                System.out.println("Room Number: " + roomNumber);
-                                System.out.println("Contact Number: " + contactNumber);
-                                System.out.println("Email: " + email);
-                                System.out.println("Overdue Amount: " + overdueAmount);
-                                userFound = true;
-                                break;
-
-                            } else {
-                                System.out.println("Username not found.");
-                            }
-
-                        }
-
-                    case 2:
-                        System.out.print("Search Resident by ID: ");
-                        String searchID = sc.next();
-
-                        residentInfo = new BufferedReader(new FileReader("Resident_Info.txt"));
-                        result = 0;
-                        userFound = false;
-
-                        while ((lines = residentInfo.readLine()) != null) {
-                            String[] line = lines.split(",");
-                            String id = line[0];
-                            String username = line[1];
-                            String password = line[2];
-                            String name = line[3];
-                            String gender = line[4];
-                            String roomNumber = line[5];
-                            String contactNumber = line[6];
-                            String email = line[7];
-                            String overdueAmount = line[8];
-
-                            if (id.contains(searchID)) {
-                                System.out.println("Result" + ++result);
-                                System.out.println("ID: " + id);
-                                System.out.println("Username: " + username);
-                                System.out.println("Password: " + password);
-                                System.out.println("Name: " + name);
-                                System.out.println("Gender: " + gender);
-                                System.out.println("Room Number: " + roomNumber);
-                                System.out.println("Contact Number: " + contactNumber);
-                                System.out.println("Email: " + email);
-                                System.out.println("Overdue Amount: " + overdueAmount);
-                                userFound = true;
-                                break;
-                            } else {
-                                System.out.println("ID not found.");
-                            }
-                        }
-
-                        System.out.println(result + " result(s) found.");
-
-                        residentInfo.close();
-                        break;
-
-                    case 3:
-                        System.out.print("Search Resident by Username: ");
-                        String searchUsername = sc.next();
-
-                        residentInfo = new BufferedReader(new FileReader("Resident_Info.txt"));
-                        result = 0;
-                        userFound = false;
-
-                        while ((lines = residentInfo.readLine()) != null) {
-                            String[] line = lines.split(",");
-                            String id = line[0];
-                            String username = line[1];
-                            String password = line[2];
-                            String name = line[3];
-                            String gender = line[4];
-                            String roomNumber = line[5];
-                            String contactNumber = line[6];
-                            String email = line[7];
-                            String overdueAmount = line[8];
-
-                            if (id.contains(searchUsername)) {
-                                System.out.println("Result" + ++result);
-                                System.out.println("ID: " + id);
-                                System.out.println("Username: " + username);
-                                System.out.println("Password: " + password);
-                                System.out.println("Name: " + name);
-                                System.out.println("Gender: " + gender);
-                                System.out.println("Room Number: " + roomNumber);
-                                System.out.println("Contact Number: " + contactNumber);
-                                System.out.println("Email: " + email);
-                                System.out.println("Overdue Amount: " + overdueAmount);
-                                userFound = true;
-                                break;
-
-                            } else {
-                                System.out.println("Username not found.");
-                            }
-                        }
-
-                        System.out.println(result + " result(s) found.");
-                        residentInfo.close();
-
-                        break;
-
-                    case 4:
-                        System.out.println("Search Resident by Name: ");
-                        String searchName = sc.next();
-                        residentInfo = new BufferedReader(new FileReader("Resident_Info.txt"));
-                        result = 0;
-                        userFound = false;
-
-                        while ((lines = residentInfo.readLine()) != null) {
-                            String[] line = lines.split(",");
-                            String id = line[0];
-                            String username = line[1];
-                            String password = line[2];
-                            String name = line[3];
-                            String gender = line[4];
-                            String roomNumber = line[5];
-                            String contactNumber = line[6];
-                            String email = line[7];
-                            String overdueAmount = line[8];
-
-                            if (id.contains(searchName)) {
-                                System.out.println("Result" + ++result);
-                                System.out.println("ID: " + id);
-                                System.out.println("Username: " + username);
-                                System.out.println("Password: " + password);
-                                System.out.println("Name: " + name);
-                                System.out.println("Gender: " + gender);
-                                System.out.println("Room Number: " + roomNumber);
-                                System.out.println("Contact Number: " + contactNumber);
-                                System.out.println("Email: " + email);
-                                System.out.println("Overdue Amount: " + overdueAmount);
-                                userFound = true;
-                                break;
-
-                            } else {
-                                System.out.println("Username not found.");
-                            }
-                        }
-
-                        System.out.println(result + " result(s) found.");
-                        residentInfo.close();
-                        break;
-
-                    default:
-                        System.out.println("Wrong input. Please try again.");
-                        break;
-                }
+                fileName = "Resident_Info.txt";
                 break;
+            default:
+                System.out.println("Wrong input. Please try again.");
+                return;
+        }
 
+        System.out.print("Enter search value: ");
+        String searchValue = sc.next();
+
+        boolean exist = searchUser(fileName, searchType, searchValue);
+
+        if (exist) {
+            System.out.println("Do you want to edit the user? (Y/N)");
+            String edit = sc.next();
+
+            if (edit.equalsIgnoreCase("Y")) {
+                updateUser(fileName);
+
+            } else if (edit.equalsIgnoreCase("N")) {
+                System.out.println("Do you want to delete the user? (Y/N)");
+                String delete = sc.next();
+
+                if (delete.equalsIgnoreCase("Y")) {
+                    deleteUser(fileName);
+
+                } else if (delete.equalsIgnoreCase("N")) {
+                    System.out.println("Back to main menu.");
+
+                } else {
+                    System.out.println("Invalid input.");
+                }
+
+            } else {
+                System.out.println("Invalid input.");
+            }
+        }
+
+
+    }
+
+    private boolean searchUser(String fileName, int searchType, String searchValue) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        String line;
+        int result = 0;
+        boolean userFound = false;
+
+        while ((line = br.readLine()) != null) {
+            String[] details = line.split(",");
+            String id = details[0];
+            String username = details[1];
+            String name = details[3];
+
+            boolean match = false;
+            switch (searchType) {
+                case 1:
+                    match = line.contains(searchValue);
+                    break;
+                case 2:
+                    match = id.contains(searchValue);
+                    break;
+                case 3:
+                    match = username.contains(searchValue);
+                    break;
+                case 4:
+                    match = name.contains(searchValue);
+                    break;
+                default:
+                    System.out.println("Wrong input. Please try again.");
+                    break;
+            }
+
+            if (match) {
+                if (fileName.equals("Resident_Info.txt")) {
+                    System.out.println("Result " + ++result);
+                    System.out.println("ID: " + id);
+                    System.out.println("Username: " + username);
+                    System.out.println("Name: " + name);
+                    System.out.println("Gender: " + details[4]);
+                    System.out.println("Room Number: " + details[5]);
+                    System.out.println("Contact Number: " + details[6]);
+                    System.out.println("Email: " + details[7]);
+                    System.out.println("Overdue Amount: " + details[8]);
+
+                } else {
+                    System.out.println("Result " + ++result);
+                    System.out.println("ID: " + id);
+                    System.out.println("Username: " + username);
+                    System.out.println("Name: " + name);
+                    System.out.println("Contact Number: " + details[4]);
+                    System.out.println("Email: " + details[5]);
+                }
+
+                userFound = true;
+            }
+        }
+
+        if (!userFound) {
+            System.out.println("No results found.");
+        }
+
+        br.close();
+        return userFound;
+    }
+
+
+    public void updateUser(String fileName) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true));
+
+        String line;
+        System.out.println("1. Edit Username");
+        System.out.println("2. Edit Password");
+        System.out.println("3. Edit Name");
+        System.out.println("4. Edit Contact Number");
+        System.out.println("5. Edit Email");
+
+        if (fileName.equals("Resident_Info.txt")) {
+            System.out.println("6. Edit Room Type");
+            System.out.println("7. Edit Overdue Amount");
+        }
+
+        System.out.print("Please enter the update type: ");
+        int updateType = sc.nextInt();
+
+        switch (updateType) {
+            case 1:
+                System.out.print("Enter new username: ");
+                String newUsername = sc.next();
+                break;
+            case 2:
+                System.out.print("Enter new password: ");
+                String newPassword = sc.next();
+                break;
+            case 3:
+                System.out.print("Enter new name: ");
+                String newName = sc.next();
+                break;
+            case 4:
+                System.out.print("Enter new contact number: ");
+                String newContactNumber = sc.next();
+                break;
+            case 5:
+                System.out.print("Enter new email: ");
+                String newEmail = sc.next();
+                break;
+            case 6:
+                System.out.print("Enter new room type: ");
+                String newRoomType = sc.next();
+                break;
+            case 7:
+                System.out.print("Enter new overdue amount: ");
+                String newOverdueAmount = sc.next();
+                break;
             default:
                 System.out.println("Wrong input. Please try again.");
                 break;
         }
-    }
 
-    public void updateUser() {
-        System.out.println("1. Update Manager");
-        System.out.println("2. Update Staff");
-        System.out.println("3. Update Resident");
-        System.out.println("Please enter the user type you want to update: ");
-        int userType = sc.nextInt();
+
 
 
 
     }
 
-    public void deleteUser() {
+    public void deleteUser(String fileName) {
 
     }
 

@@ -102,10 +102,8 @@ public class Main {
                     System.out.println("Manager Page");
                     System.out.println("1. Approve User Registration");
                     System.out.println("2. Search User Account");
-                    System.out.println("3. Update User Account");
-                    System.out.println("4. Delete User Account");
-                    System.out.println("5. Update Rental Rate");
-                    System.out.println("6. Log Out");
+                    System.out.println("3. Update Rental Rate");
+                    System.out.println("4. Log Out");
                     System.out.print(": ");
                     int managerAction = sc.nextInt();
 
@@ -115,23 +113,15 @@ public class Main {
                             break;
 
                         case 2:
-                            manager.searchUser();
+                            manager.searchEditDelete();
                             break;
 
                         case 3:
-                            System.out.println("3. Update User Account");
+                            System.out.println("3. Update Rental Rate");
                             break;
 
                         case 4:
-                            System.out.println("4. Delete User Account");
-                            break;
-
-                        case 5:
-                            System.out.println("5. Update Rental Rate");
-                            break;
-
-                        case 6:
-                            System.out.println("6. Log Out");
+                            System.out.println("4. Log Out");
                             break managerPage;
 
                         default:

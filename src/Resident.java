@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Resident extends User {
     private String gender;
-    private String roomType;
+    private String roomNo;
     private String username;
     private int overdueAmount;
     private boolean isLoggedIn = false;
@@ -27,10 +27,10 @@ public class Resident extends User {
         }
     }
 
-    public Resident(String id, String username, String password, String name, String gender, String roomType, String contactNumber, String email, int overdueAmount) {
+    public Resident(String id, String username, String password, String name, String gender, String roomNo, String contactNumber, String email, int overdueAmount) {
         super(id, username, password, name, contactNumber, email);
         this.gender = gender;
-        this.roomType = roomType;
+        this.roomNo = roomNo;
         this.overdueAmount = overdueAmount;
     }
 
@@ -41,7 +41,7 @@ public class Resident extends User {
                 ", password=" + getPassword() +
                 ", name=" + getName() +
                 ", gender=" + gender +
-                ", roomType=" + roomType +
+                ", roomNo=" + roomNo +
                 ", contactNumber=" + getContactNumber() +
                 ", email=" + getEmail() +
                 ", overdueAmount=" + overdueAmount + "}";

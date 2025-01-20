@@ -4,10 +4,21 @@
  */
 package OOP_Assignment.GUI;
 
+
 /**
  *
  * @author Yong Jun
  */
+import javax.swing.*;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+
+
 public class StaffPage extends javax.swing.JFrame {
 
     /**
@@ -46,6 +57,11 @@ public class StaffPage extends javax.swing.JFrame {
         });
 
         MakePaymentforResident.setText("Make Payment for Resident");
+        MakePaymentforResident.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MakePaymentforResidentActionPerformed(evt);
+            }
+        });
 
         generateReceipt.setText("Generate Receipt");
         generateReceipt.addActionListener(new java.awt.event.ActionListener() {
@@ -115,20 +131,36 @@ public class StaffPage extends javax.swing.JFrame {
 
     private void AcceptRoomChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AcceptRoomChangeActionPerformed
         // TODO add your handling code here:
+        StaffAcceptResidentRoomTypeChangeRequestPage sa = new StaffAcceptResidentRoomTypeChangeRequestPage();
+        sa.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_AcceptRoomChangeActionPerformed
 
     private void generateReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateReceiptActionPerformed
         // TODO add your handling code here:
+        StaffGenerateReceiptPage sg = new StaffGenerateReceiptPage();
+        sg.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_generateReceiptActionPerformed
 
     private void UpdateIndividualLoginAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateIndividualLoginAccountActionPerformed
         // TODO add your handling code here:
+        StaffUpdateIndividualLoginAccountPage su = new StaffUpdateIndividualLoginAccountPage();
+        su.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_UpdateIndividualLoginAccountActionPerformed
 
     private void StaffLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StaffLogOutActionPerformed
         // TODO add your handling code here:
         
     }//GEN-LAST:event_StaffLogOutActionPerformed
+
+    private void MakePaymentforResidentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MakePaymentforResidentActionPerformed
+        // TODO add your handling code here:
+        StaffMakePaymentForResidentPage sm = new StaffMakePaymentForResidentPage();
+        sm.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_MakePaymentforResidentActionPerformed
 
     /**
      * @param args the command line arguments

@@ -1,2 +1,2 @@
 R03,From single to Double Sharing Room,Approved
-R01,From 222 to Single Room,Disapproved
+R01,From 222 to Single Room,Disapproved,Disapproved

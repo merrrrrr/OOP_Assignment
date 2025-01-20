@@ -243,7 +243,7 @@ public class Staff extends User {
         }
     }
 
-    private void updateResidentRoomType(String residentId, String newRoomType) {
+    public void updateResidentRoomType(String residentId, String newRoomType) {
         try {
             List<String> lines = new ArrayList<>();
             try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
@@ -425,4 +425,5 @@ public class Staff extends User {
         }
         return String.format("REC%03d", maxReceiptNumber + 1);
     }
+
 }

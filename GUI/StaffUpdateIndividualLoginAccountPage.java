@@ -8,15 +8,23 @@ package OOP_Assignment.GUI;
  *
  * @author Yong Jun
  */
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class StaffUpdateIndividualLoginAccountPage extends javax.swing.JFrame {
+    private String username;
+    private boolean isLoggedIn = true; // Assuming the user is logged in for this example
+
+    public StaffUpdateIndividualLoginAccountPage(String username) {
+        this.username = username;
+        initComponents();
+    }
 
     /**
      * Creates new form StaffUpdateIndividualLoginAccountPage
      */
-    public StaffUpdateIndividualLoginAccountPage() {
-        initComponents();
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -55,6 +63,36 @@ public class StaffUpdateIndividualLoginAccountPage extends javax.swing.JFrame {
 
         jLabel6.setText("New Email:");
 
+        editPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editPasswordActionPerformed(evt);
+            }
+        });
+
+        editUsername.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editUsernameActionPerformed(evt);
+            }
+        });
+
+        editName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editNameActionPerformed(evt);
+            }
+        });
+
+        editContactNum.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editContactNumActionPerformed(evt);
+            }
+        });
+
+        editEmail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editEmailActionPerformed(evt);
+            }
+        });
+
         confirmEditButton.setText("Confirm Edit");
         confirmEditButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -70,6 +108,11 @@ public class StaffUpdateIndividualLoginAccountPage extends javax.swing.JFrame {
                 .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3)
@@ -77,23 +120,21 @@ public class StaffUpdateIndividualLoginAccountPage extends javax.swing.JFrame {
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(75, 75, 75)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(editPassword)
-                            .addComponent(editUsername)
-                            .addComponent(editContactNum)
-                            .addComponent(editName)
-                            .addComponent(editEmail))
-                        .addGap(29, 29, 29))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ModifyText)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(141, Short.MAX_VALUE))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(ModifyText)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(editPassword)
+                                    .addComponent(editUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(editContactNum)
+                                    .addComponent(editName)
+                                    .addComponent(editEmail))
+                                .addGap(29, 29, 29))))))
             .addGroup(layout.createSequentialGroup()
-                .addGap(178, 178, 178)
+                .addGap(218, 218, 218)
                 .addComponent(confirmEditButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -119,15 +160,13 @@ public class StaffUpdateIndividualLoginAccountPage extends javax.swing.JFrame {
                         .addGap(42, 42, 42)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(editEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                        .addComponent(confirmEditButton)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(editContactNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                            .addComponent(editEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(editContactNum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(confirmEditButton)
+                .addGap(62, 62, 62))
         );
 
         pack();
@@ -138,39 +177,57 @@ public class StaffUpdateIndividualLoginAccountPage extends javax.swing.JFrame {
         StaffPage sp = new StaffPage();
         sp.setVisible(true);
         this.dispose();
+        modify();
     }//GEN-LAST:event_confirmEditButtonActionPerformed
+
+    private void modify() {
+        editUsernameActionPerformed(null);
+        editPasswordActionPerformed(null);
+        editNameActionPerformed(null);
+        editContactNumActionPerformed(null);
+        editEmailActionPerformed(null);
+    }
+
+    
+    
+    private void editUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editUsernameActionPerformed
+        // TODO add your handling code here:
+        String newUsername = editUsername.getText().trim();
+        System.out.println("Updated Username: " + newUsername);
+        
+    }//GEN-LAST:event_editUsernameActionPerformed
+
+    private void editPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPasswordActionPerformed
+        // TODO add your handling code here:
+        String newPassword = new String(editPassword.getPassword()).trim();
+        System.out.println("Updated Password: " + newPassword);
+    }//GEN-LAST:event_editPasswordActionPerformed
+
+    private void editNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editNameActionPerformed
+        // TODO add your handling code here:
+        String newName = editName.getText().trim();
+        System.out.println("Updated Name: " + newName);
+    }//GEN-LAST:event_editNameActionPerformed
+
+    private void editContactNumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editContactNumActionPerformed
+        // TODO add your handling code here:
+        String newContactNumber = editContactNum.getText().trim();
+        System.out.println("Updated Contact Number: " + newContactNumber);
+    }//GEN-LAST:event_editContactNumActionPerformed
+
+    private void editEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEmailActionPerformed
+        // TODO add your handling code here:
+        String newEmail = editEmail.getText().trim();
+        System.out.println("Updated Email: " + newEmail);
+    }//GEN-LAST:event_editEmailActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default looconfirmEditButtonel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(StaffUpdateIndividualLoginAccountPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(StaffUpdateIndividualLoginAccountPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(StaffUpdateIndividualLoginAccountPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(StaffUpdateIndividualLoginAccountPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new StaffUpdateIndividualLoginAccountPage().setVisible(true);
+                new StaffUpdateIndividualLoginAccountPage("currentUsername").setVisible(true);
             }
         });
     }

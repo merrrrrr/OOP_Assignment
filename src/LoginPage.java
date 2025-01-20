@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,6 +10,12 @@ public class LoginPage extends javax.swing.JFrame {
     Scanner sc = new Scanner(System.in);
 
     int userType;
+    String id;
+    String username;
+    String password;
+    String name;
+    String contactNumber;
+    String email;
 
 
     public String getInfoFilename(int userType) {
@@ -23,6 +30,32 @@ public class LoginPage extends javax.swing.JFrame {
         }
 
         return filename;
+    }
+
+    public void getManagerInfo(String filename, Manager manager) throws IOException {
+        BufferedReader managerInfo = new BufferedReader(new FileReader(filename));
+        String line = managerInfo.readLine();
+
+        while (line != null) {
+            String[] managerInfoArray = line.split(",");
+            String id = managerInfoArray[0];
+            String username = managerInfoArray[1];
+            String password = managerInfoArray[2];
+            String name = managerInfoArray[3];
+            String contactNumber = managerInfoArray[4];
+            String email = managerInfoArray[5];
+
+            if (username.equals(manager.getUsername())) {
+                manager.setId(id);
+                manager.setName(name);
+                manager.setContactNumber(contactNumber);
+                manager.setEmail(email);
+            }
+
+            line = managerInfo.readLine();
+        }
+
+        managerInfo.close();
     }
 
     /**
@@ -138,19 +171,51 @@ public class LoginPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
-    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
+    private void loginButtonActionPerformed(ActionEvent evt) throws IOException {
         // TODO add your handling code here:
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        Manager manager = new Manager();
-        boolean loginSuccessful = manager.login(username, password);
+        User user = new User();
+        String loginSuccessful = user.login(userType, username, password);
 
-        if (loginSuccessful) {
-            JOptionPane.showMessageDialog(null, "Login Successful\nWelcome, " + manager.getName());
-            ManagerMenuPage managerMenuPage = new ManagerMenuPage();
-            managerMenuPage.setVisible(true);
-            this.dispose();
+        if (loginSuccessful != null) {
+            switch (userType) {
+                case 1:
+                    String[] m_line = loginSuccessful.split(",");
+                    String m_id = m_line[0];
+                    String m_name = m_line[3];
+                    String m_contactNumber = m_line[4];
+                    String m_email = m_line[5];
+                    Manager manager = new Manager(m_id, username, password, m_name, m_contactNumber, m_email);
+                    JOptionPane.showMessageDialog(null, "Login Successful\nWelcome, " + m_name);
+                    ManagerMenuPage managerMenuPage = new ManagerMenuPage(manager);
+                    managerMenuPage.setVisible(true);
+                    this.dispose();
+                    break;
+                case 2:
+                    String[] s_line = loginSuccessful.split(",");
+                    String s_id = s_line[0];
+                    String s_name = s_line[3];
+                    String s_contactNumber = s_line[4];
+                    String s_email = s_line[5];
+                    Staff staff = new Staff(s_id, username, password, s_name, s_contactNumber, s_email);
+                    break;
+                case 3:
+                    String[] r_line = loginSuccessful.split(",");
+                    String r_id = r_line[0];
+                    String r_name = r_line[3];
+                    String r_gender = r_line[4];
+                    String r_roomType = r_line[5];
+                    String r_contactNumber = r_line[6];
+                    String r_email = r_line[7];
+                    double r_overdueAmount = Double.parseDouble(r_line[8]);
+                    Resident resident = new Resident(r_id, username, password, r_name, r_gender, r_roomType, r_contactNumber, r_email, r_overdueAmount);
+                    break;
+            }
+
+
+
         } else {
             JOptionPane.showMessageDialog(null, "Login Failed\nInvalid username or password");
         }
@@ -158,6 +223,9 @@ public class LoginPage extends javax.swing.JFrame {
 
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+        RegisterPage registerPage = new RegisterPage();
+        registerPage.setVisible(true);
+        this.dispose();
     }
 
     /**

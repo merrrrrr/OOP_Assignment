@@ -113,34 +113,18 @@ public class User {
         userRegistration.close();
     }
 
-    public boolean login(String filename, int userType) throws IOException {
-        BufferedReader userInfo = new BufferedReader(new FileReader(filename));
+    public String getInfoFilename(int userType) {
+        String filename = "";
 
-        System.out.print("Username: ");
-        String userEnteredUsername = sc.next().trim();
-        System.out.print("Password: ");
-        String userEnteredPassword = sc.next().trim();
-
-        String lines;
-        boolean login = false;
-
-        while (((lines = userInfo.readLine()) != null)) {
-            String[] line = lines.split(",");
-            String id = line[0];
-            String username = line[1];
-            String password = line[2];
-            String name = line[3];
-            String contactNumber = line[4];
-            String email = line[5];
-
-            if (username.equals(userEnteredUsername) && password.equals(userEnteredPassword)) {
-                System.out.println("Welcome! " + name);
-                return true;
-            }
+        if (userType == 1) {
+            filename = "Manager_Info.txt";
+        } else if (userType == 2) {
+            filename = "Staff_Info.txt";
+        } else if (userType == 3) {
+            filename = "Resident_Info.txt";
         }
 
-        userInfo.close();
-        return false;
+        return filename;
     }
-    
+
 }

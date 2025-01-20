@@ -52,18 +52,13 @@ public class Manager extends User{
 //        managerInfo.close();
     }
 
-    public boolean login() throws IOException {
-        BufferedReader managerInfo = new BufferedReader(new FileReader("Manager_Info.txt"));
-
-        System.out.print("Username: ");
-        String userEnteredUsername = sc.next();
-        System.out.print("Password: ");
-        String userEnteredPassword = sc.next();
+    public boolean login(String usernameInput, String passwordInput) throws IOException {
+        String filename = getInfoFilename(1);
+        BufferedReader userInfo = new BufferedReader(new FileReader(filename));
 
         String lines;
-        boolean login = false;
 
-        while (((lines = managerInfo.readLine()) != null)) {
+        while (((lines = userInfo.readLine()) != null)) {
             String[] line = lines.split(",");
             String id = line[0];
             String username = line[1];
@@ -72,13 +67,12 @@ public class Manager extends User{
             String contactNumber = line[4];
             String email = line[5];
 
-            if (username.equals(userEnteredUsername) && password.equals(userEnteredPassword)) {
-                System.out.println("Welcome! " + name);
+            if (username.equals(usernameInput) && password.equals(passwordInput)) {
                 return true;
             }
         }
 
-        managerInfo.close();
+        userInfo.close();
         return false;
     }
 

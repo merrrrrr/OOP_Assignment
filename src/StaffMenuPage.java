@@ -1,8 +1,12 @@
 public class StaffMenuPage extends javax.swing.JFrame {
-    private String username;
+    private Staff staff;
 
-    public StaffMenuPage(String username) {
-        this.username = username;
+    public StaffMenuPage() {
+        initComponents();
+    }
+
+    public StaffMenuPage(Staff staff) {
+        this.staff = staff;
         initComponents();
     }
 
@@ -103,19 +107,19 @@ public class StaffMenuPage extends javax.swing.JFrame {
     }// </editor-fold>
 
     private void AcceptRoomChangeActionPerformed(java.awt.event.ActionEvent evt) {
-        StaffAcceptResidentRoomTypeChangeRequestPage sa = new StaffAcceptResidentRoomTypeChangeRequestPage();
+        StaffAcceptResidentRoomTypeChangeRequestPage sa = new StaffAcceptResidentRoomTypeChangeRequestPage(staff);
         sa.setVisible(true);
         this.dispose();
     }
 
     private void generateReceiptActionPerformed(java.awt.event.ActionEvent evt) {
-        StaffGenerateReceiptPage sg = new StaffGenerateReceiptPage(this.username);
+        StaffGenerateReceiptPage sg = new StaffGenerateReceiptPage(staff);
         sg.setVisible(true);
         this.dispose();
     }
 
     private void UpdateIndividualLoginAccountActionPerformed(java.awt.event.ActionEvent evt) {
-        StaffUpdateIndividualLoginAccountPage su = new StaffUpdateIndividualLoginAccountPage(this.username);
+        StaffUpdateIndividualLoginAccountPage su = new StaffUpdateIndividualLoginAccountPage(staff);
         su.setVisible(true);
         this.dispose();
     }
@@ -127,7 +131,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
     }
 
     private void MakePaymentforResidentActionPerformed(java.awt.event.ActionEvent evt) {
-        StaffMakePaymentForResidentPage sm = new StaffMakePaymentForResidentPage(this.username);
+        StaffMakePaymentForResidentPage sm = new StaffMakePaymentForResidentPage(this.staff);
         sm.setVisible(true);
         this.dispose();
     }
@@ -135,7 +139,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new StaffMenuPage("currentUsername").setVisible(true);
+                new StaffMenuPage().setVisible(true);
             }
         });
     }

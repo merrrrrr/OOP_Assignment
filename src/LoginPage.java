@@ -180,37 +180,30 @@ public class LoginPage extends javax.swing.JFrame {
         String loginSuccessful = user.login(userType, username, password);
 
         if (loginSuccessful != null) {
+            String[] line = loginSuccessful.split(",");
+            String id = line[0];
+            String name = line[3];
+            String contactNumber = line[4];
+            String email = line[5];
+            JOptionPane.showMessageDialog(null, "Login Successful\nWelcome, " + name);
+
             switch (userType) {
                 case 1:
-                    String[] m_line = loginSuccessful.split(",");
-                    String m_id = m_line[0];
-                    String m_name = m_line[3];
-                    String m_contactNumber = m_line[4];
-                    String m_email = m_line[5];
-                    Manager manager = new Manager(m_id, username, password, m_name, m_contactNumber, m_email);
-                    JOptionPane.showMessageDialog(null, "Login Successful\nWelcome, " + m_name);
+                    Manager manager = new Manager(id, username, password, name, contactNumber, email);
                     ManagerMenuPage managerMenuPage = new ManagerMenuPage(manager);
                     managerMenuPage.setVisible(true);
                     this.dispose();
                     break;
                 case 2:
-                    String[] s_line = loginSuccessful.split(",");
-                    String s_id = s_line[0];
-                    String s_name = s_line[3];
-                    String s_contactNumber = s_line[4];
-                    String s_email = s_line[5];
-                    Staff staff = new Staff(s_id, username, password, s_name, s_contactNumber, s_email);
+                    Staff staff = new Staff(id, username, password, name, contactNumber, email);
+                    StaffMenuPage staffMenuPage = new StaffMenuPage(staff);
+                    staffMenuPage.setVisible(true);
                     break;
                 case 3:
-                    String[] r_line = loginSuccessful.split(",");
-                    String r_id = r_line[0];
-                    String r_name = r_line[3];
-                    String r_gender = r_line[4];
-                    String r_roomType = r_line[5];
-                    String r_contactNumber = r_line[6];
-                    String r_email = r_line[7];
-                    double r_overdueAmount = Double.parseDouble(r_line[8]);
-                    Resident resident = new Resident(r_id, username, password, r_name, r_gender, r_roomType, r_contactNumber, r_email, r_overdueAmount);
+                    String gender = line[6];
+                    String roomType = line[7];
+                    double overdueAmount = Double.parseDouble(line[8]);
+                    Resident resident = new Resident(id, username, password, name, contactNumber, email, gender, roomType, overdueAmount);
                     break;
             }
 

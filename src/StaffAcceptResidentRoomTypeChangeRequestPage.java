@@ -1,9 +1,13 @@
 
 public class StaffAcceptResidentRoomTypeChangeRequestPage extends javax.swing.JFrame {
-    private String username;
+    private Staff staff;
 
     public StaffAcceptResidentRoomTypeChangeRequestPage() {
-        this.username = username;
+        initComponents();
+    }
+
+    public StaffAcceptResidentRoomTypeChangeRequestPage(Staff staff) {
+        this.staff = staff;
         initComponents();
     }
 
@@ -101,7 +105,7 @@ public class StaffAcceptResidentRoomTypeChangeRequestPage extends javax.swing.JF
     }
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        StaffMenuPage sp = new StaffMenuPage(this.username);
+        StaffMenuPage sp = new StaffMenuPage(staff);
         sp.setVisible(true);
         this.dispose();
     }

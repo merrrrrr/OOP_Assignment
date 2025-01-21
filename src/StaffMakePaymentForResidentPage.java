@@ -1,8 +1,12 @@
 public class StaffMakePaymentForResidentPage extends javax.swing.JFrame {
-    private String username;
+    private Staff staff;
 
-    public StaffMakePaymentForResidentPage(String username) {
-        this.username = username;
+    public StaffMakePaymentForResidentPage() {
+        initComponents();
+    }
+
+    public StaffMakePaymentForResidentPage(Staff staff) {
+        this.staff = staff;
         initComponents();
     }
 
@@ -62,7 +66,7 @@ public class StaffMakePaymentForResidentPage extends javax.swing.JFrame {
     }
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        StaffMenuPage sp = new StaffMenuPage(this.username);
+        StaffMenuPage sp = new StaffMenuPage(this.staff);
         sp.setVisible(true);
         this.dispose();
     }
@@ -70,7 +74,7 @@ public class StaffMakePaymentForResidentPage extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new StaffMakePaymentForResidentPage("currentUsername").setVisible(true);
+                new StaffMakePaymentForResidentPage().setVisible(true);
             }
         });
     }

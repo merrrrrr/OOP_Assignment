@@ -1,8 +1,12 @@
 public class StaffGenerateReceiptPage extends javax.swing.JFrame {
-    private String username;
+    private Staff staff;
 
-    public StaffGenerateReceiptPage(String username) {
-        this.username = username;
+    public StaffGenerateReceiptPage() {
+        initComponents();
+    }
+
+    public StaffGenerateReceiptPage(Staff staff) {
+        this.staff = staff;
         initComponents();
     }
 
@@ -102,7 +106,7 @@ public class StaffGenerateReceiptPage extends javax.swing.JFrame {
     }
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        StaffMenuPage sp = new StaffMenuPage(this.username);
+        StaffMenuPage sp = new StaffMenuPage(staff);
         sp.setVisible(true);
         this.dispose();
     }
@@ -110,7 +114,7 @@ public class StaffGenerateReceiptPage extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new StaffGenerateReceiptPage("currentUsername").setVisible(true);
+                new StaffGenerateReceiptPage().setVisible(true);
             }
         });
     }

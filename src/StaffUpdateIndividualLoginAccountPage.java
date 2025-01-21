@@ -3,11 +3,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StaffUpdateIndividualLoginAccountPage extends javax.swing.JFrame {
-    private String username;
+    private Staff staff;
     private boolean isLoggedIn = true; // Assuming the user is logged in for this example
 
-    public StaffUpdateIndividualLoginAccountPage(String username) {
-        this.username = username;
+    public StaffUpdateIndividualLoginAccountPage() {
+        initComponents();
+    }
+
+    public StaffUpdateIndividualLoginAccountPage(Staff staff) {
+        this.staff = staff;
         initComponents();
     }
 
@@ -176,7 +180,7 @@ public class StaffUpdateIndividualLoginAccountPage extends javax.swing.JFrame {
         editEmailActionPerformed(null);
 
         // Navigate back to the StaffMenuPage
-        StaffMenuPage sp = new StaffMenuPage(this.username);
+        StaffMenuPage sp = new StaffMenuPage(staff);
         sp.setVisible(true);
         this.dispose();
     }
@@ -363,7 +367,7 @@ public class StaffUpdateIndividualLoginAccountPage extends javax.swing.JFrame {
     }
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        StaffMenuPage sp = new StaffMenuPage(this.username);
+        StaffMenuPage sp = new StaffMenuPage(staff);
         sp.setVisible(true);
         this.dispose();
     }
@@ -372,7 +376,7 @@ public class StaffUpdateIndividualLoginAccountPage extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new StaffUpdateIndividualLoginAccountPage("currentUsername").setVisible(true);
+                new StaffUpdateIndividualLoginAccountPage().setVisible(true);
             }
         });
     }

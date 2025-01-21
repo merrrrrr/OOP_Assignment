@@ -31,7 +31,7 @@ public class Resident extends User {
         }
     }
 
-    public Resident(String id, String username, String password, String name, String gender, String roomNo, String contactNumber, String email, double overdueAmount) {
+    public Resident(String id, String username, String password, String name, String contactNumber, String email, String gender, String roomNo, double overdueAmount) {
         super(id, username, password, name, contactNumber, email);
         this.gender = gender;
         this.roomNo = roomNo;
@@ -59,16 +59,16 @@ public class Resident extends User {
             String password = sc.nextLine().trim();
             System.out.print("Name: ");
             String name = sc.nextLine().trim();
-            System.out.print("Gender: ");
-            String gender = sc.nextLine().trim();
-            System.out.print("Room Type: ");
-            String roomType = sc.nextLine().trim();
             System.out.print("Contact Number: ");
             String contactNumber = sc.nextLine().trim();
             System.out.print("Email: ");
             String email = sc.nextLine().trim();
+            System.out.print("Gender: ");
+            String gender = sc.nextLine().trim();
+            System.out.print("Room Type: ");
+            String roomType = sc.nextLine().trim();
 
-            String register = username + "," + password + "," + name + "," + gender + "," + roomType + "," + contactNumber + "," + email;
+            String register = username + "," + password + "," + name + "," + contactNumber + "," + email + "," + gender + "," + roomType;
             writer.write(register);
             writer.newLine();
             System.out.println("Your registration request has been sent to the manager for approval.");

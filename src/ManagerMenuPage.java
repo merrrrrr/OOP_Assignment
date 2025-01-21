@@ -9,7 +9,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
     /**
      * Creates new form ManagerMenuPage
      */
-    public Manager manager;
+    private Manager manager;
 
     public ManagerMenuPage() {
         initComponents();

@@ -114,11 +114,11 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
-    private void searchUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void approveUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void approveUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void searchUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 

@@ -71,46 +71,24 @@ public class User {
 
     Scanner sc = new Scanner(System.in);
 
-    public void register(String filename, User user) throws IOException {
+    public boolean register(int userType, String registerInfo) throws IOException {
+        boolean registerSuccessful = false;
+        String filename = getRegisterFilename(userType);
         BufferedReader userRegistration = new BufferedReader(new FileReader(filename));
         BufferedWriter userRegistrationWriter = new BufferedWriter(new FileWriter(filename, true));
-
-        String register = "";
-
-        System.out.print("Username: ");
-        String username = sc.nextLine().trim();
-        System.out.print("Password: ");
-        String password = sc.nextLine().trim();
-        System.out.print("Name: ");
-        String name = sc.nextLine().trim();
-        System.out.print("Contact Number: ");
-        String contactNumber = sc.nextLine().trim();
-        System.out.print("Email: ");
-        String email = sc.nextLine().trim();
-
-        if (user.equals("resident")) {
-            System.out.print("Gender: ");
-            String gender = sc.nextLine().trim();
-            System.out.print("Room Type: ");
-            String roomType = sc.nextLine().trim();
-            register = (username + "," + password + "," + name + "," + gender + "," + roomType + "," + contactNumber + "," + email);
-
-        } else if (user.equals("manager") || user.equals("staff")) {
-            register = (username + "," + password + "," + name + "," + contactNumber + "," + email);
-
-        } else {
-            System.out.println("Invalid user type.");
-        }
 
         if (userRegistration.read() != -1) {
             userRegistrationWriter.newLine();
         }
 
-        userRegistrationWriter.write(register);
+        userRegistrationWriter.write(registerInfo);
+        registerSuccessful = true;
         System.out.println("Your registration request has been sent to manager for approval.");
 
         userRegistrationWriter.close();
         userRegistration.close();
+
+        return registerSuccessful;
     }
 
     public String login(int userType, String usernameInput, String passwordInput) throws IOException {
@@ -143,6 +121,20 @@ public class User {
             filename = "Staff_Info.txt";
         } else if (userType == 3) {
             filename = "Resident_Info.txt";
+        }
+
+        return filename;
+    }
+
+    public String getRegisterFilename(int userType) {
+        String filename = "";
+
+        if (userType == 1) {
+            filename = "Manager_Registration.txt";
+        } else if (userType == 2) {
+            filename = "Staff_Registration.txt";
+        } else if (userType == 3) {
+            filename = "Resident_Registration.txt";
         }
 
         return filename;

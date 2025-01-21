@@ -10,53 +10,6 @@ public class LoginPage extends javax.swing.JFrame {
     Scanner sc = new Scanner(System.in);
 
     int userType;
-    String id;
-    String username;
-    String password;
-    String name;
-    String contactNumber;
-    String email;
-
-
-    public String getInfoFilename(int userType) {
-        String filename = "";
-
-        if (userType == 1) {
-            filename = "Manager_Info.txt";
-        } else if (userType == 2) {
-            filename = "Staff_Info.txt";
-        } else if (userType == 3) {
-            filename = "Resident_Info.txt";
-        }
-
-        return filename;
-    }
-
-    public void getManagerInfo(String filename, Manager manager) throws IOException {
-        BufferedReader managerInfo = new BufferedReader(new FileReader(filename));
-        String line = managerInfo.readLine();
-
-        while (line != null) {
-            String[] managerInfoArray = line.split(",");
-            String id = managerInfoArray[0];
-            String username = managerInfoArray[1];
-            String password = managerInfoArray[2];
-            String name = managerInfoArray[3];
-            String contactNumber = managerInfoArray[4];
-            String email = managerInfoArray[5];
-
-            if (username.equals(manager.getUsername())) {
-                manager.setId(id);
-                manager.setName(name);
-                manager.setContactNumber(contactNumber);
-                manager.setEmail(email);
-            }
-
-            line = managerInfo.readLine();
-        }
-
-        managerInfo.close();
-    }
 
     /**
      * Creates new form Login
@@ -216,7 +169,7 @@ public class LoginPage extends javax.swing.JFrame {
 
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-        RegisterPage registerPage = new RegisterPage();
+        RegisterPage registerPage = new RegisterPage(userType);
         registerPage.setVisible(true);
         this.dispose();
     }

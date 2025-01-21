@@ -38,6 +38,30 @@ public class Resident extends User {
         this.overdueAmount = overdueAmount;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getRoomNo() {
+        return roomNo;
+    }
+
+    public void setRoomNo(String roomNo) {
+        this.roomNo = roomNo;
+    }
+
+    public double getOverdueAmount() {
+        return overdueAmount;
+    }
+
+    public void setOverdueAmount(double overdueAmount) {
+        this.overdueAmount = overdueAmount;
+    }
+
     @Override
     public String toString() {
         return "Resident{id=" + getId() +

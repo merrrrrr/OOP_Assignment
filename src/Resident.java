@@ -11,7 +11,7 @@ public class Resident extends User {
     private String gender;
     private String roomNo;
     private String username;
-    private int overdueAmount;
+    private double overdueAmount;
     private boolean isLoggedIn = false;
     private Scanner sc = new Scanner(System.in);
 
@@ -31,7 +31,7 @@ public class Resident extends User {
         }
     }
 
-    public Resident(String id, String username, String password, String name, String gender, String roomNo, String contactNumber, String email, int overdueAmount) {
+    public Resident(String id, String username, String password, String name, String gender, String roomNo, String contactNumber, String email, double overdueAmount) {
         super(id, username, password, name, contactNumber, email);
         this.gender = gender;
         this.roomNo = roomNo;

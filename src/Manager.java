@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -52,7 +53,7 @@ public class Manager extends User{
 //        managerInfo.close();
     }
 
-    public boolean login(String usernameInput, String passwordInput) throws IOException {
+    public String login(String usernameInput, String passwordInput) throws IOException {
         String filename = getInfoFilename(1);
         BufferedReader userInfo = new BufferedReader(new FileReader(filename));
 
@@ -60,20 +61,16 @@ public class Manager extends User{
 
         while (((lines = userInfo.readLine()) != null)) {
             String[] line = lines.split(",");
-            String id = line[0];
             String username = line[1];
             String password = line[2];
-            String name = line[3];
-            String contactNumber = line[4];
-            String email = line[5];
 
             if (username.equals(usernameInput) && password.equals(passwordInput)) {
-                return true;
+                return lines;
             }
         }
 
         userInfo.close();
-        return false;
+        return null;
     }
 
     public void approveUser() throws IOException {

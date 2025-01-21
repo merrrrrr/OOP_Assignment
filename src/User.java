@@ -107,10 +107,31 @@ public class User {
         }
 
         userRegistrationWriter.write(register);
-        System.out.println("Your userRegistration request has been sent to manager for approval.");
+        System.out.println("Your registration request has been sent to manager for approval.");
 
         userRegistrationWriter.close();
         userRegistration.close();
+    }
+
+    public String login(int userType, String usernameInput, String passwordInput) throws IOException {
+        String filename = getInfoFilename(userType);
+        BufferedReader userInfo = new BufferedReader(new FileReader(filename));
+
+        String lines;
+
+        while (((lines = userInfo.readLine()) != null)) {
+            String[] line = lines.split(",");
+            String username = line[1];
+            String password = line[2];
+
+            if (username.equals(usernameInput) && password.equals(passwordInput)) {
+                return lines;
+            }
+
+        }
+
+        userInfo.close();
+        return null;
     }
 
     public String getInfoFilename(int userType) {

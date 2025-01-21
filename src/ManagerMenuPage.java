@@ -1,3 +1,5 @@
+import javax.swing.*;
+
 /**
  *
  * @author Mervin Ooi
@@ -7,7 +9,14 @@ public class ManagerMenuPage extends javax.swing.JFrame {
     /**
      * Creates new form ManagerMenuPage
      */
+    public Manager manager;
+
     public ManagerMenuPage() {
+        initComponents();
+    }
+
+    public ManagerMenuPage(Manager manager) {
+        this.manager = manager;
         initComponents();
     }
 
@@ -107,7 +116,6 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
     private void searchUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-
     }
 
     private void approveUserButtonActionPerformed(java.awt.event.ActionEvent evt) {

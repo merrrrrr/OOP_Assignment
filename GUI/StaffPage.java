@@ -22,7 +22,7 @@ import java.util.Scanner;
 public class StaffPage extends javax.swing.JFrame {
 
     /**
-     * Creates new form StaffPage
+     * Creates new form StaffMenuPage
      */
     public StaffPage() {
         initComponents();

@@ -1,2 +1,2 @@
-S01,jun,jjj,kum,111,222
-S02,yong,yyy,hehe,999,111
+S01,jun,jjj,kum,0182742133,jun@gmail.com
+S02,yong,yyy,hehe,0182719323,yong@gmail.com

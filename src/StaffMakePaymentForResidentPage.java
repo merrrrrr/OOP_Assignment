@@ -62,7 +62,7 @@ public class StaffMakePaymentForResidentPage extends javax.swing.JFrame {
     }
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        StaffPage sp = new StaffPage(this.username);
+        StaffMenuPage sp = new StaffMenuPage(this.username);
         sp.setVisible(true);
         this.dispose();
     }

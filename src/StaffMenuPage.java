@@ -1,15 +1,15 @@
-import javax.swing.*;
-import java.io.*;
-
-public class StaffPage extends javax.swing.JFrame {
+public class StaffMenuPage extends javax.swing.JFrame {
     private String username;
 
-    public StaffPage(String username) {
+    public StaffMenuPage(String username) {
         this.username = username;
         initComponents();
     }
 
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
+
         StaffPageText = new javax.swing.JLabel();
         UpdateIndividualLoginAccount = new javax.swing.JButton();
         MakePaymentforResident = new javax.swing.JButton();
@@ -68,8 +68,8 @@ public class StaffPage extends javax.swing.JFrame {
                                         .addComponent(UpdateIndividualLoginAccount, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(MakePaymentforResident, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(AcceptRoomChange))
+                                        .addComponent(MakePaymentforResident, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(AcceptRoomChange, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(24, 24, 24))
                         .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -100,7 +100,7 @@ public class StaffPage extends javax.swing.JFrame {
         );
 
         pack();
-    }
+    }// </editor-fold>
 
     private void AcceptRoomChangeActionPerformed(java.awt.event.ActionEvent evt) {
         StaffAcceptResidentRoomTypeChangeRequestPage sa = new StaffAcceptResidentRoomTypeChangeRequestPage();
@@ -121,7 +121,9 @@ public class StaffPage extends javax.swing.JFrame {
     }
 
     private void StaffLogOutActionPerformed(java.awt.event.ActionEvent evt) {
-
+        MainPage mp = new MainPage();
+        mp.setVisible(true);
+        this.dispose();
     }
 
     private void MakePaymentforResidentActionPerformed(java.awt.event.ActionEvent evt) {
@@ -133,7 +135,7 @@ public class StaffPage extends javax.swing.JFrame {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new StaffPage("currentUsername").setVisible(true);
+                new StaffMenuPage("currentUsername").setVisible(true);
             }
         });
     }

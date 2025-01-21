@@ -67,38 +67,19 @@ public class RegisterPage extends javax.swing.JFrame {
         usernameField.setMaximumSize(null);
         usernameField.setMinimumSize(null);
         usernameField.setPreferredSize(new java.awt.Dimension(150, 26));
-        usernameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                usernameFieldActionPerformed(evt);
-            }
-        });
 
         nameField.setMaximumSize(null);
         nameField.setMinimumSize(null);
         nameField.setPreferredSize(new java.awt.Dimension(150, 26));
-        nameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nameFieldActionPerformed(evt);
-            }
-        });
+
 
         contactNumberField.setMaximumSize(null);
         contactNumberField.setMinimumSize(null);
         contactNumberField.setPreferredSize(new java.awt.Dimension(150, 26));
-        contactNumberField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                contactNumberFieldActionPerformed(evt);
-            }
-        });
 
         emailField.setMaximumSize(null);
         emailField.setMinimumSize(null);
         emailField.setPreferredSize(new java.awt.Dimension(150, 26));
-        emailField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                emailFieldActionPerformed(evt);
-            }
-        });
 
         jLabel10.setText("Name");
 
@@ -130,19 +111,9 @@ public class RegisterPage extends javax.swing.JFrame {
 
         genderComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
         genderComboBox1.setMinimumSize(new java.awt.Dimension(150, 26));
-        genderComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                genderComboBox1ActionPerformed(evt);
-            }
-        });
 
         roomTypeComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Single Room", "Double Room", "Triple Room" }));
         roomTypeComboBox1.setMinimumSize(new java.awt.Dimension(150, 26));
-        roomTypeComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                roomTypeComboBox1ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -270,30 +241,6 @@ public class RegisterPage extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(null, "Password does not match");
         }
-    }
-
-    private void usernameFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void nameFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void contactNumberFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void emailFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void genderComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void roomTypeComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
     }
 
     /**

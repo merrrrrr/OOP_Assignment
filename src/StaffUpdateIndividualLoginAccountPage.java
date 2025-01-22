@@ -172,12 +172,48 @@ public class StaffUpdateIndividualLoginAccountPage extends javax.swing.JFrame {
     }// </editor-fold>
 
     private void confirmEditButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // Update all new inputs
-        editUsernameActionPerformed(null);
-        editPasswordActionPerformed(null);
-        editNameActionPerformed(null);
-        editContactNumActionPerformed(null);
-        editEmailActionPerformed(null);
+        // Get new inputs from text fields
+        String newUsername = editUsername.getText().trim();
+        String newPassword = new String(editPassword.getPassword()).trim();
+        String newName = editName.getText().trim();
+        String newContactNumber = editContactNum.getText().trim();
+        String newEmail = editEmail.getText().trim();
+
+        // Read the file and load the data into a list
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("Staff_Info.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+            return;
+        }
+
+        // Modify the details
+        for (int i = 0; i < lines.size(); i++) {
+            String[] details = lines.get(i).split(",");
+            if (details[0].equals(staff.getId())) { // Assuming you want to modify the details for the logged-in staff
+                details[1] = newUsername;
+                details[2] = newPassword;
+                details[3] = newName;
+                details[4] = newContactNumber;
+                details[5] = newEmail;
+                lines.set(i, String.join(",", details));
+                break;
+            }
+        }
+
+        // Write the updated data back to the file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Staff_Info.txt"))) {
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing to the file: " + e.getMessage());
+        }
 
         // Navigate back to the StaffMenuPage
         StaffMenuPage sp = new StaffMenuPage(staff);

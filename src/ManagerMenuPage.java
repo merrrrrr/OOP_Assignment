@@ -5,10 +5,17 @@
  */
 public class ManagerMenuPage extends javax.swing.JFrame {
 
+    Manager manager;
+
     /**
      * Creates new form ApproveUserPage
      */
     public ManagerMenuPage() {
+        initComponents();
+    }
+
+    public ManagerMenuPage(Manager manager) {
+        this.manager = manager;
         initComponents();
     }
 

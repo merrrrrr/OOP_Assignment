@@ -1,22 +1,20 @@
-
 /**
  *
  * @author Mervin Ooi
  */
 public class ManagerMenuPage extends javax.swing.JFrame {
 
-    Manager manager;
-
     /**
      * Creates new form ApproveUserPage
      */
+    private Manager manager;
+
     public ManagerMenuPage() {
         initComponents();
     }
 
     public ManagerMenuPage(Manager manager) {
         this.manager = manager;
-        initComponents();
     }
 
     /**
@@ -28,71 +26,83 @@ public class ManagerMenuPage extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        jTabbedPane2 = new javax.swing.JTabbedPane();
+        ManagerMenuTab = new javax.swing.JTabbedPane();
         jPanel4 = new javax.swing.JPanel();
-        jTabbedPane4 = new javax.swing.JTabbedPane();
+        UserInformationTab = new javax.swing.JTabbedPane();
         jScrollPane7 = new javax.swing.JScrollPane();
         jTable7 = new javax.swing.JTable();
         jScrollPane8 = new javax.swing.JScrollPane();
         jTable8 = new javax.swing.JTable();
         jScrollPane9 = new javax.swing.JScrollPane();
         jTable9 = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton15 = new javax.swing.JButton();
+        AddUserButton = new javax.swing.JButton();
+        DeleteUserButton = new javax.swing.JButton();
+        EditUserButton = new javax.swing.JButton();
+        FilterUserInfoButton = new javax.swing.JButton();
+        SortUserInfoButton = new javax.swing.JButton();
+        SearchUserInfoButton = new javax.swing.JButton();
+        ViewUserDetailsButton = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        jTabbedPane5 = new javax.swing.JTabbedPane();
+        RegistrationRequestTab = new javax.swing.JTabbedPane();
         jScrollPane10 = new javax.swing.JScrollPane();
-        jTable10 = new javax.swing.JTable();
+        ManagerRegistrationTable = new javax.swing.JTable();
         jScrollPane11 = new javax.swing.JScrollPane();
-        jTable11 = new javax.swing.JTable();
+        StaffRegistrationTable = new javax.swing.JTable();
         jScrollPane12 = new javax.swing.JScrollPane();
-        jTable12 = new javax.swing.JTable();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
+        ResidentRegistrationTable = new javax.swing.JTable();
+        FilterResultButton = new javax.swing.JButton();
+        SortResultButton = new javax.swing.JButton();
+        SearchRegistrationButton = new javax.swing.JButton();
+        ApproveRegistrationButton = new javax.swing.JButton();
+        RejectRegistrationButton = new javax.swing.JButton();
+        RoomInformationPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton13 = new javax.swing.JButton();
-        jButton14 = new javax.swing.JButton();
-        jButton19 = new javax.swing.JButton();
-        jPanel5 = new javax.swing.JPanel();
+        RoomInfoTable = new javax.swing.JTable();
+        UpdateRoomInfoButton = new javax.swing.JButton();
+        UpdateRateButton = new javax.swing.JButton();
+        ViewRoomInfoDetailsButton = new javax.swing.JButton();
+        RoomChangeRequestPanel = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
-        jButton16 = new javax.swing.JButton();
-        jButton17 = new javax.swing.JButton();
-        jButton18 = new javax.swing.JButton();
-        jPanel6 = new javax.swing.JPanel();
+        RoomChangeRequestTable = new javax.swing.JTable();
+        RejectRoomChangeButton = new javax.swing.JButton();
+        ApproveRoomChangeButton = new javax.swing.JButton();
+        ViewRoomChangeDetailsButton = new javax.swing.JButton();
+        PaymentRecordPanel = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTable4 = new javax.swing.JTable();
+        PaymentRecordTable = new javax.swing.JTable();
         jButton21 = new javax.swing.JButton();
-        jPanel8 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
-        jButton12 = new javax.swing.JButton();
+        ProfilePanel = new javax.swing.JPanel();
+        UsernameLabel = new javax.swing.JLabel();
+        PasswordLabel = new javax.swing.JLabel();
+        NameLabel = new javax.swing.JLabel();
+        ContactLabel = new javax.swing.JLabel();
+        EmailLabel = new javax.swing.JLabel();
+        ManagerIDLabel = new javax.swing.JLabel();
+        ManagerIDField = new javax.swing.JTextField();
+        UsernameField = new javax.swing.JTextField();
+        PasswordField = new javax.swing.JPasswordField();
+        NameField = new javax.swing.JTextField();
+        ContactField = new javax.swing.JTextField();
+        EmailField = new javax.swing.JTextField();
+        EditProfileButton = new javax.swing.JButton();
+        LogOutPanel = new javax.swing.JPanel();
+        LogOutButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jTable7.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
+                        {null, null, null, null, null},
+                        {null, null, null, null, null},
+                        {null, null, null, null, null},
+                        {null, null, null, null, null},
+                        {null, null, null, null, null},
+                        {null, null, null, null, null},
+                        {null, null, null, null, null},
+                        {null, null, null, null, null},
+                        {null, null, null, null, null},
+                        {null, null, null, null, null},
+                        {null, null, null, null, null},
                         {null, null, null, null, null},
                         {null, null, null, null, null},
                         {null, null, null, null, null},
@@ -111,11 +121,8 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             }
         });
         jScrollPane7.setViewportView(jTable7);
-        if (jTable7.getColumnModel().getColumnCount() > 0) {
-            jTable7.getColumnModel().getColumn(0).setHeaderValue("ManagerID");
-        }
 
-        jTabbedPane4.addTab("Manager", jScrollPane7);
+        UserInformationTab.addTab("Manager", jScrollPane7);
 
         jTable8.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
@@ -137,11 +144,8 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             }
         });
         jScrollPane8.setViewportView(jTable8);
-        if (jTable8.getColumnModel().getColumnCount() > 0) {
-            jTable8.getColumnModel().getColumn(0).setHeaderValue("Staff ID");
-        }
 
-        jTabbedPane4.addTab("Staff", jScrollPane8);
+        UserInformationTab.addTab("Staff", jScrollPane8);
 
         jTable9.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
@@ -167,76 +171,101 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             jTable9.getColumnModel().getColumn(0).setHeaderValue("Resident ID");
         }
 
-        jTabbedPane4.addTab("Resident", jScrollPane9);
+        UserInformationTab.addTab("Resident", jScrollPane9);
 
-        jButton2.setText("Add User");
-
-        jButton3.setText("Delete User");
-
-        jButton4.setText("Edit User");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        AddUserButton.setText("Add User");
+        AddUserButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                AddUserButtonActionPerformed(evt);
             }
         });
 
-        jButton6.setText("Filter");
-
-        jButton5.setText("Sort");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        DeleteUserButton.setText("Delete User");
+        DeleteUserButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                DeleteUserButtonActionPerformed(evt);
             }
         });
 
-        jButton1.setText("Search User");
+        EditUserButton.setText("Edit User");
+        EditUserButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditUserButtonActionPerformed(evt);
+            }
+        });
 
-        jButton15.setText("View Details");
+        FilterUserInfoButton.setText("Filter");
+        FilterUserInfoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FilterUserInfoButtonActionPerformed(evt);
+            }
+        });
+
+        SortUserInfoButton.setText("Sort");
+        SortUserInfoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SortUserInfoButtonActionPerformed(evt);
+            }
+        });
+
+        SearchUserInfoButton.setText("Search User");
+        SearchUserInfoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SearchUserInfoButtonActionPerformed(evt);
+            }
+        });
+
+        ViewUserDetailsButton.setText("View Details");
+        ViewUserDetailsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ViewUserDetailsButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
                 jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                                                .addComponent(jButton2)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(UserInformationTab)
+                                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                                .addComponent(AddUserButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton3)
+                                                .addComponent(DeleteUserButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton4)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 259, Short.MAX_VALUE)
-                                                .addComponent(jButton15)
+                                                .addComponent(EditUserButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 247, Short.MAX_VALUE)
+                                                .addComponent(ViewUserDetailsButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton6)
+                                                .addComponent(FilterUserInfoButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton5)
+                                                .addComponent(SortUserInfoButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton1))
-                                        .addComponent(jTabbedPane4))
+                                                .addComponent(SearchUserInfoButton)))
                                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
                 jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jTabbedPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(UserInformationTab, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                        .addComponent(jButton2)
-                                        .addComponent(jButton3)
-                                        .addComponent(jButton4)
-                                        .addComponent(jButton6)
-                                        .addComponent(jButton5)
-                                        .addComponent(jButton1)
-                                        .addComponent(jButton15))
+                                        .addComponent(AddUserButton)
+                                        .addComponent(DeleteUserButton)
+                                        .addComponent(EditUserButton)
+                                        .addComponent(FilterUserInfoButton)
+                                        .addComponent(SortUserInfoButton)
+                                        .addComponent(SearchUserInfoButton)
+                                        .addComponent(ViewUserDetailsButton))
                                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
-        jTabbedPane2.addTab("User Information", jPanel4);
+        ManagerMenuTab.addTab("User Information", jPanel4);
 
-        jTable10.setModel(new javax.swing.table.DefaultTableModel(
+        ManagerRegistrationTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null},
                         {null, null, null, null, null},
@@ -255,11 +284,11 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane10.setViewportView(jTable10);
+        jScrollPane10.setViewportView(ManagerRegistrationTable);
 
-        jTabbedPane5.addTab("Manager", jScrollPane10);
+        RegistrationRequestTab.addTab("Manager", jScrollPane10);
 
-        jTable11.setModel(new javax.swing.table.DefaultTableModel(
+        StaffRegistrationTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null},
                         {null, null, null, null, null},
@@ -278,11 +307,11 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane11.setViewportView(jTable11);
+        jScrollPane11.setViewportView(StaffRegistrationTable);
 
-        jTabbedPane5.addTab("Staff", jScrollPane11);
+        RegistrationRequestTab.addTab("Staff", jScrollPane11);
 
-        jTable12.setModel(new javax.swing.table.DefaultTableModel(
+        ResidentRegistrationTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null, null, null},
                         {null, null, null, null, null, null, null},
@@ -301,24 +330,44 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane12.setViewportView(jTable12);
+        jScrollPane12.setViewportView(ResidentRegistrationTable);
 
-        jTabbedPane5.addTab("Resident", jScrollPane12);
+        RegistrationRequestTab.addTab("Resident", jScrollPane12);
 
-        jButton7.setText("Filter");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        FilterResultButton.setText("Filter");
+        FilterResultButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                FilterResultButtonActionPerformed(evt);
             }
         });
 
-        jButton8.setText("Sort");
+        SortResultButton.setText("Sort");
+        SortResultButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SortResultButtonActionPerformed(evt);
+            }
+        });
 
-        jButton9.setText("Search User");
+        SearchRegistrationButton.setText("Search User");
+        SearchRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SearchRegistrationButtonActionPerformed(evt);
+            }
+        });
 
-        jButton10.setText("Approve");
+        ApproveRegistrationButton.setText("Approve");
+        ApproveRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ApproveRegistrationButtonActionPerformed(evt);
+            }
+        });
 
-        jButton11.setText("Reject");
+        RejectRegistrationButton.setText("Reject");
+        RejectRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RejectRegistrationButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -327,38 +376,38 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jTabbedPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE)
+                                        .addComponent(RegistrationRequestTab, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
                                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jButton10)
+                                                .addComponent(ApproveRegistrationButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton11)
+                                                .addComponent(RejectRegistrationButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jButton7)
+                                                .addComponent(FilterResultButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton8)
+                                                .addComponent(SortResultButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton9)))
+                                                .addComponent(SearchRegistrationButton)))
                                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jTabbedPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(RegistrationRequestTab, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                        .addComponent(jButton8)
-                                        .addComponent(jButton9)
+                                        .addComponent(SortResultButton)
+                                        .addComponent(SearchRegistrationButton)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                .addComponent(jButton10)
-                                                .addComponent(jButton11)
-                                                .addComponent(jButton7)))
-                                .addContainerGap(27, Short.MAX_VALUE))
+                                                .addComponent(ApproveRegistrationButton)
+                                                .addComponent(RejectRegistrationButton)
+                                                .addComponent(FilterResultButton)))
+                                .addContainerGap(39, Short.MAX_VALUE))
         );
 
-        jTabbedPane2.addTab("Registration Request", jPanel1);
+        ManagerMenuTab.addTab("Registration Request", jPanel1);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        RoomInfoTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null},
                         {null, null, null, null},
@@ -377,65 +426,65 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(3).setHeaderValue("Rate");
+        jScrollPane2.setViewportView(RoomInfoTable);
+        if (RoomInfoTable.getColumnModel().getColumnCount() > 0) {
+            RoomInfoTable.getColumnModel().getColumn(3).setHeaderValue("Rate");
         }
 
-        jButton13.setText("Update Room Information");
-        jButton13.addActionListener(new java.awt.event.ActionListener() {
+        UpdateRoomInfoButton.setText("Update Room Information");
+        UpdateRoomInfoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton13ActionPerformed(evt);
+                UpdateRoomInfoButtonActionPerformed(evt);
             }
         });
 
-        jButton14.setText("Update Rate");
-        jButton14.addActionListener(new java.awt.event.ActionListener() {
+        UpdateRateButton.setText("Update Rate");
+        UpdateRateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton14ActionPerformed(evt);
+                UpdateRateButtonActionPerformed(evt);
             }
         });
 
-        jButton19.setText("View Details");
-        jButton19.addActionListener(new java.awt.event.ActionListener() {
+        ViewRoomInfoDetailsButton.setText("View Details");
+        ViewRoomInfoDetailsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton19ActionPerformed(evt);
+                ViewRoomInfoDetailsButtonActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout RoomInformationPanelLayout = new javax.swing.GroupLayout(RoomInformationPanel);
+        RoomInformationPanel.setLayout(RoomInformationPanelLayout);
+        RoomInformationPanelLayout.setHorizontalGroup(
+                RoomInformationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(RoomInformationPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addGroup(RoomInformationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RoomInformationPanelLayout.createSequentialGroup()
                                                 .addGap(0, 0, Short.MAX_VALUE)
-                                                .addComponent(jButton19)
+                                                .addComponent(ViewRoomInfoDetailsButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton14)
+                                                .addComponent(UpdateRateButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton13)))
+                                                .addComponent(UpdateRoomInfoButton)))
                                 .addContainerGap())
         );
-        jPanel3Layout.setVerticalGroup(
-                jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
+        RoomInformationPanelLayout.setVerticalGroup(
+                RoomInformationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(RoomInformationPanelLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jButton13)
-                                        .addComponent(jButton14)
-                                        .addComponent(jButton19))
-                                .addContainerGap(24, Short.MAX_VALUE))
+                                .addGroup(RoomInformationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(UpdateRoomInfoButton)
+                                        .addComponent(UpdateRateButton)
+                                        .addComponent(ViewRoomInfoDetailsButton))
+                                .addContainerGap(36, Short.MAX_VALUE))
         );
 
-        jTabbedPane2.addTab("Room Information", jPanel3);
+        ManagerMenuTab.addTab("Room Information", RoomInformationPanel);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        RoomChangeRequestTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null, null},
                         {null, null, null, null, null, null},
@@ -454,62 +503,62 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane3.setViewportView(jTable2);
+        jScrollPane3.setViewportView(RoomChangeRequestTable);
 
-        jButton16.setText("Reject");
-        jButton16.addActionListener(new java.awt.event.ActionListener() {
+        RejectRoomChangeButton.setText("Reject");
+        RejectRoomChangeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton16ActionPerformed(evt);
+                RejectRoomChangeButtonActionPerformed(evt);
             }
         });
 
-        jButton17.setText("Approve");
-        jButton17.addActionListener(new java.awt.event.ActionListener() {
+        ApproveRoomChangeButton.setText("Approve");
+        ApproveRoomChangeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton17ActionPerformed(evt);
+                ApproveRoomChangeButtonActionPerformed(evt);
             }
         });
 
-        jButton18.setText("View Details");
-        jButton18.addActionListener(new java.awt.event.ActionListener() {
+        ViewRoomChangeDetailsButton.setText("View Details");
+        ViewRoomChangeDetailsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton18ActionPerformed(evt);
+                ViewRoomChangeDetailsButtonActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-                jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel5Layout.createSequentialGroup()
+        javax.swing.GroupLayout RoomChangeRequestPanelLayout = new javax.swing.GroupLayout(RoomChangeRequestPanel);
+        RoomChangeRequestPanel.setLayout(RoomChangeRequestPanelLayout);
+        RoomChangeRequestPanelLayout.setHorizontalGroup(
+                RoomChangeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(RoomChangeRequestPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                                .addGroup(RoomChangeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RoomChangeRequestPanelLayout.createSequentialGroup()
                                                 .addGap(0, 0, Short.MAX_VALUE)
-                                                .addComponent(jButton18)
+                                                .addComponent(ViewRoomChangeDetailsButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton17)
+                                                .addComponent(ApproveRoomChangeButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jButton16)))
+                                                .addComponent(RejectRoomChangeButton)))
                                 .addContainerGap())
         );
-        jPanel5Layout.setVerticalGroup(
-                jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel5Layout.createSequentialGroup()
+        RoomChangeRequestPanelLayout.setVerticalGroup(
+                RoomChangeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(RoomChangeRequestPanelLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jButton16)
-                                        .addComponent(jButton17)
-                                        .addComponent(jButton18))
-                                .addContainerGap(24, Short.MAX_VALUE))
+                                .addGroup(RoomChangeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(RejectRoomChangeButton)
+                                        .addComponent(ApproveRoomChangeButton)
+                                        .addComponent(ViewRoomChangeDetailsButton))
+                                .addContainerGap(36, Short.MAX_VALUE))
         );
 
-        jTabbedPane2.addTab("Room Change Request", jPanel5);
+        ManagerMenuTab.addTab("Room Change Request", RoomChangeRequestPanel);
 
-        jTable4.setModel(new javax.swing.table.DefaultTableModel(
+        PaymentRecordTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null, null, null},
                         {null, null, null, null, null, null, null},
@@ -528,7 +577,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane5.setViewportView(jTable4);
+        jScrollPane5.setViewportView(PaymentRecordTable);
 
         jButton21.setText("View Details");
         jButton21.addActionListener(new java.awt.event.ActionListener() {
@@ -537,22 +586,22 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-                jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel6Layout.createSequentialGroup()
+        javax.swing.GroupLayout PaymentRecordPanelLayout = new javax.swing.GroupLayout(PaymentRecordPanel);
+        PaymentRecordPanel.setLayout(PaymentRecordPanelLayout);
+        PaymentRecordPanelLayout.setHorizontalGroup(
+                PaymentRecordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(PaymentRecordPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 891, Short.MAX_VALUE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                                .addGroup(PaymentRecordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PaymentRecordPanelLayout.createSequentialGroup()
                                                 .addGap(0, 0, Short.MAX_VALUE)
                                                 .addComponent(jButton21)))
                                 .addContainerGap())
         );
-        jPanel6Layout.setVerticalGroup(
-                jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel6Layout.createSequentialGroup()
+        PaymentRecordPanelLayout.setVerticalGroup(
+                PaymentRecordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(PaymentRecordPanelLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -560,217 +609,286 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                                 .addContainerGap(36, Short.MAX_VALUE))
         );
 
-        jTabbedPane2.addTab("Payment Record", jPanel6);
+        ManagerMenuTab.addTab("Payment Record", PaymentRecordPanel);
 
-        jLabel1.setText("Username");
+        UsernameLabel.setText("Username");
 
-        jLabel2.setText("Password");
+        PasswordLabel.setText("Password");
 
-        jLabel3.setText("Name");
+        NameLabel.setText("Name");
 
-        jLabel4.setText("Contact Number");
+        ContactLabel.setText("Contact Number");
 
-        jLabel5.setText("Email Address");
+        EmailLabel.setText("Email Address");
 
-        jLabel6.setText("Manager ID");
+        ManagerIDLabel.setText("Manager ID");
 
-        jTextField1.setEditable(false);
-        jTextField1.setText("M0001");
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        ManagerIDField.setEditable(false);
+        ManagerIDField.setText("M0001");
+        ManagerIDField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                ManagerIDFieldActionPerformed(evt);
             }
         });
 
-        jTextField2.setEditable(false);
-        jTextField2.setText("mervin");
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        UsernameField.setEditable(false);
+        UsernameField.setText("mervin");
+        UsernameField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                UsernameFieldActionPerformed(evt);
             }
         });
 
-        jPasswordField1.setEditable(false);
-        jPasswordField1.setText("123123");
-        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+        PasswordField.setEditable(false);
+        PasswordField.setText("123123");
+        PasswordField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField1ActionPerformed(evt);
+                PasswordFieldActionPerformed(evt);
             }
         });
 
-        jTextField3.setEditable(false);
-        jTextField3.setText("Mervin");
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        NameField.setEditable(false);
+        NameField.setText("Mervin");
+        NameField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                NameFieldActionPerformed(evt);
             }
         });
 
-        jTextField4.setEditable(false);
-        jTextField4.setText("0123456789");
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+        ContactField.setEditable(false);
+        ContactField.setText("0123456789");
+        ContactField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
+                ContactFieldActionPerformed(evt);
             }
         });
 
-        jTextField5.setEditable(false);
-        jTextField5.setText("mervinooi221@gmail.com");
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
+        EmailField.setEditable(false);
+        EmailField.setText("mervinooi221@gmail.com");
+        EmailField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
+                EmailFieldActionPerformed(evt);
             }
         });
 
-        jButton12.setText("Edit Profile");
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
+        EditProfileButton.setText("Edit Profile");
+        EditProfileButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
+                EditProfileButtonActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-                jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+        javax.swing.GroupLayout ProfilePanelLayout = new javax.swing.GroupLayout(ProfilePanel);
+        ProfilePanel.setLayout(ProfilePanelLayout);
+        ProfilePanelLayout.setHorizontalGroup(
+                ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProfilePanelLayout.createSequentialGroup()
                                 .addGap(290, 290, 290)
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel5)
-                                        .addComponent(jLabel6)
-                                        .addComponent(jLabel1)
-                                        .addComponent(jLabel3)
-                                        .addComponent(jLabel4)
-                                        .addComponent(jLabel2))
+                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(EmailLabel)
+                                        .addComponent(ManagerIDLabel)
+                                        .addComponent(UsernameLabel)
+                                        .addComponent(NameLabel)
+                                        .addComponent(ContactLabel)
+                                        .addComponent(PasswordLabel))
                                 .addGap(45, 45, 45)
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jTextField1)
-                                        .addComponent(jTextField2)
-                                        .addComponent(jPasswordField1)
-                                        .addComponent(jTextField3)
-                                        .addComponent(jTextField4)
-                                        .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE))
+                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(ManagerIDField)
+                                        .addComponent(UsernameField)
+                                        .addComponent(PasswordField)
+                                        .addComponent(NameField)
+                                        .addComponent(ContactField)
+                                        .addComponent(EmailField, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
                                 .addGap(285, 285, 285))
-                        .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGroup(ProfilePanelLayout.createSequentialGroup()
                                 .addGap(400, 400, 400)
-                                .addComponent(jButton12)
+                                .addComponent(EditProfileButton)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel8Layout.setVerticalGroup(
-                jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel8Layout.createSequentialGroup()
+        ProfilePanelLayout.setVerticalGroup(
+                ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(ProfilePanelLayout.createSequentialGroup()
                                 .addGap(48, 48, 48)
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel6)
-                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(ManagerIDLabel)
+                                        .addComponent(ManagerIDField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel1)
-                                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(UsernameLabel)
+                                        .addComponent(UsernameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel2)
-                                        .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(PasswordLabel)
+                                        .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel3)
-                                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(NameLabel)
+                                        .addComponent(NameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel4)
-                                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(ContactLabel)
+                                        .addComponent(ContactField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel5)
-                                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(EmailLabel)
+                                        .addComponent(EmailField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(32, 32, 32)
-                                .addComponent(jButton12)
-                                .addContainerGap(91, Short.MAX_VALUE))
+                                .addComponent(EditProfileButton)
+                                .addContainerGap(103, Short.MAX_VALUE))
         );
 
-        jTabbedPane2.addTab("Profile", jPanel8);
+        ManagerMenuTab.addTab("Profile", ProfilePanel);
+
+        LogOutButton.setText("Log Out");
+        LogOutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LogOutButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout LogOutPanelLayout = new javax.swing.GroupLayout(LogOutPanel);
+        LogOutPanel.setLayout(LogOutPanelLayout);
+        LogOutPanelLayout.setHorizontalGroup(
+                LogOutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(LogOutPanelLayout.createSequentialGroup()
+                                .addGap(404, 404, 404)
+                                .addComponent(LogOutButton)
+                                .addContainerGap(410, Short.MAX_VALUE))
+        );
+        LogOutPanelLayout.setVerticalGroup(
+                LogOutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(LogOutPanelLayout.createSequentialGroup()
+                                .addGap(194, 194, 194)
+                                .addComponent(LogOutButton)
+                                .addContainerGap(235, Short.MAX_VALUE))
+        );
+
+        ManagerMenuTab.addTab("Log Out", LogOutPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jTabbedPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(ManagerMenuTab)
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jTabbedPane2))
+                                .addComponent(ManagerMenuTab))
         );
 
         pack();
     }// </editor-fold>
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void EditUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void SortUserInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void ManagerIDFieldActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void UsernameFieldActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void PasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void NameFieldActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void ContactFieldActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void EmailFieldActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void EditProfileButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void UpdateRateButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void UpdateRoomInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void RejectRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void ApproveRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void FilterResultButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void ViewRoomChangeDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void ViewRoomInfoDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void AddUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void DeleteUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void ViewUserDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void FilterUserInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SearchUserInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void ApproveRegistrationButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void RejectRegistrationButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SortResultButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SearchRegistrationButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void LogOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
@@ -811,40 +929,55 @@ public class ManagerMenuPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton15;
-    private javax.swing.JButton jButton16;
-    private javax.swing.JButton jButton17;
-    private javax.swing.JButton jButton18;
-    private javax.swing.JButton jButton19;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton AddUserButton;
+    private javax.swing.JButton ApproveRegistrationButton;
+    private javax.swing.JButton ApproveRoomChangeButton;
+    private javax.swing.JTextField ContactField;
+    private javax.swing.JLabel ContactLabel;
+    private javax.swing.JButton DeleteUserButton;
+    private javax.swing.JButton EditProfileButton;
+    private javax.swing.JButton EditUserButton;
+    private javax.swing.JTextField EmailField;
+    private javax.swing.JLabel EmailLabel;
+    private javax.swing.JButton FilterResultButton;
+    private javax.swing.JButton FilterUserInfoButton;
+    private javax.swing.JButton LogOutButton;
+    private javax.swing.JPanel LogOutPanel;
+    private javax.swing.JTextField ManagerIDField;
+    private javax.swing.JLabel ManagerIDLabel;
+    private javax.swing.JTabbedPane ManagerMenuTab;
+    private javax.swing.JTable ManagerRegistrationTable;
+    private javax.swing.JTextField NameField;
+    private javax.swing.JLabel NameLabel;
+    private javax.swing.JPasswordField PasswordField;
+    private javax.swing.JLabel PasswordLabel;
+    private javax.swing.JPanel PaymentRecordPanel;
+    private javax.swing.JTable PaymentRecordTable;
+    private javax.swing.JPanel ProfilePanel;
+    private javax.swing.JTabbedPane RegistrationRequestTab;
+    private javax.swing.JButton RejectRegistrationButton;
+    private javax.swing.JButton RejectRoomChangeButton;
+    private javax.swing.JTable ResidentRegistrationTable;
+    private javax.swing.JPanel RoomChangeRequestPanel;
+    private javax.swing.JTable RoomChangeRequestTable;
+    private javax.swing.JTable RoomInfoTable;
+    private javax.swing.JPanel RoomInformationPanel;
+    private javax.swing.JButton SearchRegistrationButton;
+    private javax.swing.JButton SearchUserInfoButton;
+    private javax.swing.JButton SortResultButton;
+    private javax.swing.JButton SortUserInfoButton;
+    private javax.swing.JTable StaffRegistrationTable;
+    private javax.swing.JButton UpdateRateButton;
+    private javax.swing.JButton UpdateRoomInfoButton;
+    private javax.swing.JTabbedPane UserInformationTab;
+    private javax.swing.JTextField UsernameField;
+    private javax.swing.JLabel UsernameLabel;
+    private javax.swing.JButton ViewRoomChangeDetailsButton;
+    private javax.swing.JButton ViewRoomInfoDetailsButton;
+    private javax.swing.JButton ViewUserDetailsButton;
     private javax.swing.JButton jButton21;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane12;
@@ -854,22 +987,8 @@ public class ManagerMenuPage extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
-    private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTabbedPane jTabbedPane4;
-    private javax.swing.JTabbedPane jTabbedPane5;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable10;
-    private javax.swing.JTable jTable11;
-    private javax.swing.JTable jTable12;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable4;
     private javax.swing.JTable jTable7;
     private javax.swing.JTable jTable8;
     private javax.swing.JTable jTable9;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
     // End of variables declaration
 }

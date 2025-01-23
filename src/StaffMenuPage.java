@@ -8,6 +8,17 @@
  *
  * @author Yong Jun
  */
+
+import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
+
 public class StaffMenuPage extends javax.swing.JFrame {
 
     /**
@@ -17,11 +28,13 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
     public StaffMenuPage() {
         initComponents();
+        populateResidentPaymentTable();
     }
 
     public StaffMenuPage(Staff staff) {
         this.staff = staff;
         initComponents();
+        populateResidentPaymentTable();
     }
 
     /**
@@ -80,7 +93,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
                         {null, null, null, null}
                 },
                 new String [] {
-                        "Title 1", "Title 2", "Title 3", "Title 4"
+                        "Username", "Room Type", "Overdue Amount", "Action"
                 }
         ));
         jScrollPane2.setViewportView(ResidentPaymentTable);
@@ -414,8 +427,15 @@ public class StaffMenuPage extends javax.swing.JFrame {
     }
 
     private void SearchMakePaymentBoxActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        // Get user input from the search box
+        String searchName = SearchMakePaymentBox.getText().trim();
+        if (!searchName.isEmpty()) {
+            searchResidentInfo(searchName);
+        } else {
+            JOptionPane.showMessageDialog(this, "Please enter a name to search.");
+        }
     }
+
 
     private void editEmailAddressBoxActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
@@ -433,7 +453,65 @@ public class StaffMenuPage extends javax.swing.JFrame {
     }
 
     private void confirmButtonMPActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        // Get user input from the search box
+        String searchName = SearchMakePaymentBox.getText().trim();
+        if (!searchName.isEmpty()) {
+            searchResidentInfo(searchName);
+        } else {
+            JOptionPane.showMessageDialog(this, "Please enter a name to search.");
+        }
+    }
+
+    private void searchResidentInfo(String searchName) {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) ResidentPaymentTable.getModel();
+        model.setRowCount(0); // Clear existing rows
+
+        boolean found = false;
+        for (String line : lines) {
+            String[] details = line.split(",");
+            if (details[1].equalsIgnoreCase(searchName)) {
+                found = true;
+                // Display the resident's information in the ResidentPaymentTable
+                model.addRow(new Object[]{details[1], details[7], details[8], "Action"});
+                break;
+            }
+        }
+
+        if (!found) {
+            JOptionPane.showMessageDialog(this, "Resident not found.");
+        }
+    }
+
+    private void populateResidentPaymentTable() {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) ResidentPaymentTable.getModel();
+        model.setRowCount(0); // Clear existing rows
+
+        for (String line : lines) {
+            String[] details = line.split(",");
+            model.addRow(new Object[]{details[1], details[7], details[8], "Action"});
+        }
     }
 
     /**

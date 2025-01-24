@@ -33,12 +33,12 @@ Assumption:
 5. New manager can only be approved by old manager/s
 6. Only manager can approve new manager,staff and resident
 
-Manager_Registration: Username, Password, Name, Contact_Number, Email
-Staff_Registration: Username, Password, Name, Contact_Number, Email
-Resident_Registration: Username, Password, Name, Gender, Room_Type, Contact_Number, Email
+Manager_Registration: Username, Password, Name, Contact_Number, Email, Request Datetime
+Staff_Registration: Username, Password, Name, Contact_Number, Email, Request Datetime
+Resident_Registration: Username, Password, Name, Gender, Email, Room_Type, Contact_Number, Request Datetime
 Manager_Info: ManagerID, Username, Password, Name, Contact_Number, Email
 Staff_Info: StaffID, Username, Password, Name, Contact_Number, Email
-Resident_Info: ResidentID, Username, Password, Name, Gender, Room_No, Contact_Number, Email, Overdue_Amount
+Resident_Info: ResidentID, Username, Password, Name, Contact_Number, Email, Overdue_Amount, Gender, Room_No
 
 Login_Records: LoginRecordID, UserID(StaffID / ResidentID), Datetime
 Payment_Records: PaymentRecordID, Datetime, Amount, ResidentID, StaffID

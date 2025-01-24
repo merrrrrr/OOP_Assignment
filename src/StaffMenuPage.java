@@ -10,19 +10,18 @@
  */
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import javax.swing.table.DefaultTableModel;
+import java.time.format.DateTimeFormatter;
 
 
 public class StaffMenuPage extends javax.swing.JFrame {
@@ -35,12 +34,14 @@ public class StaffMenuPage extends javax.swing.JFrame {
     public StaffMenuPage() {
         initComponents();
         populateResidentPaymentTable();
+        populateGenerateReceiptTable();
     }
 
     public StaffMenuPage(Staff staff) {
         this.staff = staff;
         initComponents();
         populateResidentPaymentTable();
+        populateGenerateReceiptTable();
     }
 
     /**
@@ -162,7 +163,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
                         {null, null, null, null}
                 },
                 new String [] {
-                        "Title 1", "Title 2", "Title 3", "Title 4"
+                        "Resident ID", "Username", "Room Type", "Paid Amount", "Paid Date Time", "Action"
                 }
         ));
         jScrollPane3.setViewportView(generateReceiptTable);
@@ -430,16 +431,13 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
     private void GenerateReceiptSearchBoxActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+        filterGenerateReceiptTable();
     }
+
 
     private void SearchMakePaymentBoxActionPerformed(java.awt.event.ActionEvent evt) {
         // Get user input from the search box
-        String searchName = SearchMakePaymentBox.getText().trim();
-        if (!searchName.isEmpty()) {
-            searchResidentInfo(searchName);
-        } else {
-            JOptionPane.showMessageDialog(this, "Please enter a name to search.");
-        }
+        filterResidentPaymentTable();
     }
 
 
@@ -453,20 +451,48 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
     private void logOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-        LoginPage lp = new LoginPage();
-        lp.setVisible(true);
+        MainPage mp = new MainPage();
+        mp.setVisible(true);
         this.dispose();
     }
 
     private void confirmButtonMPActionPerformed(java.awt.event.ActionEvent evt) {
         // Get user input from the search box
-        String searchName = SearchMakePaymentBox.getText().trim();
-        if (!searchName.isEmpty()) {
-            searchResidentInfo(searchName);
+        filterResidentPaymentTable();
+    }
+
+    private void confirmButtonGRActionPerformed(java.awt.event.ActionEvent evt) {
+        // Get user input from the search box
+        filterGenerateReceiptTable();
+    }
+
+    private void filterGenerateReceiptTable() {
+        String searchTerm = GenerateReceiptSearchBox.getText().trim().toLowerCase();
+        DefaultTableModel model = (DefaultTableModel) generateReceiptTable.getModel();
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+        generateReceiptTable.setRowSorter(sorter);
+
+        if (searchTerm.isEmpty()) {
+            sorter.setRowFilter(null);
         } else {
-            JOptionPane.showMessageDialog(this, "Please enter a name to search.");
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + searchTerm));
         }
     }
+
+    private void filterResidentPaymentTable() {
+        String searchTerm = SearchMakePaymentBox.getText().trim().toLowerCase();
+        DefaultTableModel model = (DefaultTableModel) ResidentPaymentTable.getModel();
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+        ResidentPaymentTable.setRowSorter(sorter);
+
+        if (searchTerm.isEmpty()) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + searchTerm));
+        }
+    }
+
+
 
     private void searchResidentInfo(String searchName) {
         List<String> lines = new ArrayList<>();
@@ -489,7 +515,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
             if (details[1].equalsIgnoreCase(searchName)) {
                 found = true;
                 // Display the resident's information in the ResidentPaymentTable
-                model.addRow(new Object[]{details[1], details[7], details[8], "Action"});
+                model.addRow(new Object[]{details[1], details[7], details[8], "Make Payment"});
                 break;
             }
         }
@@ -524,6 +550,27 @@ public class StaffMenuPage extends javax.swing.JFrame {
         ResidentPaymentTable.getColumn("Action").setCellEditor(new ButtonEditor(new JCheckBox()));
     }
 
+    private void populateGenerateReceiptTable() {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("Receipt.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) generateReceiptTable.getModel();
+        model.setRowCount(0); // Clear existing rows
+
+        for (String line : lines) {
+            String[] details = line.split(",");
+            model.addRow(new Object[]{details[0], details[1], details[2], details[3], details[4], ""});
+        }
+    }
+
     class ButtonRenderer extends JButton implements TableCellRenderer {
         public ButtonRenderer() {
             setOpaque(true);
@@ -551,13 +598,18 @@ public class StaffMenuPage extends javax.swing.JFrame {
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     fireEditingStopped();
-                    int response = JOptionPane.showConfirmDialog(null,
-                            "Are you sure to make payment for " + table.getValueAt(row, 0) + "?",
-                            "Confirm Payment",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
-                    if (response == JOptionPane.YES_OPTION) {
-                        updateOverdueAmount(row);
+                    String overdueAmount = (String) table.getValueAt(row, 2);
+                    if ("RM00.00".equals(overdueAmount)) {
+                        JOptionPane.showMessageDialog(null, table.getValueAt(row, 0) + " has no overdue amount.");
+                    } else {
+                        int response = JOptionPane.showConfirmDialog(null,
+                                "Are you sure to make payment for " + table.getValueAt(row, 0) + "?",
+                                "Confirm Payment",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.QUESTION_MESSAGE);
+                        if (response == JOptionPane.YES_OPTION) {
+                            updateOverdueAmount(row);
+                        }
                     }
                 }
             });
@@ -580,6 +632,8 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
     private void updateOverdueAmount(int row) {
         String username = (String) ResidentPaymentTable.getValueAt(row, 0);
+        String roomType = (String) ResidentPaymentTable.getValueAt(row, 1);
+        String amountPaid = (String) ResidentPaymentTable.getValueAt(row, 2);
         List<String> lines = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
             String line;
@@ -605,7 +659,43 @@ public class StaffMenuPage extends javax.swing.JFrame {
             System.err.println("Error writing to the file: " + e.getMessage());
         }
 
+        generateReceipt(username, roomType, amountPaid);
         populateResidentPaymentTable();
+    }
+
+    private void generateReceipt(String username, String roomType, String amountPaid) {
+        String receiptID = generateUniqueReceiptID();
+        String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String receipt = String.join(",", receiptID, username, roomType, amountPaid, dateTime);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Receipt.txt", true))) {
+            writer.write(receipt);
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.println("Error writing to the file: " + e.getMessage());
+        }
+    }
+
+    private String generateUniqueReceiptID() {
+        int maxID = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader("Receipt.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                if (details.length > 0 && details[0].startsWith("REC")) {
+                    String id = details[0].substring(3); // Remove "REC" prefix
+                    int currentID = Integer.parseInt(id);
+                    if (currentID > maxID) {
+                        maxID = currentID;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.err.println("Error parsing receipt ID: " + e.getMessage());
+        }
+        return "REC" + String.format("%04d", maxID + 1);
     }
 
     /**

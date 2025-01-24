@@ -1,3 +1,9 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
 /**
  *
  * @author Mervin Ooi
@@ -17,6 +23,33 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         this.manager = manager;
     }
 
+    public String[][] displayManagerInfo() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("Manager_Info.txt"));
+
+        int lineCount = 0;
+        while (br.readLine() != null) {
+            lineCount++;
+        }
+        br.close();
+
+        String[][] tableInfo = new String[lineCount][5];
+
+        br = new BufferedReader(new FileReader("Manager_Info.txt"));
+        String line;
+        int i = 0;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            tableInfo[i][0] = parts[0]; // id
+            tableInfo[i][1] = parts[1]; // username
+            tableInfo[i][2] = parts[3]; // name
+            tableInfo[i][3] = parts[4]; // phone
+            tableInfo[i][4] = parts[5]; // email
+            i++;
+        }
+        return tableInfo;
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -27,14 +60,14 @@ public class ManagerMenuPage extends javax.swing.JFrame {
     private void initComponents() {
 
         ManagerMenuTab = new javax.swing.JTabbedPane();
-        jPanel4 = new javax.swing.JPanel();
-        UserInformationTab = new javax.swing.JTabbedPane();
+        UserInfoPanel = new javax.swing.JPanel();
+        UserInfoTab = new javax.swing.JTabbedPane();
         jScrollPane7 = new javax.swing.JScrollPane();
-        jTable7 = new javax.swing.JTable();
+        ManagerInfoTable = new javax.swing.JTable();
         jScrollPane8 = new javax.swing.JScrollPane();
-        jTable8 = new javax.swing.JTable();
+        StaffInfoTable = new javax.swing.JTable();
         jScrollPane9 = new javax.swing.JScrollPane();
-        jTable9 = new javax.swing.JTable();
+        ResidentInfoTable = new javax.swing.JTable();
         AddUserButton = new javax.swing.JButton();
         DeleteUserButton = new javax.swing.JButton();
         EditUserButton = new javax.swing.JButton();
@@ -42,7 +75,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         SortUserInfoButton = new javax.swing.JButton();
         SearchUserInfoButton = new javax.swing.JButton();
         ViewUserDetailsButton = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        RegistrationPanel = new javax.swing.JPanel();
         RegistrationRequestTab = new javax.swing.JTabbedPane();
         jScrollPane10 = new javax.swing.JScrollPane();
         ManagerRegistrationTable = new javax.swing.JTable();
@@ -50,8 +83,8 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         StaffRegistrationTable = new javax.swing.JTable();
         jScrollPane12 = new javax.swing.JScrollPane();
         ResidentRegistrationTable = new javax.swing.JTable();
-        FilterResultButton = new javax.swing.JButton();
-        SortResultButton = new javax.swing.JButton();
+        FilterRegistrationButton = new javax.swing.JButton();
+        SortRegistrationButton = new javax.swing.JButton();
         SearchRegistrationButton = new javax.swing.JButton();
         ApproveRegistrationButton = new javax.swing.JButton();
         RejectRegistrationButton = new javax.swing.JButton();
@@ -70,7 +103,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         PaymentRecordPanel = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         PaymentRecordTable = new javax.swing.JTable();
-        jButton21 = new javax.swing.JButton();
+        ViewPaymentDetailsButton = new javax.swing.JButton();
         ProfilePanel = new javax.swing.JPanel();
         UsernameLabel = new javax.swing.JLabel();
         PasswordLabel = new javax.swing.JLabel();
@@ -90,7 +123,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable7.setModel(new javax.swing.table.DefaultTableModel(
+        ManagerInfoTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null},
                         {null, null, null, null, null},
@@ -120,11 +153,11 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane7.setViewportView(jTable7);
+        jScrollPane7.setViewportView(ManagerInfoTable);
 
-        UserInformationTab.addTab("Manager", jScrollPane7);
+        UserInfoTab.addTab("Manager", jScrollPane7);
 
-        jTable8.setModel(new javax.swing.table.DefaultTableModel(
+        StaffInfoTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null},
                         {null, null, null, null, null},
@@ -143,11 +176,11 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane8.setViewportView(jTable8);
+        jScrollPane8.setViewportView(StaffInfoTable);
 
-        UserInformationTab.addTab("Staff", jScrollPane8);
+        UserInfoTab.addTab("Staff", jScrollPane8);
 
-        jTable9.setModel(new javax.swing.table.DefaultTableModel(
+        ResidentInfoTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null, null, null, null},
                         {null, null, null, null, null, null, null, null},
@@ -166,12 +199,12 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane9.setViewportView(jTable9);
-        if (jTable9.getColumnModel().getColumnCount() > 0) {
-            jTable9.getColumnModel().getColumn(0).setHeaderValue("Resident ID");
+        jScrollPane9.setViewportView(ResidentInfoTable);
+        if (ResidentInfoTable.getColumnModel().getColumnCount() > 0) {
+            ResidentInfoTable.getColumnModel().getColumn(0).setHeaderValue("Resident ID");
         }
 
-        UserInformationTab.addTab("Resident", jScrollPane9);
+        UserInfoTab.addTab("Resident", jScrollPane9);
 
         AddUserButton.setText("Add User");
         AddUserButton.addActionListener(new java.awt.event.ActionListener() {
@@ -191,6 +224,13 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         EditUserButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 EditUserButtonActionPerformed(evt);
+            }
+        });
+
+        ViewUserDetailsButton.setText("View Details");
+        ViewUserDetailsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ViewUserDetailsButtonActionPerformed(evt);
             }
         });
 
@@ -215,21 +255,14 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             }
         });
 
-        ViewUserDetailsButton.setText("View Details");
-        ViewUserDetailsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ViewUserDetailsButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(UserInfoPanel);
+        UserInfoPanel.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
                 jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(UserInformationTab)
+                                        .addComponent(UserInfoTab)
                                         .addGroup(jPanel4Layout.createSequentialGroup()
                                                 .addComponent(AddUserButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -250,7 +283,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(UserInformationTab, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(UserInfoTab, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                                         .addComponent(AddUserButton)
@@ -263,7 +296,9 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
-        ManagerMenuTab.addTab("User Information", jPanel4);
+        ManagerMenuTab.addTab("User Information", UserInfoPanel);
+
+        RegistrationRequestTab.addTab("Manager", jScrollPane10);
 
         ManagerRegistrationTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
@@ -285,8 +320,6 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             }
         });
         jScrollPane10.setViewportView(ManagerRegistrationTable);
-
-        RegistrationRequestTab.addTab("Manager", jScrollPane10);
 
         StaffRegistrationTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
@@ -334,27 +367,6 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
         RegistrationRequestTab.addTab("Resident", jScrollPane12);
 
-        FilterResultButton.setText("Filter");
-        FilterResultButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                FilterResultButtonActionPerformed(evt);
-            }
-        });
-
-        SortResultButton.setText("Sort");
-        SortResultButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SortResultButtonActionPerformed(evt);
-            }
-        });
-
-        SearchRegistrationButton.setText("Search User");
-        SearchRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SearchRegistrationButtonActionPerformed(evt);
-            }
-        });
-
         ApproveRegistrationButton.setText("Approve");
         ApproveRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -369,8 +381,29 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
+        FilterRegistrationButton.setText("Filter");
+        FilterRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FilterRegistrationButtonActionPerformed(evt);
+            }
+        });
+
+        SortRegistrationButton.setText("Sort");
+        SortRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SortRegistrationActionPerformed(evt);
+            }
+        });
+
+        SearchRegistrationButton.setText("Search User");
+        SearchRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SearchRegistrationButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(RegistrationPanel);
+        RegistrationPanel.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
@@ -382,9 +415,9 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(RejectRegistrationButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(FilterResultButton)
+                                                .addComponent(FilterRegistrationButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(SortResultButton)
+                                                .addComponent(SortRegistrationButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(SearchRegistrationButton)))
                                 .addContainerGap())
@@ -396,16 +429,16 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                                 .addComponent(RegistrationRequestTab, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                                        .addComponent(SortResultButton)
+                                        .addComponent(SortRegistrationButton)
                                         .addComponent(SearchRegistrationButton)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                                 .addComponent(ApproveRegistrationButton)
                                                 .addComponent(RejectRegistrationButton)
-                                                .addComponent(FilterResultButton)))
+                                                .addComponent(FilterRegistrationButton)))
                                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
-        ManagerMenuTab.addTab("Registration Request", jPanel1);
+        ManagerMenuTab.addTab("Registration Request", RegistrationPanel);
 
         RoomInfoTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
@@ -431,10 +464,10 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             RoomInfoTable.getColumnModel().getColumn(3).setHeaderValue("Rate");
         }
 
-        UpdateRoomInfoButton.setText("Update Room Information");
-        UpdateRoomInfoButton.addActionListener(new java.awt.event.ActionListener() {
+        ViewRoomInfoDetailsButton.setText("View Details");
+        ViewRoomInfoDetailsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                UpdateRoomInfoButtonActionPerformed(evt);
+                ViewRoomInfoDetailsButtonActionPerformed(evt);
             }
         });
 
@@ -445,10 +478,10 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             }
         });
 
-        ViewRoomInfoDetailsButton.setText("View Details");
-        ViewRoomInfoDetailsButton.addActionListener(new java.awt.event.ActionListener() {
+        UpdateRoomInfoButton.setText("Update Room Information");
+        UpdateRoomInfoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ViewRoomInfoDetailsButtonActionPerformed(evt);
+                UpdateRoomInfoButtonActionPerformed(evt);
             }
         });
 
@@ -505,10 +538,10 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(RoomChangeRequestTable);
 
-        RejectRoomChangeButton.setText("Reject");
-        RejectRoomChangeButton.addActionListener(new java.awt.event.ActionListener() {
+        ViewRoomChangeDetailsButton.setText("View Details");
+        ViewRoomChangeDetailsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RejectRoomChangeButtonActionPerformed(evt);
+                ViewRoomChangeDetailsButtonActionPerformed(evt);
             }
         });
 
@@ -519,12 +552,13 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             }
         });
 
-        ViewRoomChangeDetailsButton.setText("View Details");
-        ViewRoomChangeDetailsButton.addActionListener(new java.awt.event.ActionListener() {
+        RejectRoomChangeButton.setText("Reject");
+        RejectRoomChangeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ViewRoomChangeDetailsButtonActionPerformed(evt);
+                RejectRoomChangeButtonActionPerformed(evt);
             }
         });
+
 
         javax.swing.GroupLayout RoomChangeRequestPanelLayout = new javax.swing.GroupLayout(RoomChangeRequestPanel);
         RoomChangeRequestPanel.setLayout(RoomChangeRequestPanelLayout);
@@ -579,10 +613,10 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         });
         jScrollPane5.setViewportView(PaymentRecordTable);
 
-        jButton21.setText("View Details");
-        jButton21.addActionListener(new java.awt.event.ActionListener() {
+        ViewPaymentDetailsButton.setText("View Details");
+        ViewPaymentDetailsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton21ActionPerformed(evt);
+                ViewPaymentDetailsButtonActionPerformed(evt);
             }
         });
 
@@ -596,7 +630,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                                         .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PaymentRecordPanelLayout.createSequentialGroup()
                                                 .addGap(0, 0, Short.MAX_VALUE)
-                                                .addComponent(jButton21)))
+                                                .addComponent(ViewPaymentDetailsButton)))
                                 .addContainerGap())
         );
         PaymentRecordPanelLayout.setVerticalGroup(
@@ -605,11 +639,13 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                                 .addContainerGap()
                                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton21)
+                                .addComponent(ViewPaymentDetailsButton)
                                 .addContainerGap(36, Short.MAX_VALUE))
         );
 
         ManagerMenuTab.addTab("Payment Record", PaymentRecordPanel);
+
+        ManagerIDLabel.setText("Manager ID");
 
         UsernameLabel.setText("Username");
 
@@ -621,7 +657,6 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
         EmailLabel.setText("Email Address");
 
-        ManagerIDLabel.setText("Manager ID");
 
         ManagerIDField.setEditable(false);
         ManagerIDField.setText("M0001");
@@ -784,11 +819,80 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
+    private void AddUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+
+    }
+
+    private void DeleteUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
     private void EditUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
+    private void ViewUserDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void FilterUserInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
     private void SortUserInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SearchUserInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void ApproveRegistrationButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void RejectRegistrationButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void FilterRegistrationButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SortRegistrationActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SearchRegistrationButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void ViewRoomInfoDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void UpdateRateButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void UpdateRoomInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void ViewRoomChangeDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void ApproveRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void RejectRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void ViewPaymentDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
@@ -817,74 +921,6 @@ public class ManagerMenuPage extends javax.swing.JFrame {
     }
 
     private void EditProfileButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void UpdateRateButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void UpdateRoomInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void RejectRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void ApproveRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void FilterResultButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void ViewRoomChangeDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void ViewRoomInfoDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void AddUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void DeleteUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void ViewUserDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void FilterUserInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void SearchUserInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void ApproveRegistrationButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void RejectRegistrationButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void SortResultButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void SearchRegistrationButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
@@ -939,12 +975,13 @@ public class ManagerMenuPage extends javax.swing.JFrame {
     private javax.swing.JButton EditUserButton;
     private javax.swing.JTextField EmailField;
     private javax.swing.JLabel EmailLabel;
-    private javax.swing.JButton FilterResultButton;
+    private javax.swing.JButton FilterRegistrationButton;
     private javax.swing.JButton FilterUserInfoButton;
     private javax.swing.JButton LogOutButton;
     private javax.swing.JPanel LogOutPanel;
     private javax.swing.JTextField ManagerIDField;
     private javax.swing.JLabel ManagerIDLabel;
+    private javax.swing.JTable ManagerInfoTable;
     private javax.swing.JTabbedPane ManagerMenuTab;
     private javax.swing.JTable ManagerRegistrationTable;
     private javax.swing.JTextField NameField;
@@ -958,26 +995,28 @@ public class ManagerMenuPage extends javax.swing.JFrame {
     private javax.swing.JButton RejectRegistrationButton;
     private javax.swing.JButton RejectRoomChangeButton;
     private javax.swing.JTable ResidentRegistrationTable;
+    private javax.swing.JTable ResidentInfoTable;
     private javax.swing.JPanel RoomChangeRequestPanel;
     private javax.swing.JTable RoomChangeRequestTable;
     private javax.swing.JTable RoomInfoTable;
     private javax.swing.JPanel RoomInformationPanel;
     private javax.swing.JButton SearchRegistrationButton;
     private javax.swing.JButton SearchUserInfoButton;
-    private javax.swing.JButton SortResultButton;
+    private javax.swing.JButton SortRegistrationButton;
     private javax.swing.JButton SortUserInfoButton;
+    private javax.swing.JTable StaffInfoTable;
     private javax.swing.JTable StaffRegistrationTable;
     private javax.swing.JButton UpdateRateButton;
     private javax.swing.JButton UpdateRoomInfoButton;
-    private javax.swing.JTabbedPane UserInformationTab;
+    private javax.swing.JTabbedPane UserInfoTab;
     private javax.swing.JTextField UsernameField;
     private javax.swing.JLabel UsernameLabel;
+    private javax.swing.JButton ViewPaymentDetailsButton;
     private javax.swing.JButton ViewRoomChangeDetailsButton;
     private javax.swing.JButton ViewRoomInfoDetailsButton;
     private javax.swing.JButton ViewUserDetailsButton;
-    private javax.swing.JButton jButton21;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel RegistrationPanel;
+    private javax.swing.JPanel UserInfoPanel;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane12;
@@ -987,8 +1026,5 @@ public class ManagerMenuPage extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
-    private javax.swing.JTable jTable7;
-    private javax.swing.JTable jTable8;
-    private javax.swing.JTable jTable9;
     // End of variables declaration
 }

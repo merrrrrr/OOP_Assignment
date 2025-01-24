@@ -151,6 +151,7 @@ public class LoginPage extends javax.swing.JFrame {
                     Staff staff = new Staff(id, username, password, name, contactNumber, email);
                     StaffMenuPage staffMenuPage = new StaffMenuPage(staff);
                     staffMenuPage.setVisible(true);
+                    this.dispose();
                     break;
                 case 3:
                     String gender = line[6];

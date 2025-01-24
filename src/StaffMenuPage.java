@@ -10,12 +10,18 @@
  */
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -510,8 +516,96 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
         for (String line : lines) {
             String[] details = line.split(",");
-            model.addRow(new Object[]{details[1], details[7], details[8], "Action"});
+            model.addRow(new Object[]{details[1], details[7], details[8], "Make Payment"});
         }
+
+        ResidentPaymentTable.setRowHeight(30); // Set the row height to 30 pixels
+        ResidentPaymentTable.getColumn("Action").setCellRenderer(new ButtonRenderer());
+        ResidentPaymentTable.getColumn("Action").setCellEditor(new ButtonEditor(new JCheckBox()));
+    }
+
+    class ButtonRenderer extends JButton implements TableCellRenderer {
+        public ButtonRenderer() {
+            setOpaque(true);
+        }
+
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
+            setText((value == null) ? "Make Payment" : value.toString());
+            return this;
+        }
+    }
+
+    class ButtonEditor extends DefaultCellEditor {
+        private String label;
+        private boolean isPushed;
+
+        public ButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+        }
+
+        public Component getTableCellEditorComponent(JTable table, Object value,
+                                                     boolean isSelected, int row, int column) {
+            label = (value == null) ? "Make Payment" : value.toString();
+            JButton button = new JButton(label);
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    fireEditingStopped();
+                    int response = JOptionPane.showConfirmDialog(null,
+                            "Are you sure to make payment for " + table.getValueAt(row, 0) + "?",
+                            "Confirm Payment",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (response == JOptionPane.YES_OPTION) {
+                        updateOverdueAmount(row);
+                    }
+                }
+            });
+            return button;
+        }
+
+        public Object getCellEditorValue() {
+            return label;
+        }
+
+        public boolean stopCellEditing() {
+            isPushed = false;
+            return super.stopCellEditing();
+        }
+
+        protected void fireEditingStopped() {
+            super.fireEditingStopped();
+        }
+    }
+
+    private void updateOverdueAmount(int row) {
+        String username = (String) ResidentPaymentTable.getValueAt(row, 0);
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+            return;
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Resident_Info.txt"))) {
+            for (String line : lines) {
+                String[] details = line.split(",");
+                if (details[1].equalsIgnoreCase(username)) {
+                    details[8] = "RM00.00";
+                    line = String.join(",", details);
+                }
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing to the file: " + e.getMessage());
+        }
+
+        populateResidentPaymentTable();
     }
 
     /**

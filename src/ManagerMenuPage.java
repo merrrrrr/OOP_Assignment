@@ -1,8 +1,10 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  *
@@ -15,7 +17,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
      */
     private Manager manager;
 
-    public ManagerMenuPage() {
+    public ManagerMenuPage() throws IOException {
         initComponents();
     }
 
@@ -23,8 +25,9 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         this.manager = manager;
     }
 
-    public String[][] displayManagerInfo() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("Manager_Info.txt"));
+    public String[][] toInfoTable(int userType) throws IOException {
+        String filename = manager.getInfoFilename(userType);
+        BufferedReader br = new BufferedReader(new FileReader(filename));
 
         int lineCount = 0;
         while (br.readLine() != null) {
@@ -32,11 +35,18 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         }
         br.close();
 
-        String[][] tableInfo = new String[lineCount][5];
+        String[][] tableInfo = null;
 
-        br = new BufferedReader(new FileReader("Manager_Info.txt"));
+        if (userType == 1 || userType == 2) {
+            tableInfo = new String[lineCount][5];
+        } else if (userType == 3) {
+            tableInfo = new String[lineCount][8];
+        }
+
+        br = new BufferedReader(new FileReader(filename));
         String line;
         int i = 0;
+
         while ((line = br.readLine()) != null) {
             String[] parts = line.split(",");
             tableInfo[i][0] = parts[0]; // id
@@ -44,6 +54,13 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             tableInfo[i][2] = parts[3]; // name
             tableInfo[i][3] = parts[4]; // phone
             tableInfo[i][4] = parts[5]; // email
+
+            if (userType == 3) {
+                tableInfo[i][5] = parts[5]; // gender
+                tableInfo[i][6] = parts[6]; // room number
+                tableInfo[i][7] = parts[7]; // overdue amount
+            }
+
             i++;
         }
         return tableInfo;
@@ -57,96 +74,80 @@ public class ManagerMenuPage extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
-    private void initComponents() {
+    private void initComponents() throws IOException {
 
-        ManagerMenuTab = new javax.swing.JTabbedPane();
-        UserInfoPanel = new javax.swing.JPanel();
-        UserInfoTab = new javax.swing.JTabbedPane();
-        jScrollPane7 = new javax.swing.JScrollPane();
-        ManagerInfoTable = new javax.swing.JTable();
-        jScrollPane8 = new javax.swing.JScrollPane();
-        StaffInfoTable = new javax.swing.JTable();
-        jScrollPane9 = new javax.swing.JScrollPane();
-        ResidentInfoTable = new javax.swing.JTable();
-        AddUserButton = new javax.swing.JButton();
-        DeleteUserButton = new javax.swing.JButton();
-        EditUserButton = new javax.swing.JButton();
-        FilterUserInfoButton = new javax.swing.JButton();
-        SortUserInfoButton = new javax.swing.JButton();
-        SearchUserInfoButton = new javax.swing.JButton();
-        ViewUserDetailsButton = new javax.swing.JButton();
-        RegistrationPanel = new javax.swing.JPanel();
-        RegistrationRequestTab = new javax.swing.JTabbedPane();
-        jScrollPane10 = new javax.swing.JScrollPane();
-        ManagerRegistrationTable = new javax.swing.JTable();
-        jScrollPane11 = new javax.swing.JScrollPane();
-        StaffRegistrationTable = new javax.swing.JTable();
-        jScrollPane12 = new javax.swing.JScrollPane();
-        ResidentRegistrationTable = new javax.swing.JTable();
-        FilterRegistrationButton = new javax.swing.JButton();
-        SortRegistrationButton = new javax.swing.JButton();
-        SearchRegistrationButton = new javax.swing.JButton();
-        ApproveRegistrationButton = new javax.swing.JButton();
-        RejectRegistrationButton = new javax.swing.JButton();
-        RoomInformationPanel = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        RoomInfoTable = new javax.swing.JTable();
-        UpdateRoomInfoButton = new javax.swing.JButton();
-        UpdateRateButton = new javax.swing.JButton();
-        ViewRoomInfoDetailsButton = new javax.swing.JButton();
-        RoomChangeRequestPanel = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        RoomChangeRequestTable = new javax.swing.JTable();
-        RejectRoomChangeButton = new javax.swing.JButton();
-        ApproveRoomChangeButton = new javax.swing.JButton();
-        ViewRoomChangeDetailsButton = new javax.swing.JButton();
-        PaymentRecordPanel = new javax.swing.JPanel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        PaymentRecordTable = new javax.swing.JTable();
-        ViewPaymentDetailsButton = new javax.swing.JButton();
-        ProfilePanel = new javax.swing.JPanel();
-        UsernameLabel = new javax.swing.JLabel();
-        PasswordLabel = new javax.swing.JLabel();
-        NameLabel = new javax.swing.JLabel();
-        ContactLabel = new javax.swing.JLabel();
-        EmailLabel = new javax.swing.JLabel();
-        ManagerIDLabel = new javax.swing.JLabel();
-        ManagerIDField = new javax.swing.JTextField();
-        UsernameField = new javax.swing.JTextField();
-        PasswordField = new javax.swing.JPasswordField();
-        NameField = new javax.swing.JTextField();
-        ContactField = new javax.swing.JTextField();
-        EmailField = new javax.swing.JTextField();
-        EditProfileButton = new javax.swing.JButton();
-        LogOutPanel = new javax.swing.JPanel();
-        LogOutButton = new javax.swing.JButton();
+        ManagerMenuTab = new JTabbedPane();
+        UserInfoPanel = new JPanel();
+        UserInfoTab = new JTabbedPane();
+        jScrollPane7 = new JScrollPane();
+        ManagerInfoTable = new JTable();
+        jScrollPane8 = new JScrollPane();
+        StaffInfoTable = new JTable();
+        jScrollPane9 = new JScrollPane();
+        ResidentInfoTable = new JTable();
+        AddUserButton = new JButton();
+        DeleteUserButton = new JButton();
+        EditUserButton = new JButton();
+        FilterUserInfoButton = new JButton();
+        SortUserInfoButton = new JButton();
+        SearchUserInfoButton = new JButton();
+        ViewUserDetailsButton = new JButton();
+        RegistrationPanel = new JPanel();
+        RegistrationRequestTab = new JTabbedPane();
+        jScrollPane10 = new JScrollPane();
+        ManagerRegistrationTable = new JTable();
+        jScrollPane11 = new JScrollPane();
+        StaffRegistrationTable = new JTable();
+        jScrollPane12 = new JScrollPane();
+        ResidentRegistrationTable = new JTable();
+        FilterRegistrationButton = new JButton();
+        SortRegistrationButton = new JButton();
+        SearchRegistrationButton = new JButton();
+        ApproveRegistrationButton = new JButton();
+        RejectRegistrationButton = new JButton();
+        RoomInformationPanel = new JPanel();
+        jScrollPane2 = new JScrollPane();
+        RoomInfoTable = new JTable();
+        UpdateRoomInfoButton = new JButton();
+        UpdateRateButton = new JButton();
+        ViewRoomInfoDetailsButton = new JButton();
+        RoomChangeRequestPanel = new JPanel();
+        jScrollPane3 = new JScrollPane();
+        RoomChangeRequestTable = new JTable();
+        RejectRoomChangeButton = new JButton();
+        ApproveRoomChangeButton = new JButton();
+        ViewRoomChangeDetailsButton = new JButton();
+        PaymentRecordPanel = new JPanel();
+        jScrollPane5 = new JScrollPane();
+        PaymentRecordTable = new JTable();
+        ViewPaymentDetailsButton = new JButton();
+        ProfilePanel = new JPanel();
+        UsernameLabel = new JLabel();
+        PasswordLabel = new JLabel();
+        NameLabel = new JLabel();
+        ContactLabel = new JLabel();
+        EmailLabel = new JLabel();
+        ManagerIDLabel = new JLabel();
+        ManagerIDField = new JTextField();
+        UsernameField = new JTextField();
+        PasswordField = new JPasswordField();
+        NameField = new JTextField();
+        ContactField = new JTextField();
+        EmailField = new JTextField();
+        EditProfileButton = new JButton();
+        LogOutPanel = new JPanel();
+        LogOutButton = new JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        ManagerInfoTable.setModel(new javax.swing.table.DefaultTableModel(
-                new Object [][] {
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null}
-                },
+        ManagerInfoTable.setModel(new DefaultTableModel(
+                toInfoTable(1),
                 new String [] {
                         "ManagerID", "Username", "Name", "Contact Number", "Email Address"
                 }
         ) {
             Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                    String.class, String.class, String.class, String.class, String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -157,19 +158,14 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
         UserInfoTab.addTab("Manager", jScrollPane7);
 
-        StaffInfoTable.setModel(new javax.swing.table.DefaultTableModel(
-                new Object [][] {
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null}
-                },
+        StaffInfoTable.setModel(new DefaultTableModel(
+                toInfoTable(2),
                 new String [] {
                         "Staff ID", "Username", "Name", "Contact Number", "Email Address"
                 }
         ) {
             Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                    String.class, String.class, String.class, String.class, String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -180,19 +176,14 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
         UserInfoTab.addTab("Staff", jScrollPane8);
 
-        ResidentInfoTable.setModel(new javax.swing.table.DefaultTableModel(
-                new Object [][] {
-                        {null, null, null, null, null, null, null, null},
-                        {null, null, null, null, null, null, null, null},
-                        {null, null, null, null, null, null, null, null},
-                        {null, null, null, null, null, null, null, null}
-                },
+        ResidentInfoTable.setModel(new DefaultTableModel(
+                toInfoTable(3),
                 new String [] {
                         "Resident ID", "Username", "Name", "Contact Number", "Email Address", "Gender", "Room Number", "Overdue Amount"
                 }
         ) {
             Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                    String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -207,85 +198,85 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         UserInfoTab.addTab("Resident", jScrollPane9);
 
         AddUserButton.setText("Add User");
-        AddUserButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        AddUserButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 AddUserButtonActionPerformed(evt);
             }
         });
 
         DeleteUserButton.setText("Delete User");
-        DeleteUserButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        DeleteUserButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 DeleteUserButtonActionPerformed(evt);
             }
         });
 
         EditUserButton.setText("Edit User");
-        EditUserButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        EditUserButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 EditUserButtonActionPerformed(evt);
             }
         });
 
         ViewUserDetailsButton.setText("View Details");
-        ViewUserDetailsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        ViewUserDetailsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 ViewUserDetailsButtonActionPerformed(evt);
             }
         });
 
         FilterUserInfoButton.setText("Filter");
-        FilterUserInfoButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        FilterUserInfoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 FilterUserInfoButtonActionPerformed(evt);
             }
         });
 
         SortUserInfoButton.setText("Sort");
-        SortUserInfoButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        SortUserInfoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 SortUserInfoButtonActionPerformed(evt);
             }
         });
 
         SearchUserInfoButton.setText("Search User");
-        SearchUserInfoButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        SearchUserInfoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 SearchUserInfoButtonActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(UserInfoPanel);
+        GroupLayout jPanel4Layout = new GroupLayout(UserInfoPanel);
         UserInfoPanel.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
-                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                                         .addComponent(UserInfoTab)
                                         .addGroup(jPanel4Layout.createSequentialGroup()
                                                 .addComponent(AddUserButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(DeleteUserButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(EditUserButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 247, Short.MAX_VALUE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 247, Short.MAX_VALUE)
                                                 .addComponent(ViewUserDetailsButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(FilterUserInfoButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(SortUserInfoButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(SearchUserInfoButton)))
                                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
-                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(UserInfoTab, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                .addComponent(UserInfoTab, GroupLayout.PREFERRED_SIZE, 378, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                         .addComponent(AddUserButton)
                                         .addComponent(DeleteUserButton)
                                         .addComponent(EditUserButton)
@@ -300,7 +291,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
         RegistrationRequestTab.addTab("Manager", jScrollPane10);
 
-        ManagerRegistrationTable.setModel(new javax.swing.table.DefaultTableModel(
+        ManagerRegistrationTable.setModel(new DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null},
                         {null, null, null, null, null},
@@ -312,7 +303,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 }
         ) {
             Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                    String.class, String.class, String.class, String.class, String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -321,7 +312,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         });
         jScrollPane10.setViewportView(ManagerRegistrationTable);
 
-        StaffRegistrationTable.setModel(new javax.swing.table.DefaultTableModel(
+        StaffRegistrationTable.setModel(new DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null},
                         {null, null, null, null, null},
@@ -333,7 +324,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 }
         ) {
             Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                    String.class, String.class, String.class, String.class, String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -344,7 +335,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
         RegistrationRequestTab.addTab("Staff", jScrollPane11);
 
-        ResidentRegistrationTable.setModel(new javax.swing.table.DefaultTableModel(
+        ResidentRegistrationTable.setModel(new DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null, null, null},
                         {null, null, null, null, null, null, null},
@@ -356,7 +347,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 }
         ) {
             Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                    String.class, String.class, String.class, String.class, String.class, String.class, String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -368,70 +359,70 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         RegistrationRequestTab.addTab("Resident", jScrollPane12);
 
         ApproveRegistrationButton.setText("Approve");
-        ApproveRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        ApproveRegistrationButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 ApproveRegistrationButtonActionPerformed(evt);
             }
         });
 
         RejectRegistrationButton.setText("Reject");
-        RejectRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        RejectRegistrationButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 RejectRegistrationButtonActionPerformed(evt);
             }
         });
 
         FilterRegistrationButton.setText("Filter");
-        FilterRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        FilterRegistrationButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 FilterRegistrationButtonActionPerformed(evt);
             }
         });
 
         SortRegistrationButton.setText("Sort");
-        SortRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        SortRegistrationButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 SortRegistrationActionPerformed(evt);
             }
         });
 
         SearchRegistrationButton.setText("Search User");
-        SearchRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        SearchRegistrationButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 SearchRegistrationButtonActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(RegistrationPanel);
+        GroupLayout jPanel1Layout = new GroupLayout(RegistrationPanel);
         RegistrationPanel.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(RegistrationRequestTab, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(RegistrationRequestTab, GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addComponent(ApproveRegistrationButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(RejectRegistrationButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(FilterRegistrationButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(SortRegistrationButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(SearchRegistrationButton)))
                                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(RegistrationRequestTab, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                .addComponent(RegistrationRequestTab, GroupLayout.PREFERRED_SIZE, 378, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                         .addComponent(SortRegistrationButton)
                                         .addComponent(SearchRegistrationButton)
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                 .addComponent(ApproveRegistrationButton)
                                                 .addComponent(RejectRegistrationButton)
                                                 .addComponent(FilterRegistrationButton)))
@@ -440,7 +431,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
         ManagerMenuTab.addTab("Registration Request", RegistrationPanel);
 
-        RoomInfoTable.setModel(new javax.swing.table.DefaultTableModel(
+        RoomInfoTable.setModel(new DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null},
                         {null, null, null, null},
@@ -452,7 +443,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 }
         ) {
             Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class
+                    String.class, String.class, Integer.class, Double.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -465,50 +456,50 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         }
 
         ViewRoomInfoDetailsButton.setText("View Details");
-        ViewRoomInfoDetailsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        ViewRoomInfoDetailsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 ViewRoomInfoDetailsButtonActionPerformed(evt);
             }
         });
 
         UpdateRateButton.setText("Update Rate");
-        UpdateRateButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        UpdateRateButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 UpdateRateButtonActionPerformed(evt);
             }
         });
 
         UpdateRoomInfoButton.setText("Update Room Information");
-        UpdateRoomInfoButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        UpdateRoomInfoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 UpdateRoomInfoButtonActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout RoomInformationPanelLayout = new javax.swing.GroupLayout(RoomInformationPanel);
+        GroupLayout RoomInformationPanelLayout = new GroupLayout(RoomInformationPanel);
         RoomInformationPanel.setLayout(RoomInformationPanelLayout);
         RoomInformationPanelLayout.setHorizontalGroup(
-                RoomInformationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                RoomInformationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(RoomInformationPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(RoomInformationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RoomInformationPanelLayout.createSequentialGroup()
+                                .addGroup(RoomInformationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
+                                        .addGroup(GroupLayout.Alignment.TRAILING, RoomInformationPanelLayout.createSequentialGroup()
                                                 .addGap(0, 0, Short.MAX_VALUE)
                                                 .addComponent(ViewRoomInfoDetailsButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(UpdateRateButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(UpdateRoomInfoButton)))
                                 .addContainerGap())
         );
         RoomInformationPanelLayout.setVerticalGroup(
-                RoomInformationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                RoomInformationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(RoomInformationPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(RoomInformationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 381, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(RoomInformationPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(UpdateRoomInfoButton)
                                         .addComponent(UpdateRateButton)
                                         .addComponent(ViewRoomInfoDetailsButton))
@@ -517,7 +508,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
         ManagerMenuTab.addTab("Room Information", RoomInformationPanel);
 
-        RoomChangeRequestTable.setModel(new javax.swing.table.DefaultTableModel(
+        RoomChangeRequestTable.setModel(new DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null, null},
                         {null, null, null, null, null, null},
@@ -529,7 +520,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 }
         ) {
             Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                    String.class, String.class, String.class, String.class, String.class, String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -539,51 +530,51 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         jScrollPane3.setViewportView(RoomChangeRequestTable);
 
         ViewRoomChangeDetailsButton.setText("View Details");
-        ViewRoomChangeDetailsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        ViewRoomChangeDetailsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 ViewRoomChangeDetailsButtonActionPerformed(evt);
             }
         });
 
         ApproveRoomChangeButton.setText("Approve");
-        ApproveRoomChangeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        ApproveRoomChangeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 ApproveRoomChangeButtonActionPerformed(evt);
             }
         });
 
         RejectRoomChangeButton.setText("Reject");
-        RejectRoomChangeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        RejectRoomChangeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 RejectRoomChangeButtonActionPerformed(evt);
             }
         });
 
 
-        javax.swing.GroupLayout RoomChangeRequestPanelLayout = new javax.swing.GroupLayout(RoomChangeRequestPanel);
+        GroupLayout RoomChangeRequestPanelLayout = new GroupLayout(RoomChangeRequestPanel);
         RoomChangeRequestPanel.setLayout(RoomChangeRequestPanelLayout);
         RoomChangeRequestPanelLayout.setHorizontalGroup(
-                RoomChangeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                RoomChangeRequestPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(RoomChangeRequestPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(RoomChangeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RoomChangeRequestPanelLayout.createSequentialGroup()
+                                .addGroup(RoomChangeRequestPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane3, GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
+                                        .addGroup(GroupLayout.Alignment.TRAILING, RoomChangeRequestPanelLayout.createSequentialGroup()
                                                 .addGap(0, 0, Short.MAX_VALUE)
                                                 .addComponent(ViewRoomChangeDetailsButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(ApproveRoomChangeButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(RejectRoomChangeButton)))
                                 .addContainerGap())
         );
         RoomChangeRequestPanelLayout.setVerticalGroup(
-                RoomChangeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                RoomChangeRequestPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(RoomChangeRequestPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(RoomChangeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 381, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(RoomChangeRequestPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(RejectRoomChangeButton)
                                         .addComponent(ApproveRoomChangeButton)
                                         .addComponent(ViewRoomChangeDetailsButton))
@@ -592,7 +583,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
         ManagerMenuTab.addTab("Room Change Request", RoomChangeRequestPanel);
 
-        PaymentRecordTable.setModel(new javax.swing.table.DefaultTableModel(
+        PaymentRecordTable.setModel(new DefaultTableModel(
                 new Object [][] {
                         {null, null, null, null, null, null, null},
                         {null, null, null, null, null, null, null},
@@ -604,7 +595,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 }
         ) {
             Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.String.class
+                    String.class, String.class, String.class, String.class, String.class, Double.class, String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -614,31 +605,31 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         jScrollPane5.setViewportView(PaymentRecordTable);
 
         ViewPaymentDetailsButton.setText("View Details");
-        ViewPaymentDetailsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        ViewPaymentDetailsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 ViewPaymentDetailsButtonActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout PaymentRecordPanelLayout = new javax.swing.GroupLayout(PaymentRecordPanel);
+        GroupLayout PaymentRecordPanelLayout = new GroupLayout(PaymentRecordPanel);
         PaymentRecordPanel.setLayout(PaymentRecordPanelLayout);
         PaymentRecordPanelLayout.setHorizontalGroup(
-                PaymentRecordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                PaymentRecordPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(PaymentRecordPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(PaymentRecordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PaymentRecordPanelLayout.createSequentialGroup()
+                                .addGroup(PaymentRecordPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane5, GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
+                                        .addGroup(GroupLayout.Alignment.TRAILING, PaymentRecordPanelLayout.createSequentialGroup()
                                                 .addGap(0, 0, Short.MAX_VALUE)
                                                 .addComponent(ViewPaymentDetailsButton)))
                                 .addContainerGap())
         );
         PaymentRecordPanelLayout.setVerticalGroup(
-                PaymentRecordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                PaymentRecordPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(PaymentRecordPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane5, GroupLayout.PREFERRED_SIZE, 381, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(ViewPaymentDetailsButton)
                                 .addContainerGap(36, Short.MAX_VALUE))
         );
@@ -660,66 +651,66 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
         ManagerIDField.setEditable(false);
         ManagerIDField.setText("M0001");
-        ManagerIDField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        ManagerIDField.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 ManagerIDFieldActionPerformed(evt);
             }
         });
 
         UsernameField.setEditable(false);
         UsernameField.setText("mervin");
-        UsernameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        UsernameField.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 UsernameFieldActionPerformed(evt);
             }
         });
 
         PasswordField.setEditable(false);
         PasswordField.setText("123123");
-        PasswordField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        PasswordField.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 PasswordFieldActionPerformed(evt);
             }
         });
 
         NameField.setEditable(false);
         NameField.setText("Mervin");
-        NameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        NameField.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 NameFieldActionPerformed(evt);
             }
         });
 
         ContactField.setEditable(false);
         ContactField.setText("0123456789");
-        ContactField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        ContactField.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 ContactFieldActionPerformed(evt);
             }
         });
 
         EmailField.setEditable(false);
         EmailField.setText("mervinooi221@gmail.com");
-        EmailField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        EmailField.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 EmailFieldActionPerformed(evt);
             }
         });
 
         EditProfileButton.setText("Edit Profile");
-        EditProfileButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        EditProfileButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 EditProfileButtonActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout ProfilePanelLayout = new javax.swing.GroupLayout(ProfilePanel);
+        GroupLayout ProfilePanelLayout = new GroupLayout(ProfilePanel);
         ProfilePanel.setLayout(ProfilePanelLayout);
         ProfilePanelLayout.setHorizontalGroup(
-                ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ProfilePanelLayout.createSequentialGroup()
+                ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(GroupLayout.Alignment.TRAILING, ProfilePanelLayout.createSequentialGroup()
                                 .addGap(290, 290, 290)
-                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addComponent(EmailLabel)
                                         .addComponent(ManagerIDLabel)
                                         .addComponent(UsernameLabel)
@@ -727,46 +718,46 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                                         .addComponent(ContactLabel)
                                         .addComponent(PasswordLabel))
                                 .addGap(45, 45, 45)
-                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addComponent(ManagerIDField)
                                         .addComponent(UsernameField)
                                         .addComponent(PasswordField)
                                         .addComponent(NameField)
                                         .addComponent(ContactField)
-                                        .addComponent(EmailField, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
+                                        .addComponent(EmailField, GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
                                 .addGap(285, 285, 285))
                         .addGroup(ProfilePanelLayout.createSequentialGroup()
                                 .addGap(400, 400, 400)
                                 .addComponent(EditProfileButton)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         ProfilePanelLayout.setVerticalGroup(
-                ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(ProfilePanelLayout.createSequentialGroup()
                                 .addGap(48, 48, 48)
-                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(ManagerIDLabel)
-                                        .addComponent(ManagerIDField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(ManagerIDField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(UsernameLabel)
-                                        .addComponent(UsernameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(UsernameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(PasswordLabel)
-                                        .addComponent(PasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(PasswordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(NameLabel)
-                                        .addComponent(NameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(NameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(ContactLabel)
-                                        .addComponent(ContactField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(ContactField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(ProfilePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(EmailLabel)
-                                        .addComponent(EmailField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(EmailField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGap(32, 32, 32)
                                 .addComponent(EditProfileButton)
                                 .addContainerGap(103, Short.MAX_VALUE))
@@ -775,23 +766,23 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         ManagerMenuTab.addTab("Profile", ProfilePanel);
 
         LogOutButton.setText("Log Out");
-        LogOutButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        LogOutButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 LogOutButtonActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout LogOutPanelLayout = new javax.swing.GroupLayout(LogOutPanel);
+        GroupLayout LogOutPanelLayout = new GroupLayout(LogOutPanel);
         LogOutPanel.setLayout(LogOutPanelLayout);
         LogOutPanelLayout.setHorizontalGroup(
-                LogOutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                LogOutPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(LogOutPanelLayout.createSequentialGroup()
                                 .addGap(404, 404, 404)
                                 .addComponent(LogOutButton)
                                 .addContainerGap(410, Short.MAX_VALUE))
         );
         LogOutPanelLayout.setVerticalGroup(
-                LogOutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                LogOutPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(LogOutPanelLayout.createSequentialGroup()
                                 .addGap(194, 194, 194)
                                 .addComponent(LogOutButton)
@@ -800,18 +791,18 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
         ManagerMenuTab.addTab("Log Out", LogOutPanel);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(ManagerMenuTab)
                                 .addContainerGap())
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(ManagerMenuTab))
         );
@@ -959,7 +950,11 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ManagerMenuPage().setVisible(true);
+                try {
+                    new ManagerMenuPage().setVisible(true);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }

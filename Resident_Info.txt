@@ -1,1 +1,2 @@
-R01,khong,kcl,nig,0199999999,khong@gmail.com,female,Double Sharing Room,RM300.0
+R01,khong,Kcl1208!,nig,0199999999,khong@gmail.com,female,Double Sharing Room,RM300
+R02,kynax,Justin123!,ng,0128934392,kynax@gmail.com,male,Single Room,RM500

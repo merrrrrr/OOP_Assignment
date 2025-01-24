@@ -21,11 +21,12 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         initComponents();
     }
 
-    public ManagerMenuPage(Manager manager) {
+    public ManagerMenuPage(Manager manager) throws IOException {
         this.manager = manager;
+        initComponents();
     }
 
-    public String[][] toInfoTable(int userType) throws IOException {
+    public String[][] toUserInfoTable(int userType) throws IOException {
         String filename = manager.getInfoFilename(userType);
         BufferedReader br = new BufferedReader(new FileReader(filename));
 
@@ -56,15 +57,88 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             tableInfo[i][4] = parts[5]; // email
 
             if (userType == 3) {
-                tableInfo[i][5] = parts[5]; // gender
-                tableInfo[i][6] = parts[6]; // room number
-                tableInfo[i][7] = parts[7]; // overdue amount
+                tableInfo[i][5] = parts[6]; // gender
+                tableInfo[i][6] = parts[7]; // room number
+                tableInfo[i][7] = parts[8]; // overdue amount
             }
 
             i++;
         }
         return tableInfo;
+    }
 
+    public String[][] toRegistrationTable(int userType) throws IOException {
+        String filename = manager.getRegisterFilename(userType);
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+
+        int lineCount = 0;
+        while (br.readLine() != null) {
+            lineCount++;
+        }
+        br.close();
+
+        String[][] tableInfo = null;
+
+        if (userType == 1 || userType == 2) {
+            tableInfo = new String[lineCount][5];
+        } else if (userType == 3) {
+            tableInfo = new String[lineCount][7];
+        }
+
+        br = new BufferedReader(new FileReader(filename));
+        String line;
+        int i = 0;
+
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            tableInfo[i][0] = parts[1]; // username
+            tableInfo[i][1] = parts[2]; // name
+            tableInfo[i][2] = parts[3]; // phone
+            tableInfo[i][3] = parts[4]; // email
+
+            if (userType == 1 || userType == 2) {
+                tableInfo[i][4] = parts[5]; // request date
+
+            } else if (userType == 3) {
+                tableInfo[i][4] = parts[5]; // Gender
+                tableInfo[i][5] = parts[6]; // Room Type
+                tableInfo[i][6] = parts[7]; // request date
+            }
+        }
+        return tableInfo;
+    }
+
+    public String[][] toRoomInfoTable() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("Room_Info.txt"));
+
+        int lineCount = 0;
+        while (br.readLine() != null) {
+            lineCount++;
+        }
+        br.close();
+
+        String[][] tableInfo = new String[lineCount][4];
+
+        br = new BufferedReader(new FileReader("Room_Info.txt"));
+        String line;
+        int i = 0;
+
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            tableInfo[i][0] = parts[0]; // room number
+            tableInfo[i][1] = parts[1]; // room type
+            tableInfo[i][2] = parts[2]; // room availability
+            if (parts[0].substring(0, 1).equals("S")) {
+                tableInfo[i][3] = "900"; // rate
+            } else if (parts[0].substring(0, 1).equals("D")) {
+                tableInfo[i][3] = "700"; // rate
+            } else if (parts[0].substring(0, 1).equals("T")) {
+                tableInfo[i][3] = "500"; // rate
+            }
+            i++;
+        }
+
+        return tableInfo;
     }
 
     /**
@@ -141,7 +215,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         ManagerInfoTable.setModel(new DefaultTableModel(
-                toInfoTable(1),
+                toUserInfoTable(1),
                 new String [] {
                         "ManagerID", "Username", "Name", "Contact Number", "Email Address"
                 }
@@ -159,7 +233,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         UserInfoTab.addTab("Manager", jScrollPane7);
 
         StaffInfoTable.setModel(new DefaultTableModel(
-                toInfoTable(2),
+                toUserInfoTable(2),
                 new String [] {
                         "Staff ID", "Username", "Name", "Contact Number", "Email Address"
                 }
@@ -177,7 +251,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         UserInfoTab.addTab("Staff", jScrollPane8);
 
         ResidentInfoTable.setModel(new DefaultTableModel(
-                toInfoTable(3),
+                toUserInfoTable(3),
                 new String [] {
                         "Resident ID", "Username", "Name", "Contact Number", "Email Address", "Gender", "Room Number", "Overdue Amount"
                 }
@@ -292,12 +366,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         RegistrationRequestTab.addTab("Manager", jScrollPane10);
 
         ManagerRegistrationTable.setModel(new DefaultTableModel(
-                new Object [][] {
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null}
-                },
+                toRegistrationTable(1),
                 new String [] {
                         "Username", "Name", "Contact Number", "Email Address", "Request Date"
                 }
@@ -313,12 +382,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         jScrollPane10.setViewportView(ManagerRegistrationTable);
 
         StaffRegistrationTable.setModel(new DefaultTableModel(
-                new Object [][] {
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null},
-                        {null, null, null, null, null}
-                },
+                toRegistrationTable(2),
                 new String [] {
                         "Username", "Name", "Contact Number", "Email Address", "Request Date"
                 }
@@ -336,12 +400,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         RegistrationRequestTab.addTab("Staff", jScrollPane11);
 
         ResidentRegistrationTable.setModel(new DefaultTableModel(
-                new Object [][] {
-                        {null, null, null, null, null, null, null},
-                        {null, null, null, null, null, null, null},
-                        {null, null, null, null, null, null, null},
-                        {null, null, null, null, null, null, null}
-                },
+                toRegistrationTable(3),
                 new String [] {
                         "Username", "Name", "Contact Number", "Email Address", "Gender", "Room Type", "Request Date"
                 }

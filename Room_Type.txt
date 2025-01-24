@@ -1,0 +1,3 @@
+Single Room,900
+Double Sharing Room,700
+Triple Sharing Room,400

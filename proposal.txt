@@ -8,14 +8,15 @@ Staff
 To register individual login account
 To update individual login account
 Make payment for resident
-Generate receipt (1. Hostel Name
+**Accept Resident Room Type Change/ check out
+**Generate receipt (1. Hostel Name
                   2. Receipt Number
                   3. Date of Issue
                   5. Resident Name
                   6. Room Number
                   7. Room Type
                   8. Amount Paid
-                  9. Outstanding Amount
+                  9. Overdue Amount
                   10. Staff in charge)
 
 
@@ -24,6 +25,9 @@ To register individual login account
 To update individual login account
 View payment records
 **View receipts
+**View Overdue Amount
+**Request Changing of room type/ check out
+
 
 Assumption:
 1. Password must have at least 8 character, 1 UPPERCASE, 1 lowercase, 1 Special Character
@@ -32,6 +36,7 @@ Assumption:
 4. Every input has validation
 5. New manager can only be approved by old manager/s
 6. Only manager can approve new manager,staff and resident
+7. Every Month first day must pay the rent
 
 Manager_Registration: Username, Password, Name, Contact_Number, Email, Request Datetime
 Staff_Registration: Username, Password, Name, Contact_Number, Email, Request Datetime

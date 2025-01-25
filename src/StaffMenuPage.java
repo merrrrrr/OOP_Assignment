@@ -35,6 +35,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         initComponents();
         populateResidentPaymentTable();
         populateGenerateReceiptTable();
+        setupGenerateReceiptTable();
     }
 
     public StaffMenuPage(Staff staff) {
@@ -42,6 +43,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         initComponents();
         populateResidentPaymentTable();
         populateGenerateReceiptTable();
+        setupGenerateReceiptTable();
     }
 
     /**
@@ -100,7 +102,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
                         {null, null, null, null}
                 },
                 new String [] {
-                        "Username", "Room Type", "Overdue Amount", "Action"
+                        "Resident ID","Username", "Room Number", "Room Type", "Overdue Amount", "Action"
                 }
         ));
         jScrollPane2.setViewportView(ResidentPaymentTable);
@@ -163,7 +165,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
                         {null, null, null, null}
                 },
                 new String [] {
-                        "Resident ID", "Username", "Room Type", "Paid Amount", "Paid Date Time", "Action"
+                        "Receipt ID", "Date of Issue","Resident ID","Resident Name","Room Number","Room Type","Amount Paid","Staff In Charge", "Action"
                 }
         ));
         jScrollPane3.setViewportView(generateReceiptTable);
@@ -525,6 +527,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         }
     }
 
+    //adjust resident payment table's row size and refresh gui
     private void populateResidentPaymentTable() {
         List<String> lines = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
@@ -542,7 +545,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
         for (String line : lines) {
             String[] details = line.split(",");
-            model.addRow(new Object[]{details[1], details[7], details[8], "Make Payment"});
+            model.addRow(new Object[]{details[0], details[1],details[7], details[8],details[9], "Make Payment"});
         }
 
         ResidentPaymentTable.setRowHeight(30); // Set the row height to 30 pixels
@@ -550,6 +553,8 @@ public class StaffMenuPage extends javax.swing.JFrame {
         ResidentPaymentTable.getColumn("Action").setCellEditor(new ButtonEditor(new JCheckBox()));
     }
 
+
+    //adjust generate receipt table's row size and refresh gui
     private void populateGenerateReceiptTable() {
         List<String> lines = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("Receipt.txt"))) {
@@ -567,7 +572,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
         for (String line : lines) {
             String[] details = line.split(",");
-            model.addRow(new Object[]{details[0], details[1], details[2], details[3], details[4], ""});
+            model.addRow(new Object[]{details[0], details[1], details[2], details[3], details[4],details[5],details[6],details[7], "Display"});
         }
     }
 
@@ -583,6 +588,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         }
     }
 
+    //Make Payment Button in Make Payment Table
     class ButtonEditor extends DefaultCellEditor {
         private String label;
         private boolean isPushed;
@@ -598,12 +604,13 @@ public class StaffMenuPage extends javax.swing.JFrame {
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     fireEditingStopped();
-                    String overdueAmount = (String) table.getValueAt(row, 2);
+                    String overdueAmount = (String) table.getValueAt(row, 4); // Assuming overdue amount is in the 5th column (index 4)
+                    String residentName = (String) table.getValueAt(row, 1); // Assuming resident name is in the 2nd column (index 1)
                     if ("RM00.00".equals(overdueAmount)) {
-                        JOptionPane.showMessageDialog(null, table.getValueAt(row, 0) + " has no overdue amount.");
+                        JOptionPane.showMessageDialog(null, residentName + " has no overdue amount.");
                     } else {
                         int response = JOptionPane.showConfirmDialog(null,
-                                "Are you sure to make payment for " + table.getValueAt(row, 0) + "?",
+                                "Are you sure to make payment for " + residentName + "?",
                                 "Confirm Payment",
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.QUESTION_MESSAGE);
@@ -630,10 +637,92 @@ public class StaffMenuPage extends javax.swing.JFrame {
         }
     }
 
+
+
+    class GenerateButtonRenderer extends JButton implements TableCellRenderer {
+        public GenerateButtonRenderer() {
+            setOpaque(true);
+            setText("Display");
+        }
+
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
+            return this;
+        }
+    }
+
+    class GenerateButtonEditor extends DefaultCellEditor {
+        private String label;
+        private boolean isPushed;
+
+        public GenerateButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+        }
+
+        public Component getTableCellEditorComponent(JTable table, Object value,
+                                                     boolean isSelected, int row, int column) {
+            label = "Display";
+            JButton button = new JButton(label);
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    fireEditingStopped();
+                    String receiptID = (String) table.getValueAt(row, 0);
+                    String dateOfIssue = (String) table.getValueAt(row, 1);
+                    String residentName = (String) table.getValueAt(row, 3);
+                    String roomNumber = (String) table.getValueAt(row, 4);
+                    String roomType = (String) table.getValueAt(row, 5);
+                    String amountPaid = (String) table.getValueAt(row, 6);
+                    String staffInCharge = (String) table.getValueAt(row, 7);
+                    JOptionPane.showMessageDialog(null, "Receipt ID: " + receiptID + "\nDate of Issue: " + dateOfIssue +
+                            "\nResident Name: " + residentName + "\nRoom Number: " + roomNumber +
+                            "\nRoom Type: " + roomType + "\nAmount Paid: " + amountPaid +
+                            "\nStaff in Charge: " + staffInCharge);
+                }
+            });
+            return button;
+        }
+
+        public Object getCellEditorValue() {
+            return label;
+        }
+
+        public boolean stopCellEditing() {
+            isPushed = false;
+            return super.stopCellEditing();
+        }
+
+        protected void fireEditingStopped() {
+            super.fireEditingStopped();
+        }
+    }
+
+    //adjust generate receipt table's row size
+    private void setupGenerateReceiptTable() {
+        generateReceiptTable.getColumn("Action").setCellRenderer(new GenerateButtonRenderer());
+        generateReceiptTable.getColumn("Action").setCellEditor(new GenerateButtonEditor(new JCheckBox()));
+
+        TableColumnModel columnModel = generateReceiptTable.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(100); // Receipt ID
+        columnModel.getColumn(1).setPreferredWidth(150); // Date of Issue
+        columnModel.getColumn(2).setPreferredWidth(150); // Resident ID
+        columnModel.getColumn(3).setPreferredWidth(200); // Resident Name
+        columnModel.getColumn(4).setPreferredWidth(150); // Room Number
+        columnModel.getColumn(5).setPreferredWidth(150); // Room Type
+        columnModel.getColumn(6).setPreferredWidth(120); // Amount Paid
+        columnModel.getColumn(7).setPreferredWidth(170); // Staff In Charge
+        columnModel.getColumn(8).setPreferredWidth(150); // Action
+
+        generateReceiptTable.setRowHeight(30); // Set the row height to 30 pixels
+    }
+
+
     private void updateOverdueAmount(int row) {
-        String username = (String) ResidentPaymentTable.getValueAt(row, 0);
-        String roomType = (String) ResidentPaymentTable.getValueAt(row, 1);
-        String amountPaid = (String) ResidentPaymentTable.getValueAt(row, 2);
+        if (staff == null) {
+            System.err.println("Staff is not initialized.");
+            return;
+        }
+
+        String residentID = (String) ResidentPaymentTable.getValueAt(row, 0);
         List<String> lines = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
             String line;
@@ -648,8 +737,8 @@ public class StaffMenuPage extends javax.swing.JFrame {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("Resident_Info.txt"))) {
             for (String line : lines) {
                 String[] details = line.split(",");
-                if (details[1].equalsIgnoreCase(username)) {
-                    details[8] = "RM00.00";
+                if (details[0].equalsIgnoreCase(residentID)) {
+                    details[9] = "RM00.00"; // Assuming the overdue amount is in the 10th column (index 9)
                     line = String.join(",", details);
                 }
                 writer.write(line);
@@ -659,21 +748,33 @@ public class StaffMenuPage extends javax.swing.JFrame {
             System.err.println("Error writing to the file: " + e.getMessage());
         }
 
-        generateReceipt(username, roomType, amountPaid);
+        generateReceipt(row, staff.getUsername());
         populateResidentPaymentTable();
     }
 
-    private void generateReceipt(String username, String roomType, String amountPaid) {
+    // auto generate receipt after clicked make payment button
+    private void generateReceipt(int row, String staffInCharge) {
         String receiptID = generateUniqueReceiptID();
         String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        String receipt = String.join(",", receiptID, username, roomType, amountPaid, dateTime);
+        String residentID = (String) ResidentPaymentTable.getValueAt(row, 0);
+        String residentName = (String) ResidentPaymentTable.getValueAt(row, 1);
+        String roomNumber = (String) ResidentPaymentTable.getValueAt(row, 2);
+        String roomType = (String) ResidentPaymentTable.getValueAt(row, 3);
+        String amountPaid = (String) ResidentPaymentTable.getValueAt(row, 4);
 
+        // Create receipt details
+        String receipt = String.join(",", receiptID, dateTime, residentID, residentName, roomNumber, roomType, amountPaid, staffInCharge);
+
+        // Write receipt details to Receipt.txt
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("Receipt.txt", true))) {
             writer.write(receipt);
             writer.newLine();
         } catch (IOException e) {
             System.err.println("Error writing to the file: " + e.getMessage());
         }
+
+        // Refresh the generateReceiptTable
+        populateGenerateReceiptTable();
     }
 
     private String generateUniqueReceiptID() {

@@ -1,2 +1,2 @@
 RequestID, ResidentID, Current Room Number, Current Room Type, New Room Type, Description
-C1,R0001,mervin,T001,Triple Sharing Room,Single Room,....
+C1,R0001,mervin,T001,Triple Sharing Room,Single Room,no privacy

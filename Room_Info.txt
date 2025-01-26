@@ -1,12 +1,18 @@
-S001,Single Room,1
-S002,Single Room,1
-S003,Single Room,0
-D001,Double Sharing Room,2
-D002,Double Sharing Room,2
-D003,Double Sharing Room,0
-D004,Double Sharing Room,1
-T001,Triple Sharing Room,3
-T002,Triple Sharing Room,3
-T003,Triple Sharing Room,0
-T004,Triple Sharing Room,2
-T005,Triple Sharing Room,1
+FS001,Single Room,1,female
+FS002,Single Room,1,female
+FS003,Single Room,0,female
+MS004,Single Room,0,male
+MS005,Single Room,0,male
+MS006,Single Room,1,male
+FD001,Double Sharing Room,2,female
+FD002,Double Sharing Room,2,female
+FD003,Double Sharing Room,0,female
+MD004,Double Sharing Room,1,male
+MD005,Double Sharing Room,1,male
+MD006,Double Sharing Room,1,male
+FT001,Triple Sharing Room,3,female
+FT002,Triple Sharing Room,3,female
+FT003,Triple Sharing Room,0,female
+MT004,Triple Sharing Room,2,male
+MT005,Triple Sharing Room,1,male
+MT006,Triple Sharing Room,1,male

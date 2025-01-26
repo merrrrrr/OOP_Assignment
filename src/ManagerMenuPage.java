@@ -128,12 +128,13 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             tableInfo[i][0] = parts[0]; // room number
             tableInfo[i][1] = parts[1]; // room type
             tableInfo[i][2] = parts[2]; // room availability
-            if (parts[0].substring(0, 1).equals("S")) {
-                tableInfo[i][3] = "900"; // rate
-            } else if (parts[0].substring(0, 1).equals("D")) {
-                tableInfo[i][3] = "700"; // rate
-            } else if (parts[0].substring(0, 1).equals("T")) {
-                tableInfo[i][3] = "500"; // rate
+
+            if (parts[1].equals("Single Room")) {
+                tableInfo[i][3] = "500.00";
+            } else if (parts[1].equals("Double Sharing Room")) {
+                tableInfo[i][3] = "700.00";
+            } else if (parts[1].equals("Triple Sharing Room")) {
+                tableInfo[i][3] = "900.00";
             }
             i++;
         }
@@ -491,18 +492,13 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         ManagerMenuTab.addTab("Registration Request", RegistrationPanel);
 
         RoomInfoTable.setModel(new DefaultTableModel(
-                new Object [][] {
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null}
-                },
+                toRoomInfoTable(),
                 new String [] {
                         "Room Number", "Room Type", "Room Availability", "Rate"
                 }
         ) {
             Class[] types = new Class [] {
-                    String.class, String.class, Integer.class, Double.class
+                    String.class, String.class, Integer.class, String.class
             };
 
             public Class getColumnClass(int columnIndex) {

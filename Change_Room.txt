@@ -1,2 +1,2 @@
-R03,From single to Double Sharing Room,Approved
-R01,From 222 to Single Room,Disapproved,Disapproved
+RequestID, ResidentID, Current Room Number, Current Room Type, New Room Type, Description
+C1,R0001,mervin,T001,Triple Sharing Room,Single Room,....

@@ -239,7 +239,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
                         {null, null, null, null}
                 },
                 new String [] {
-                        "Title 1", "Title 2", "Title 3", "Title 4"
+                        "Request ID", "Resident ID", "Current Room Number", "Current Room Type", "New Room Type", "Description"
                 }
         ));
         jScrollPane1.setViewportView(ManageRoomChangeTable);
@@ -315,6 +315,11 @@ public class StaffMenuPage extends javax.swing.JFrame {
         });
 
         editProfileButton.setText("Edit Profile");
+        editProfileButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editProfileButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -466,6 +471,66 @@ public class StaffMenuPage extends javax.swing.JFrame {
     private void confirmButtonGRActionPerformed(java.awt.event.ActionEvent evt) {
         // Get user input from the search box
         filterGenerateReceiptTable();
+    }
+
+    // Method to handle the edit profile button action
+    private void editProfileButtonActionPerformed(ActionEvent evt) {
+        String newUsername = editUsernameBox.getText().trim();
+        String newPassword = editPasswordBox.getText().trim();
+        String newName = editNameBox.getText().trim();
+        String newContactNumber = editContactNumberBox.getText().trim();
+        String newEmailAddress = editEmailAddressBox.getText().trim();
+
+        updateStaffInfo(newUsername, newPassword, newName, newContactNumber, newEmailAddress);
+    }
+
+    // Method to update the staff information in the Staff_Info.txt file
+    private void updateStaffInfo(String newUsername, String newPassword, String newName, String newContactNumber, String newEmailAddress) {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("Staff_Info.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+            return;
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Staff_Info.txt"))) {
+            for (String line : lines) {
+                String[] details = line.split(",");
+                if (details[1].equalsIgnoreCase(staff.getUsername())) {
+                    if (!newUsername.isEmpty()) {
+                        details[1] = newUsername;
+                        staff.setUsername(newUsername);
+                    }
+                    if (!newPassword.isEmpty()) {
+                        details[2] = newPassword;
+                        staff.setPassword(newPassword);
+                    }
+                    if (!newName.isEmpty()) {
+                        details[3] = newName;
+                        staff.setName(newName);
+                    }
+                    if (!newContactNumber.isEmpty()) {
+                        details[4] = newContactNumber;
+                        staff.setContactNumber(newContactNumber);
+                    }
+                    if (!newEmailAddress.isEmpty()) {
+                        details[5] = newEmailAddress;
+                        staff.setEmail(newEmailAddress);
+                    }
+                    line = String.join(",", details);
+                }
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing to the file: " + e.getMessage());
+        }
+
+        JOptionPane.showMessageDialog(this, "Profile updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void filterGenerateReceiptTable() {

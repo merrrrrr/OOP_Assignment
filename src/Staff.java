@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class Staff extends User {
     private String username;
     private String password;
+
     private boolean isLoggedIn = false;
     private Scanner sc = new Scanner(System.in);
 

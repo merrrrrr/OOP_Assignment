@@ -1,2 +1,1 @@
-REC0001,khong,Double Sharing Room,RM700.00,2025-01-24 22:00:24
-REC0002,kynax,Single Room,RM900.00,2025-01-24 22:15:16
+REC0001,2025-01-26 01:14:56,R02,kynax,S001,Single Room,RM800.00,jun

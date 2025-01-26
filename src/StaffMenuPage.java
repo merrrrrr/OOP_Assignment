@@ -14,14 +14,30 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Component;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableColumnModel;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+
 
 
 public class StaffMenuPage extends javax.swing.JFrame {
@@ -35,6 +51,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         initComponents();
         populateResidentPaymentTable();
         populateGenerateReceiptTable();
+        populateRoomChangeData();
         setupGenerateReceiptTable();
     }
 
@@ -43,6 +60,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         initComponents();
         populateResidentPaymentTable();
         populateGenerateReceiptTable();
+        populateRoomChangeData();
         setupGenerateReceiptTable();
     }
 
@@ -70,8 +88,6 @@ public class StaffMenuPage extends javax.swing.JFrame {
         confirmButtonGR = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         roomChangeRequestTextBox = new javax.swing.JTextField();
-        approveRadioButton = new javax.swing.JRadioButton();
-        RejectRadioButton = new javax.swing.JRadioButton();
         confirmButtonRC = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         ManageRoomChangeTable = new javax.swing.JTable();
@@ -180,6 +196,11 @@ public class StaffMenuPage extends javax.swing.JFrame {
         });
 
         confirmButtonGR.setText("Confirm");
+        confirmButtonGR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                confirmButtonGRActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -215,21 +236,12 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
         StaffTab.addTab("Generate Receipt", jPanel4);
 
-        approveRadioButton.setText("Approve");
-        approveRadioButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                approveRadioButtonActionPerformed(evt);
-            }
-        });
-
-        RejectRadioButton.setText("Reject");
-        RejectRadioButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RejectRadioButtonActionPerformed(evt);
-            }
-        });
-
         confirmButtonRC.setText("Confirm");
+        confirmButtonRC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                confirmButtonRCActionPerformed(evt);
+            }
+        });
 
         ManageRoomChangeTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
@@ -239,13 +251,19 @@ public class StaffMenuPage extends javax.swing.JFrame {
                         {null, null, null, null}
                 },
                 new String [] {
-                        "Request ID", "Resident ID", "Current Room Number", "Current Room Type", "New Room Type", "Description"
+                        "Request ID", "Resident ID", "Resident Name", "gender", "Current Room Number", "Current Room Type", "New Room Type", "Description","Action","Status"
                 }
         ));
         jScrollPane1.setViewportView(ManageRoomChangeTable);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("Enter the number of the request to approve/disapprove: ");
+
+        roomChangeRequestTextBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterManageRoomChangeTable();
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -263,10 +281,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
                                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(roomChangeRequestTextBox)
                                                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addComponent(RejectRadioButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(approveRadioButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(confirmButtonRC))
+                                                                .addComponent(confirmButtonRC)
                                                                 .addGap(0, 190, Short.MAX_VALUE)))))
                                 .addContainerGap())
         );
@@ -277,10 +292,6 @@ public class StaffMenuPage extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(jLabel1)
                                         .addComponent(roomChangeRequestTextBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(approveRadioButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(RejectRadioButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(confirmButtonRC)
                                 .addGap(18, 18, 18)
@@ -432,9 +443,6 @@ public class StaffMenuPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
-    private void approveRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
 
     private void GenerateReceiptSearchBoxActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
@@ -448,13 +456,29 @@ public class StaffMenuPage extends javax.swing.JFrame {
     }
 
 
+    private void populateRoomChangeData() {
+        DefaultTableModel model = (DefaultTableModel) ManageRoomChangeTable.getModel();
+        model.setRowCount(0); // Clear existing rows
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Change_Room.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                model.addRow(new Object[]{details[0], details[1], details[2], details[3], details[4], details[5], details[6], details[7], "", details[8]});
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+        }
+
+        ManageRoomChangeTable.setRowHeight(60); // Set the row height to 30 pixels
+        ManageRoomChangeTable.getColumn("Action").setCellRenderer(new ActionButtonRenderer());
+        ManageRoomChangeTable.getColumn("Action").setCellEditor(new ActionButtonEditor(new JCheckBox()));
+    }
+
     private void editEmailAddressBoxActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
-    private void RejectRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
 
     private void logOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
@@ -471,6 +495,10 @@ public class StaffMenuPage extends javax.swing.JFrame {
     private void confirmButtonGRActionPerformed(java.awt.event.ActionEvent evt) {
         // Get user input from the search box
         filterGenerateReceiptTable();
+    }
+
+    private void confirmButtonRCActionPerformed(java.awt.event.ActionEvent evt) {
+        filterManageRoomChangeTable();
     }
 
     // Method to handle the edit profile button action
@@ -551,6 +579,19 @@ public class StaffMenuPage extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) ResidentPaymentTable.getModel();
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
         ResidentPaymentTable.setRowSorter(sorter);
+
+        if (searchTerm.isEmpty()) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + searchTerm));
+        }
+    }
+
+    private void filterManageRoomChangeTable() {
+        String searchTerm = roomChangeRequestTextBox.getText().trim().toLowerCase();
+        DefaultTableModel model = (DefaultTableModel) ManageRoomChangeTable.getModel();
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+        ManageRoomChangeTable.setRowSorter(sorter);
 
         if (searchTerm.isEmpty()) {
             sorter.setRowFilter(null);
@@ -650,6 +691,98 @@ public class StaffMenuPage extends javax.swing.JFrame {
                                                        boolean isSelected, boolean hasFocus, int row, int column) {
             setText((value == null) ? "Make Payment" : value.toString());
             return this;
+        }
+    }
+
+    // Custom cell renderer for the "Action" column
+    class ActionButtonRenderer extends JPanel implements TableCellRenderer {
+        private JButton approveButton;
+        private JButton rejectButton;
+        private JLabel completedLabel;
+
+        public ActionButtonRenderer() {
+            setOpaque(true);
+            setLayout(new java.awt.GridLayout(1, 2));
+            approveButton = new JButton("Approve");
+            rejectButton = new JButton("Reject");
+            completedLabel = new JLabel("Completed", SwingConstants.CENTER);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            String status = (String) table.getValueAt(row, 9); // Assuming status is in the 10th column (index 9)
+            removeAll();
+            if ("approved".equalsIgnoreCase(status) || "rejected".equalsIgnoreCase(status)) {
+                add(completedLabel);
+            } else {
+                add(approveButton);
+                add(rejectButton);
+            }
+            return this;
+        }
+    }
+
+    // Custom cell editor for the "Action" column
+    class ActionButtonEditor extends DefaultCellEditor {
+        private JPanel panel;
+        private JButton approveButton;
+        private JButton rejectButton;
+        private JLabel completedLabel;
+        private int currentRow;
+
+        public ActionButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+            panel = new JPanel(new java.awt.GridLayout(1, 2));
+            approveButton = new JButton("Approve");
+            rejectButton = new JButton("Reject");
+            completedLabel = new JLabel("Completed", SwingConstants.CENTER);
+            panel.add(approveButton);
+            panel.add(rejectButton);
+
+            approveButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    fireEditingStopped();
+                    handleApproveButtonClick(currentRow);
+                }
+            });
+
+            rejectButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    fireEditingStopped();
+                    handleRejectButtonClick(currentRow);
+                }
+            });
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            currentRow = row;
+            String status = (String) table.getValueAt(row, 9); // Assuming status is in the 10th column (index 9)
+            panel.removeAll();
+            if ("approved".equalsIgnoreCase(status) || "rejected".equalsIgnoreCase(status)) {
+                panel.add(completedLabel);
+            } else {
+                panel.add(approveButton);
+                panel.add(rejectButton);
+            }
+            return panel;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "";
+        }
+
+        @Override
+        public boolean stopCellEditing() {
+            return super.stopCellEditing();
+        }
+
+        @Override
+        protected void fireEditingStopped() {
+            super.fireEditingStopped();
         }
     }
 
@@ -763,8 +896,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
     //adjust generate receipt table's row size
     private void setupGenerateReceiptTable() {
-        generateReceiptTable.getColumn("Action").setCellRenderer(new GenerateButtonRenderer());
-        generateReceiptTable.getColumn("Action").setCellEditor(new GenerateButtonEditor(new JCheckBox()));
+
 
         TableColumnModel columnModel = generateReceiptTable.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(100); // Receipt ID
@@ -778,6 +910,8 @@ public class StaffMenuPage extends javax.swing.JFrame {
         columnModel.getColumn(8).setPreferredWidth(150); // Action
 
         generateReceiptTable.setRowHeight(30); // Set the row height to 30 pixels
+        generateReceiptTable.getColumn("Action").setCellRenderer(new GenerateButtonRenderer());
+        generateReceiptTable.getColumn("Action").setCellEditor(new GenerateButtonEditor(new JCheckBox()));
     }
 
 
@@ -863,6 +997,142 @@ public class StaffMenuPage extends javax.swing.JFrame {
         }
         return "REC" + String.format("%04d", maxID + 1);
     }
+
+    // Method to handle the "Approve" button click
+    private void handleApproveButtonClick(int row) {
+        String residentID = (String) ManageRoomChangeTable.getValueAt(row, 1);
+        String residentName = (String) ManageRoomChangeTable.getValueAt(row, 2);
+        String gender = (String) ManageRoomChangeTable.getValueAt(row, 3);
+        String oldRoomNumber = (String) ManageRoomChangeTable.getValueAt(row, 4);
+        String newRoomType = (String) ManageRoomChangeTable.getValueAt(row, 6);
+
+        List<String> availableRooms = getAvailableRooms(newRoomType, gender);
+        if (availableRooms.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No available rooms for the selected type and gender.");
+            return;
+        }
+
+        String selectedRoom = (String) JOptionPane.showInputDialog(this, "Select a room:", "Available Rooms",
+                JOptionPane.QUESTION_MESSAGE, null, availableRooms.toArray(), availableRooms.get(0));
+
+        if (selectedRoom != null) {
+            updateChangeRoomStatus(row, "approved");
+            updateRoomInfo(oldRoomNumber, selectedRoom);
+            populateRoomChangeData(); // Repopulate the table
+        }
+    }
+
+    // Method to handle the "Reject" button click
+    private void handleRejectButtonClick(int row) {
+        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to reject this request?", "Confirm Rejection", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (response == JOptionPane.YES_OPTION) {
+            updateChangeRoomStatus(row, "rejected");
+            populateRoomChangeData(); // Repopulate the table
+        }
+    }
+
+    // Method to get available rooms based on room type and gender
+    private List<String> getAvailableRooms(String roomType, String gender) {
+        List<String> availableRooms = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("Room_Info.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                String roomNumber = details[0];
+                String type = details[1];
+                int totalResidents = Integer.parseInt(details[2]);
+                String roomGender = details[3];
+
+                if (type.equalsIgnoreCase(roomType) && roomGender.equalsIgnoreCase(gender)) {
+                    if ((type.equalsIgnoreCase("Single Room") && totalResidents == 0) ||
+                            (type.equalsIgnoreCase("Double Sharing Room") && totalResidents < 2) ||
+                            (type.equalsIgnoreCase("Triple Sharing Room") && totalResidents < 3)) {
+                        availableRooms.add(roomNumber);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+        }
+        return availableRooms;
+    }
+
+    // Method to update the status in Change_Room.txt
+    private void updateChangeRoomStatus(int row, String status) {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("Change_Room.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+            return;
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Change_Room.txt"))) {
+            for (int i = 0; i < lines.size(); i++) {
+                String[] details = lines.get(i).split(",");
+                if (i == row) {
+                    if (details.length >= 9) {
+                        details[8] = status;
+                    } else {
+                        // Ensure the array has at least 9 elements
+                        String[] newDetails = new String[9];
+                        System.arraycopy(details, 0, newDetails, 0, details.length);
+                        newDetails[8] = status;
+                        details = new String[9];
+                        System.arraycopy(newDetails, 0, details, 0, 9);
+                    }
+                    lines.set(i, String.join(",", details).replaceAll(",null", ""));
+                }
+                writer.write(lines.get(i));
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing to the file: " + e.getMessage());
+        }
+
+        // Update the table model to reflect the new status
+        DefaultTableModel model = (DefaultTableModel) ManageRoomChangeTable.getModel();
+        model.setValueAt(status, row, 8); // Assuming status is in the 9th column (index 8)
+        populateRoomChangeData(); // Repopulate the table
+    }
+
+    // Method to update the room info in Room_Info.txt
+    private void updateRoomInfo(String oldRoomNumber, String newRoomNumber) {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("Room_Info.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+            return;
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Room_Info.txt"))) {
+            for (String line : lines) {
+                String[] details = line.split(",");
+                if (details[0].equalsIgnoreCase(newRoomNumber)) {
+                    int totalResidents = Integer.parseInt(details[2]);
+                    details[2] = String.valueOf(totalResidents + 1);
+                    line = String.join(",", details);
+                } else if (details[0].equalsIgnoreCase(oldRoomNumber)) {
+                    int totalResidents = Integer.parseInt(details[2]);
+                    details[2] = String.valueOf(totalResidents - 1);
+                    line = String.join(",", details);
+                }
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing to the file: " + e.getMessage());
+        }
+    }
+
+
 
     /**
      * @param args the command line arguments

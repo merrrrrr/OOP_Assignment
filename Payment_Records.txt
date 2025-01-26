@@ -1,1 +1,1 @@
-PaymentID, ResidentID, Resident Name, Room Number, Amount, Datetime
+PaymentID, ResidentID, Resident Name, Room Number, Room Type, Amount, Datetime

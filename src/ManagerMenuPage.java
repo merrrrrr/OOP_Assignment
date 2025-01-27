@@ -2,10 +2,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.StringJoiner;
 
 /**
  *
@@ -105,6 +103,8 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 tableInfo[i][5] = parts[6]; // Room Type
                 tableInfo[i][6] = parts[7]; // request date
             }
+
+            i++;
         }
         return tableInfo;
     }
@@ -169,6 +169,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             tableInfo[i][6] = parts[6]; // new room type
             tableInfo[i][7] = parts[7]; // description
             tableInfo[i][8] = parts[8]; // status
+            i++;
         }
 
         return tableInfo;
@@ -199,12 +200,40 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             tableInfo[i][4] = parts[4]; // room type
             tableInfo[i][5] = parts[5]; // amount
             tableInfo[i][6] = parts[6]; // datetime
-
+            i++;
         }
-
 
         return tableInfo;
     }
+
+    public void updateUserInfoTable(int userType) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(manager.getInfoFilename(userType)));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(manager.getInfoFilename(userType)));
+        StringJoiner sj = new StringJoiner(",");
+        DefaultTableModel model = null;
+
+        if (userType == 1) {
+            model = (DefaultTableModel) ManagerInfoTable.getModel();
+
+        } else if (userType == 2) {
+            model = (DefaultTableModel) StaffInfoTable.getModel();
+
+        } else if (userType == 3) {
+            model = (DefaultTableModel) ResidentInfoTable.getModel();
+        }
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                sj.add(model.getValueAt(i, j).toString());
+            }
+            bw.write(sj.toString());
+            bw.newLine();
+        }
+
+
+
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -515,7 +544,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         SortRegistrationButton.setText("Sort");
         SortRegistrationButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                SortRegistrationActionPerformed(evt);
+                SortRegistrationButtonActionPerformed(evt);
             }
         });
 
@@ -612,7 +641,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         FilterRoomDetailsButton.setText("Filter");
         FilterRoomDetailsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                FilterRoomDetailsButtonActionPerformed(evt);
+                FilterRoomInfoButtonActionPerformed(evt);
             }
         });
 
@@ -1023,11 +1052,46 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
     private void AddUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+        int tab = UserInfoTab.getSelectedIndex();
+
+        if (tab == 1) {
+            ManagerAddStaffPage addStaffPage = new ManagerAddStaffPage();
+            addStaffPage.setVisible(true);
+        } else if (tab == 2) {
+            ManagerAddResidentPage addResidentPage = new ManagerAddResidentPage();
+            addResidentPage.setVisible(true);
+        } else if (tab == 0) {
+            ManagerAddManagerPage addManagerPage = new ManagerAddManagerPage();
+            addManagerPage.setVisible(true);
+        }
 
     }
 
     private void DeleteUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+        int deleteUser = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this user?", "Delete User", JOptionPane.YES_NO_OPTION);
+
+        if (deleteUser == JOptionPane.YES_OPTION) {
+            int tab = UserInfoTab.getSelectedIndex();
+            DefaultTableModel model = null;
+            int row = 0;
+
+            if (tab == 1) {
+                model = (DefaultTableModel) StaffInfoTable.getModel();
+                row = StaffInfoTable.getSelectedRow();
+
+
+            } else if (tab == 2) {
+                model = (DefaultTableModel) ResidentInfoTable.getModel();
+                row = ResidentInfoTable.getSelectedRow();
+
+            } else if (tab == 0) {
+                model = (DefaultTableModel) ManagerInfoTable.getModel();
+                row = ManagerInfoTable.getSelectedRow();
+            }
+            model.removeRow(row);
+        }
+
     }
 
     private void EditUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1062,15 +1126,11 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }
 
-    private void SortRegistrationActionPerformed(java.awt.event.ActionEvent evt) {
+    private void SortRegistrationButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
     private void SearchRegistrationButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void ViewRoomInfoDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
@@ -1079,6 +1139,22 @@ public class ManagerMenuPage extends javax.swing.JFrame {
     }
 
     private void UpdateRoomInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void ViewRoomInfoDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void FilterRoomInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SortRoomDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SearchRoomInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
@@ -1094,7 +1170,31 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }
 
+    private void FilterRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SortRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SearchRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
     private void ViewPaymentDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void FilterPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SortPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SearchPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 
@@ -1124,45 +1224,14 @@ public class ManagerMenuPage extends javax.swing.JFrame {
 
     private void EditProfileButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+        UsernameField.isEditable();
+        PasswordField.isEditable();
+        NameField.isEditable();
+        ContactField.isEditable();
+        EmailField.isEditable();
     }
 
     private void LogOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void SearchRoomInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void FilterRoomDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void SortRoomDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void FilterRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void SortRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void SearchRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void FilterPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void SortPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void SearchPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
 

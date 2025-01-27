@@ -14,11 +14,18 @@ import java.io.*;
  */
 public class ResidentMenuPage extends javax.swing.JFrame {
 
+    private Resident resident;
+
     /**
      * Creates new form ResidentMenuPage
      */
     public ResidentMenuPage() {
         initComponents();
+    }
+
+    public ResidentMenuPage(Resident resident) {
+        initComponents();
+        this.resident = resident;
     }
 
     /**

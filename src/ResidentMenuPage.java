@@ -4,6 +4,10 @@
  */
 
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+
 /**
  *
  * @author Yong Jun
@@ -83,6 +87,12 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         jLabel3.setText("Enter Change Reason : ");
 
         submitButton.setText("Submit");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                handleSubmitButtonClick();
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("Change Room Type Request");
@@ -354,6 +364,74 @@ public class ResidentMenuPage extends javax.swing.JFrame {
 
     private void editResidentProfileButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+    }
+
+    private void handleSubmitButtonClick() {
+        String newRoomType = (String) roomTypeDropdownMenu.getSelectedItem();
+        if ("Select Room Type...".equals(newRoomType)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "No room type selected. Please select a valid room type.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String changeReason = changeReasonTextBox.getText().trim();
+        if (changeReason.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please enter a change reason.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String residentID = "R0001"; // Replace with the actual logged-in resident ID
+        String residentUsername = "";
+        String residentGender = "";
+        String currentRoomNumber = "";
+        String currentRoomType = "";
+
+        // Read resident information from Resident_Info.txt
+        try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                if (details[0].equals(residentID)) {
+                    residentUsername = details[1];
+                    residentGender = details[6];
+                    currentRoomNumber = details[7];
+                    currentRoomType = details[8];
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading Resident_Info.txt: " + e.getMessage());
+            return;
+        }
+
+        // Generate a unique request ID
+        String requestID = generateUniqueRequestID();
+
+        // Add the new request to Change_Room.txt
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Change_Room.txt", true))) {
+            writer.write(String.join(",", requestID, residentID, residentUsername, residentGender, currentRoomNumber, currentRoomType, newRoomType, changeReason, "pending"));
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.println("Error writing to Change_Room.txt: " + e.getMessage());
+            return;
+        }
+
+        // Show a popup message indicating the request has been submitted
+        javax.swing.JOptionPane.showMessageDialog(this, "Room change request submitted successfully.", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private String generateUniqueRequestID() {
+        String lastID = "C000";
+        try (BufferedReader reader = new BufferedReader(new FileReader("Change_Room.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                lastID = details[0];
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading Change_Room.txt: " + e.getMessage());
+        }
+        int idNumber = Integer.parseInt(lastID.substring(1)) + 1;
+        return String.format("C%03d", idNumber);
     }
 
     /**

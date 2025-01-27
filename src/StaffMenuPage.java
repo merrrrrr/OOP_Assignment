@@ -470,7 +470,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
             System.err.println("Error reading the file: " + e.getMessage());
         }
 
-        ManageRoomChangeTable.setRowHeight(60); // Set the row height to 30 pixels
+        ManageRoomChangeTable.setRowHeight(60); // Set the row height to 60 pixels
         ManageRoomChangeTable.getColumn("Action").setCellRenderer(new ActionButtonRenderer());
         ManageRoomChangeTable.getColumn("Action").setCellEditor(new ActionButtonEditor(new JCheckBox()));
     }
@@ -1003,10 +1003,11 @@ public class StaffMenuPage extends javax.swing.JFrame {
         String residentID = (String) ManageRoomChangeTable.getValueAt(row, 1);
         String residentName = (String) ManageRoomChangeTable.getValueAt(row, 2);
         String gender = (String) ManageRoomChangeTable.getValueAt(row, 3);
-        String oldRoomNumber = (String) ManageRoomChangeTable.getValueAt(row, 4);
-        String newRoomType = (String) ManageRoomChangeTable.getValueAt(row, 6);
+        String currentRoomNumber = (String) ManageRoomChangeTable.getValueAt(row, 4); // Assuming current room is in the 5th column (index 4)
+        String newRoomNumber = (String) ManageRoomChangeTable.getValueAt(row, 6); // Assuming new room is in the 7th column (index 6)
 
-        List<String> availableRooms = getAvailableRooms(newRoomType, gender);
+
+        List<String> availableRooms = getAvailableRooms(newRoomNumber, gender);
         if (availableRooms.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No available rooms for the selected type and gender.");
             return;
@@ -1016,9 +1017,9 @@ public class StaffMenuPage extends javax.swing.JFrame {
                 JOptionPane.QUESTION_MESSAGE, null, availableRooms.toArray(), availableRooms.get(0));
 
         if (selectedRoom != null) {
+            updateRoomInfo(currentRoomNumber, selectedRoom);
             updateChangeRoomStatus(row, "approved");
-            updateRoomInfo(oldRoomNumber, selectedRoom);
-            populateRoomChangeData(); // Repopulate the table
+            populateRoomChangeData();
         }
     }
 
@@ -1040,13 +1041,16 @@ public class StaffMenuPage extends javax.swing.JFrame {
                 String[] details = line.split(",");
                 String roomNumber = details[0];
                 String type = details[1];
-                int totalResidents = Integer.parseInt(details[2]);
+                int availability = Integer.parseInt(details[2]);
                 String roomGender = details[3];
 
                 if (type.equalsIgnoreCase(roomType) && roomGender.equalsIgnoreCase(gender)) {
-                    if ((type.equalsIgnoreCase("Single Room") && totalResidents == 0) ||
-                            (type.equalsIgnoreCase("Double Sharing Room") && totalResidents < 2) ||
-                            (type.equalsIgnoreCase("Triple Sharing Room") && totalResidents < 3)) {
+                    if ((roomNumber.startsWith("FS") && availability == 1) ||
+                            (roomNumber.startsWith("MS") && availability == 1) ||
+                            (roomNumber.startsWith("FD") && (availability == 1 || availability == 2)) ||
+                            (roomNumber.startsWith("MD") && (availability == 1 || availability == 2)) ||
+                            (roomNumber.startsWith("FT") && (availability == 1 || availability == 2 || availability == 3)) ||
+                            (roomNumber.startsWith("MT") && (availability == 1 || availability == 2 || availability == 3))) {
                         availableRooms.add(roomNumber);
                     }
                 }
@@ -1102,7 +1106,8 @@ public class StaffMenuPage extends javax.swing.JFrame {
     // Method to update the room info in Room_Info.txt
     private void updateRoomInfo(String oldRoomNumber, String newRoomNumber) {
         List<String> lines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("Room_Info.txt"))) {
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("room_info.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 lines.add(line);
@@ -1112,18 +1117,20 @@ public class StaffMenuPage extends javax.swing.JFrame {
             return;
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Room_Info.txt"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("room_info.txt"))) {
             for (String line : lines) {
                 String[] details = line.split(",");
-                if (details[0].equalsIgnoreCase(newRoomNumber)) {
-                    int totalResidents = Integer.parseInt(details[2]);
-                    details[2] = String.valueOf(totalResidents + 1);
+
+                if (details[0].equalsIgnoreCase(oldRoomNumber)) {
+                    int availability = Integer.parseInt(details[2]);
+                    details[2] = String.valueOf(availability + 1); // Increase availability
                     line = String.join(",", details);
-                } else if (details[0].equalsIgnoreCase(oldRoomNumber)) {
-                    int totalResidents = Integer.parseInt(details[2]);
-                    details[2] = String.valueOf(totalResidents - 1);
+                } else if (details[0].equalsIgnoreCase(newRoomNumber)) {
+                    int availability = Integer.parseInt(details[2]);
+                    details[2] = String.valueOf(availability - 1); // Decrease availability
                     line = String.join(",", details);
                 }
+
                 writer.write(line);
                 writer.newLine();
             }
@@ -1131,6 +1138,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
             System.err.println("Error writing to the file: " + e.getMessage());
         }
     }
+
 
 
 

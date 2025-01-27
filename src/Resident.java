@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Resident extends User {
+    private String roomType;
     private String gender;
     private String roomNo;
     private String username;
@@ -31,9 +32,10 @@ public class Resident extends User {
         }
     }
 
-    public Resident(String id, String username, String password, String name, String contactNumber, String email, String gender, String roomNo, double overdueAmount) {
+    public Resident(String id, String username, String password, String name, String contactNumber, String email, String gender, String roomType, String roomNo, double overdueAmount) {
         super(id, username, password, name, contactNumber, email);
         this.gender = gender;
+        this.roomType = roomType;
         this.roomNo = roomNo;
         this.overdueAmount = overdueAmount;
     }
@@ -44,6 +46,14 @@ public class Resident extends User {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(String roomType) {
+        this.roomType = roomType;
     }
 
     public String getRoomNo() {

@@ -463,8 +463,15 @@ public class StaffMenuPage extends javax.swing.JFrame {
         try (BufferedReader reader = new BufferedReader(new FileReader("Change_Room.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    continue; // Skip empty lines
+                }
                 String[] details = line.split(",");
-                model.addRow(new Object[]{details[0], details[1], details[2], details[3], details[4], details[5], details[6], details[7], "", details[8]});
+                if (details.length >= 9) { // Ensure there are at least 9 elements
+                    model.addRow(new Object[]{details[0], details[1], details[2], details[3], details[4], details[5], details[6], details[7], "", details[8]});
+                } else {
+                    System.err.println("Invalid line format: " + line);
+                }
             }
         } catch (IOException e) {
             System.err.println("Error reading the file: " + e.getMessage());
@@ -481,12 +488,13 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
 
     private void logOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-        MainPage mp = new MainPage();
-        mp.setVisible(true);
-        this.dispose();
+        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to log out?", "Confirm Log Out", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (response == JOptionPane.YES_OPTION) {
+            MainPage mp = new MainPage();
+            mp.setVisible(true);
+            this.dispose();
+        }
     }
-
     private void confirmButtonMPActionPerformed(java.awt.event.ActionEvent evt) {
         // Get user input from the search box
         filterResidentPaymentTable();

@@ -440,6 +440,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         int idNumber = Integer.parseInt(lastID.substring(1)) + 1;
         return String.format("C%03d", idNumber);
     }
+    
 
     /**
      * @param args the command line arguments

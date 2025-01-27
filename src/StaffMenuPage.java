@@ -1003,11 +1003,10 @@ public class StaffMenuPage extends javax.swing.JFrame {
         String residentID = (String) ManageRoomChangeTable.getValueAt(row, 1);
         String residentName = (String) ManageRoomChangeTable.getValueAt(row, 2);
         String gender = (String) ManageRoomChangeTable.getValueAt(row, 3);
-        String currentRoomNumber = (String) ManageRoomChangeTable.getValueAt(row, 4); // Assuming current room is in the 5th column (index 4)
-        String newRoomNumber = (String) ManageRoomChangeTable.getValueAt(row, 6); // Assuming new room is in the 7th column (index 6)
+        String currentRoomNumber = (String) ManageRoomChangeTable.getValueAt(row, 4);
+        String newRoomType = (String) ManageRoomChangeTable.getValueAt(row, 6);
 
-
-        List<String> availableRooms = getAvailableRooms(newRoomNumber, gender);
+        List<String> availableRooms = getAvailableRooms(newRoomType, gender);
         if (availableRooms.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No available rooms for the selected type and gender.");
             return;
@@ -1019,7 +1018,37 @@ public class StaffMenuPage extends javax.swing.JFrame {
         if (selectedRoom != null) {
             updateRoomInfo(currentRoomNumber, selectedRoom);
             updateChangeRoomStatus(row, "approved");
+            updateResidentInfo(residentID, selectedRoom, newRoomType);
             populateRoomChangeData();
+        }
+    }
+
+    // Method to update the resident info in Resident_Info.txt
+    private void updateResidentInfo(String residentID, String newRoomNumber, String newRoomType) {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+            return;
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Resident_Info.txt"))) {
+            for (String line : lines) {
+                String[] details = line.split(",");
+                if (details[0].equalsIgnoreCase(residentID)) {
+                    details[7] = newRoomNumber; // Update room number
+                    details[8] = newRoomType;   // Update room type
+                    line = String.join(",", details);
+                }
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing to the file: " + e.getMessage());
         }
     }
 

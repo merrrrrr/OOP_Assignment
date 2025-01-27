@@ -1,3 +1,3 @@
-C001,R0001,mervin,male,MT001,Triple Sharing Room,Single Room,no privacy,approved
-C002,R0002,justin,female,FD002,Double Sharing Room,Single Room,no privacy,approved
-C003,R0003,khong,female,FS001,Single Room,Triple Sharing Room,too expensive,approved
+C001,R0001,khong,female,FT001,Triple Sharing Room,Single Room,no privacy,approved
+C002,R0002,kynax,male,MD002,Double Sharing Room,Single Room,no privacy,approved
+

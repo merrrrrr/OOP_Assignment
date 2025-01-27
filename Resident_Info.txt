@@ -1,2 +1,2 @@
-R0001,khong,Kcl1208!,nig,0199999999,khong@gmail.com,female,FD001,Double Sharing Room,RM700.00,2024-12-24
+R0001,khong,Kcl1208!,nig,0199999999,khong@gmail.com,female,FS002,Single Room,RM700.00,2024-12-24
 R0002,kynax,Justin123!,ng,0128934392,kynax@gmail.com,male,MS001,Single Room,RM00.00,2024-12-24

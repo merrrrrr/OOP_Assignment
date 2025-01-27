@@ -3,6 +3,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -142,6 +143,69 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         return tableInfo;
     }
 
+    public String[][] toRoomChangeTable() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("Change_Room.txt"));
+
+        int lineCount = 0;
+        while (br.readLine() != null) {
+            lineCount++;
+        }
+        br.close();
+
+        String[][] tableInfo = new String[lineCount][9];
+
+        br = new BufferedReader(new FileReader("Change_Room.txt"));
+        String line;
+        int i = 0;
+
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            tableInfo[i][0] = parts[0]; // request id
+            tableInfo[i][1] = parts[1]; // resident id
+            tableInfo[i][2] = parts[2]; // resident name
+            tableInfo[i][3] = parts[3]; // gender
+            tableInfo[i][4] = parts[4]; // current room number
+            tableInfo[i][5] = parts[5]; // current room type
+            tableInfo[i][6] = parts[6]; // new room type
+            tableInfo[i][7] = parts[7]; // description
+            tableInfo[i][8] = parts[8]; // status
+        }
+
+        return tableInfo;
+    }
+
+    public String[][] toPaymentRecordTable() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("Payment_Records.txt"));
+
+        int lineCount = 0;
+        while (br.readLine() != null) {
+            lineCount++;
+        }
+        br.close();
+
+        String[][] tableInfo = new String[lineCount][7];
+
+        br = new BufferedReader(new FileReader("Payment_Records.txt"));
+        String line;
+        int i = 0;
+        String roomType = "";
+
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            tableInfo[i][0] = parts[0]; // payment id
+            tableInfo[i][1] = parts[1]; // resident id
+            tableInfo[i][2] = parts[2]; // resident name
+            tableInfo[i][3] = parts[3]; // room number
+            tableInfo[i][4] = parts[4]; // room type
+            tableInfo[i][5] = parts[5]; // amount
+            tableInfo[i][6] = parts[6]; // datetime
+
+        }
+
+
+        return tableInfo;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -186,16 +250,25 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         UpdateRoomInfoButton = new JButton();
         UpdateRateButton = new JButton();
         ViewRoomInfoDetailsButton = new JButton();
+        SearchRoomInfoButton = new JButton();
+        FilterRoomDetailsButton = new JButton();
+        SortRoomDetailsButton = new JButton();
         RoomChangeRequestPanel = new JPanel();
         jScrollPane3 = new JScrollPane();
         RoomChangeRequestTable = new JTable();
         RejectRoomChangeButton = new JButton();
         ApproveRoomChangeButton = new JButton();
         ViewRoomChangeDetailsButton = new JButton();
+        FilterRoomChangeButton = new JButton();
+        SortRoomChangeButton = new JButton();
+        SearchRoomChangeButton = new JButton();
         PaymentRecordPanel = new JPanel();
         jScrollPane5 = new JScrollPane();
         PaymentRecordTable = new JTable();
         ViewPaymentDetailsButton = new JButton();
+        FilterPaymentButton = new JButton();
+        SortPaymentButton = new JButton();
+        SearchPaymentButton = new JButton();
         ProfilePanel = new JPanel();
         UsernameLabel = new JLabel();
         PasswordLabel = new JLabel();
@@ -321,15 +394,15 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             }
         });
 
-        GroupLayout jPanel4Layout = new GroupLayout(UserInfoPanel);
-        UserInfoPanel.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-                jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+        GroupLayout UserInfoPanelLayout = new GroupLayout(UserInfoPanel);
+        UserInfoPanel.setLayout(UserInfoPanelLayout);
+        UserInfoPanelLayout.setHorizontalGroup(
+                UserInfoPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(GroupLayout.Alignment.TRAILING, UserInfoPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                .addGroup(UserInfoPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                                         .addComponent(UserInfoTab)
-                                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addGroup(UserInfoPanelLayout.createSequentialGroup()
                                                 .addComponent(AddUserButton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(DeleteUserButton)
@@ -345,13 +418,13 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                                                 .addComponent(SearchUserInfoButton)))
                                 .addContainerGap())
         );
-        jPanel4Layout.setVerticalGroup(
-                jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel4Layout.createSequentialGroup()
+        UserInfoPanelLayout.setVerticalGroup(
+                UserInfoPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(UserInfoPanelLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(UserInfoTab, GroupLayout.PREFERRED_SIZE, 378, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                                .addGroup(UserInfoPanelLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                         .addComponent(AddUserButton)
                                         .addComponent(DeleteUserButton)
                                         .addComponent(EditUserButton)
@@ -359,7 +432,7 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                                         .addComponent(SortUserInfoButton)
                                         .addComponent(SearchUserInfoButton)
                                         .addComponent(ViewUserDetailsButton))
-                                .addContainerGap(39, Short.MAX_VALUE))
+                                .addContainerGap(42, Short.MAX_VALUE))
         );
 
         ManagerMenuTab.addTab("User Information", UserInfoPanel);
@@ -505,15 +578,13 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(RoomInfoTable);
-        if (RoomInfoTable.getColumnModel().getColumnCount() > 0) {
-            RoomInfoTable.getColumnModel().getColumn(3).setHeaderValue("Rate");
-        }
 
-        ViewRoomInfoDetailsButton.setText("View Details");
-        ViewRoomInfoDetailsButton.addActionListener(new ActionListener() {
+        jScrollPane2.setViewportView(RoomInfoTable);
+
+        UpdateRoomInfoButton.setText("Update Room Information");
+        UpdateRoomInfoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                ViewRoomInfoDetailsButtonActionPerformed(evt);
+                UpdateRoomInfoButtonActionPerformed(evt);
             }
         });
 
@@ -524,58 +595,85 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             }
         });
 
-        UpdateRoomInfoButton.setText("Update Room Information");
-        UpdateRoomInfoButton.addActionListener(new ActionListener() {
+        ViewRoomInfoDetailsButton.setText("View Details");
+        ViewRoomInfoDetailsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                UpdateRoomInfoButtonActionPerformed(evt);
+                ViewRoomInfoDetailsButtonActionPerformed(evt);
             }
         });
 
-        GroupLayout RoomInformationPanelLayout = new GroupLayout(RoomInformationPanel);
+        SearchRoomInfoButton.setText("Search Room");
+        SearchRoomInfoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                SearchRoomInfoButtonActionPerformed(evt);
+            }
+        });
+
+        FilterRoomDetailsButton.setText("Filter");
+        FilterRoomDetailsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                FilterRoomDetailsButtonActionPerformed(evt);
+            }
+        });
+
+        SortRoomDetailsButton.setText("Sort");
+        SortRoomDetailsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                SortRoomDetailsButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout RoomInformationPanelLayout = new javax.swing.GroupLayout(RoomInformationPanel);
         RoomInformationPanel.setLayout(RoomInformationPanelLayout);
         RoomInformationPanelLayout.setHorizontalGroup(
-                RoomInformationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                RoomInformationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(RoomInformationPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(RoomInformationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
-                                        .addGroup(GroupLayout.Alignment.TRAILING, RoomInformationPanelLayout.createSequentialGroup()
-                                                .addGap(0, 0, Short.MAX_VALUE)
-                                                .addComponent(ViewRoomInfoDetailsButton)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(RoomInformationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(RoomInformationPanelLayout.createSequentialGroup()
+                                                .addContainerGap()
                                                 .addComponent(UpdateRateButton)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(UpdateRoomInfoButton)))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(UpdateRoomInfoButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(ViewRoomInfoDetailsButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(FilterRoomDetailsButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(SortRoomDetailsButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(SearchRoomInfoButton))
+                                        .addGroup(RoomInformationPanelLayout.createSequentialGroup()
+                                                .addGap(6, 6, 6)
+                                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)))
                                 .addContainerGap())
         );
         RoomInformationPanelLayout.setVerticalGroup(
-                RoomInformationPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                RoomInformationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(RoomInformationPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 381, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(RoomInformationPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(RoomInformationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(UpdateRoomInfoButton)
                                         .addComponent(UpdateRateButton)
-                                        .addComponent(ViewRoomInfoDetailsButton))
-                                .addContainerGap(36, Short.MAX_VALUE))
+                                        .addComponent(ViewRoomInfoDetailsButton)
+                                        .addComponent(FilterRoomDetailsButton)
+                                        .addComponent(SortRoomDetailsButton)
+                                        .addComponent(SearchRoomInfoButton))
+                                .addContainerGap(39, Short.MAX_VALUE))
         );
+
 
         ManagerMenuTab.addTab("Room Information", RoomInformationPanel);
 
         RoomChangeRequestTable.setModel(new DefaultTableModel(
-                new Object [][] {
-                        {null, null, null, null, null, null},
-                        {null, null, null, null, null, null},
-                        {null, null, null, null, null, null},
-                        {null, null, null, null, null, null}
-                },
+                toRoomChangeTable(),
                 new String [] {
-                        "Resident ID", "Residnt Name", "Current Room Number", "Current Room Type", "New Room Type", "Description"
+                        "Request ID", "Resident ID", "Resident Name", "Gender", "Current Room Number", "Current Room Type", "New Room Type", "Description", "Status"
                 }
         ) {
             Class[] types = new Class [] {
-                    String.class, String.class, String.class, String.class, String.class, String.class
+                    String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -584,10 +682,10 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(RoomChangeRequestTable);
 
-        ViewRoomChangeDetailsButton.setText("View Details");
-        ViewRoomChangeDetailsButton.addActionListener(new ActionListener() {
+        RejectRoomChangeButton.setText("Reject");
+        RejectRoomChangeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                ViewRoomChangeDetailsButtonActionPerformed(evt);
+                RejectRoomChangeButtonActionPerformed(evt);
             }
         });
 
@@ -598,59 +696,86 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             }
         });
 
-        RejectRoomChangeButton.setText("Reject");
-        RejectRoomChangeButton.addActionListener(new ActionListener() {
+        ViewRoomChangeDetailsButton.setText("View Details");
+        ViewRoomChangeDetailsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                RejectRoomChangeButtonActionPerformed(evt);
+                ViewRoomChangeDetailsButtonActionPerformed(evt);
+            }
+        });
+
+        FilterRoomChangeButton.setText("Filter");
+        FilterRoomChangeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                FilterRoomChangeButtonActionPerformed(evt);
+            }
+        });
+
+        SortRoomChangeButton.setText("Sort");
+        SortRoomChangeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                SortRoomChangeButtonActionPerformed(evt);
+            }
+        });
+
+        SearchRoomChangeButton.setText("Search Request");
+        SearchRoomChangeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                SearchRoomChangeButtonActionPerformed(evt);
             }
         });
 
 
-        GroupLayout RoomChangeRequestPanelLayout = new GroupLayout(RoomChangeRequestPanel);
+        javax.swing.GroupLayout RoomChangeRequestPanelLayout = new javax.swing.GroupLayout(RoomChangeRequestPanel);
         RoomChangeRequestPanel.setLayout(RoomChangeRequestPanelLayout);
         RoomChangeRequestPanelLayout.setHorizontalGroup(
-                RoomChangeRequestPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                RoomChangeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(RoomChangeRequestPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(RoomChangeRequestPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane3, GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
-                                        .addGroup(GroupLayout.Alignment.TRAILING, RoomChangeRequestPanelLayout.createSequentialGroup()
-                                                .addGap(0, 0, Short.MAX_VALUE)
-                                                .addComponent(ViewRoomChangeDetailsButton)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(RoomChangeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(RoomChangeRequestPanelLayout.createSequentialGroup()
+                                                .addContainerGap()
                                                 .addComponent(ApproveRoomChangeButton)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(RejectRoomChangeButton)))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(RejectRoomChangeButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(ViewRoomChangeDetailsButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(FilterRoomChangeButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(SortRoomChangeButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(SearchRoomChangeButton))
+                                        .addGroup(RoomChangeRequestPanelLayout.createSequentialGroup()
+                                                .addGap(6, 6, 6)
+                                                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)))
                                 .addContainerGap())
         );
         RoomChangeRequestPanelLayout.setVerticalGroup(
-                RoomChangeRequestPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                RoomChangeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(RoomChangeRequestPanelLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane3, GroupLayout.PREFERRED_SIZE, 381, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(RoomChangeRequestPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(RoomChangeRequestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(RejectRoomChangeButton)
                                         .addComponent(ApproveRoomChangeButton)
-                                        .addComponent(ViewRoomChangeDetailsButton))
-                                .addContainerGap(36, Short.MAX_VALUE))
+                                        .addComponent(ViewRoomChangeDetailsButton)
+                                        .addComponent(FilterRoomChangeButton)
+                                        .addComponent(SortRoomChangeButton)
+                                        .addComponent(SearchRoomChangeButton))
+                                .addContainerGap(39, Short.MAX_VALUE))
         );
+
 
         ManagerMenuTab.addTab("Room Change Request", RoomChangeRequestPanel);
 
         PaymentRecordTable.setModel(new DefaultTableModel(
-                new Object [][] {
-                        {null, null, null, null, null, null, null},
-                        {null, null, null, null, null, null, null},
-                        {null, null, null, null, null, null, null},
-                        {null, null, null, null, null, null, null}
-                },
+               toPaymentRecordTable(),
                 new String [] {
-                        "Payment ID", "Resident ID", "Resident Name", "Room Number", "Room Type", "Amount", "Date"
+                        "Payment ID", "Resident ID", "Resident Name", "Room Number", "Room Type", "Amount", "Datetime"
                 }
         ) {
             Class[] types = new Class [] {
-                    String.class, String.class, String.class, String.class, String.class, Double.class, String.class
+                    String.class, String.class, String.class, String.class, String.class, String.class, String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -666,18 +791,45 @@ public class ManagerMenuPage extends javax.swing.JFrame {
             }
         });
 
+        FilterPaymentButton.setText("Filter");
+        FilterPaymentButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                FilterPaymentButtonActionPerformed(evt);
+            }
+        });
+
+        SortPaymentButton.setText("Sort");
+        SortPaymentButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                SortPaymentButtonActionPerformed(evt);
+            }
+        });
+
+        SearchPaymentButton.setText("Search Record");
+        SearchPaymentButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                SearchPaymentButtonActionPerformed(evt);
+            }
+        });
+
         GroupLayout PaymentRecordPanelLayout = new GroupLayout(PaymentRecordPanel);
         PaymentRecordPanel.setLayout(PaymentRecordPanelLayout);
         PaymentRecordPanelLayout.setHorizontalGroup(
                 PaymentRecordPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(PaymentRecordPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(PaymentRecordPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane5, GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
-                                        .addGroup(GroupLayout.Alignment.TRAILING, PaymentRecordPanelLayout.createSequentialGroup()
-                                                .addGap(0, 0, Short.MAX_VALUE)
-                                                .addComponent(ViewPaymentDetailsButton)))
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(ViewPaymentDetailsButton)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(FilterPaymentButton)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(SortPaymentButton)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(SearchPaymentButton)
                                 .addContainerGap())
+                        .addGroup(PaymentRecordPanelLayout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(jScrollPane5, GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
+                                .addGap(6, 6, 6))
         );
         PaymentRecordPanelLayout.setVerticalGroup(
                 PaymentRecordPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -685,8 +837,12 @@ public class ManagerMenuPage extends javax.swing.JFrame {
                                 .addContainerGap()
                                 .addComponent(jScrollPane5, GroupLayout.PREFERRED_SIZE, 381, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ViewPaymentDetailsButton)
-                                .addContainerGap(36, Short.MAX_VALUE))
+                                .addGroup(PaymentRecordPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(ViewPaymentDetailsButton)
+                                        .addComponent(FilterPaymentButton)
+                                        .addComponent(SortPaymentButton)
+                                        .addComponent(SearchPaymentButton))
+                                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         ManagerMenuTab.addTab("Payment Record", PaymentRecordPanel);
@@ -974,6 +1130,42 @@ public class ManagerMenuPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }
 
+    private void SearchRoomInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void FilterRoomDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SortRoomDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void FilterRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SortRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SearchRoomChangeButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void FilterPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SortPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
+    private void SearchPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -1025,7 +1217,10 @@ public class ManagerMenuPage extends javax.swing.JFrame {
     private javax.swing.JButton EditUserButton;
     private javax.swing.JTextField EmailField;
     private javax.swing.JLabel EmailLabel;
+    private javax.swing.JButton FilterPaymentButton;
     private javax.swing.JButton FilterRegistrationButton;
+    private javax.swing.JButton FilterRoomChangeButton;
+    private javax.swing.JButton FilterRoomDetailsButton;
     private javax.swing.JButton FilterUserInfoButton;
     private javax.swing.JButton LogOutButton;
     private javax.swing.JPanel LogOutPanel;
@@ -1050,9 +1245,15 @@ public class ManagerMenuPage extends javax.swing.JFrame {
     private javax.swing.JTable RoomChangeRequestTable;
     private javax.swing.JTable RoomInfoTable;
     private javax.swing.JPanel RoomInformationPanel;
+    private javax.swing.JButton SearchPaymentButton;
     private javax.swing.JButton SearchRegistrationButton;
+    private javax.swing.JButton SearchRoomChangeButton;
+    private javax.swing.JButton SearchRoomInfoButton;
     private javax.swing.JButton SearchUserInfoButton;
+    private javax.swing.JButton SortPaymentButton;
     private javax.swing.JButton SortRegistrationButton;
+    private javax.swing.JButton SortRoomChangeButton;
+    private javax.swing.JButton SortRoomDetailsButton;
     private javax.swing.JButton SortUserInfoButton;
     private javax.swing.JTable StaffInfoTable;
     private javax.swing.JTable StaffRegistrationTable;

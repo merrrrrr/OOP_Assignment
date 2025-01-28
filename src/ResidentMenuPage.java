@@ -4,12 +4,15 @@
  */
 
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -57,8 +60,8 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         SearchBoxPaymentPage = new javax.swing.JTextField();
         confirmSearchButton = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        viewReceiptButton = new javax.swing.JButton();
+        viewOverdueAmountButton = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         editResidentUsernameBox = new javax.swing.JTextField();
         editResidentPasswordBox = new javax.swing.JTextField();
@@ -165,7 +168,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
                         {null, null, null, null}
                 },
                 new String [] {
-                        "Payment ID", "Resident ID", "Resident Name", "Room Number", "Room Type", "Amount Paid", "Payment Datetime"
+                        "Payment ID", "Resident Name", "Room Number", "Room Type", "Amount Paid", "Payment Datetime"
                 }
         ));
         jScrollPane1.setViewportView(paymentRecordsTable);
@@ -175,9 +178,19 @@ public class ResidentMenuPage extends javax.swing.JFrame {
 
         confirmSearchButton.setText("Confirm");
 
-        jButton3.setText("View Receipt");
+        viewReceiptButton.setText("View Receipt");
+        viewReceiptButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                viewReceiptButtonActionPerformed(evt);
+            }
+        });
 
-        jButton6.setText("View Overdue Amount");
+        viewOverdueAmountButton.setText("View Overdue Amount");
+        viewOverdueAmountButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                viewOverdueAmountButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -187,9 +200,9 @@ public class ResidentMenuPage extends javax.swing.JFrame {
                                 .addContainerGap(68, Short.MAX_VALUE)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addGroup(jPanel3Layout.createSequentialGroup()
-                                                .addComponent(jButton3)
+                                                .addComponent(viewReceiptButton)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jButton6))
+                                                .addComponent(viewOverdueAmountButton))
                                         .addGroup(jPanel3Layout.createSequentialGroup()
                                                 .addComponent(jLabel10)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -212,8 +225,8 @@ public class ResidentMenuPage extends javax.swing.JFrame {
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jButton3)
-                                        .addComponent(jButton6))
+                                        .addComponent(viewReceiptButton)
+                                        .addComponent(viewOverdueAmountButton))
                                 .addContainerGap())
         );
 
@@ -335,6 +348,11 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         ResidentTab.addTab("Edit Profile", jPanel6);
 
         ResidentLogOutButton.setText("Log Out");
+        ResidentLogOutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ResidentLogOutButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -391,6 +409,78 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }
 
+    private void ResidentLogOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to log out?", "Confirm Log Out", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (response == JOptionPane.YES_OPTION) {
+            MainPage mp = new MainPage();
+            mp.setVisible(true);
+            this.dispose();
+        }
+    }
+
+    private void viewReceiptButtonActionPerformed(ActionEvent evt) {
+        List<String> receipts = new ArrayList<>();
+        List<String> displayReceipts = new ArrayList<>();
+        String residentID = resident.getId();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Receipt.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                if (details.length >= 8 && details[2].equals(residentID)) {
+                    receipts.add(line);
+                    displayReceipts.add(String.format("ReceiptID: %s, Date of Issue: %s", details[0], details[1]));
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading Receipt.txt: " + e.getMessage());
+            return;
+        }
+
+        if (receipts.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No receipts found for the resident.", "No Receipts", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        String[] displayArray = displayReceipts.toArray(new String[0]);
+        String selectedDisplay = (String) JOptionPane.showInputDialog(this, "Select a receipt to view:", "View Receipt",
+                JOptionPane.QUESTION_MESSAGE, null, displayArray, displayArray[0]);
+
+        if (selectedDisplay != null) {
+            int selectedIndex = displayReceipts.indexOf(selectedDisplay);
+            String selectedReceipt = receipts.get(selectedIndex);
+            String[] details = selectedReceipt.split(",");
+            String receiptDetails = String.format(
+                    "ReceiptID: %s\nDate of Issue: %s\nResident Name: %s\nRoom Number: %s\nRoom Type: %s\nStaff in Charge: %s",
+                    details[0], details[1], details[3], details[4], details[5], details[7]);
+            JOptionPane.showMessageDialog(this, receiptDetails, "Receipt Details", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void viewOverdueAmountButtonActionPerformed(ActionEvent evt) {
+        String residentID = resident.getId();
+        String overdueAmount = "";
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                if (details.length >= 10 && details[0].equals(residentID)) {
+                    overdueAmount = details[9];
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading Resident_Info.txt: " + e.getMessage());
+            return;
+        }
+
+        if ("RM00.00".equals(overdueAmount)) {
+            JOptionPane.showMessageDialog(this, "You have no overdue amount for now.", "Overdue Amount", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Your overdue amount is: " + overdueAmount, "Overdue Amount", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
 
     private void handleSubmitButtonClick() {
         String newRoomType = (String) roomTypeDropdownMenu.getSelectedItem();
@@ -458,7 +548,14 @@ public class ResidentMenuPage extends javax.swing.JFrame {
             while ((line = reader.readLine()) != null) {
                 String[] details = line.split(",");
                 if (details.length >= 7 && details[1].equals(resident.getId())) {
-                    model.addRow(details);
+                    model.addRow(new Object[] {
+                            details[0], // Payment ID
+                            details[2], // Resident Name
+                            details[3], // Room Number
+                            details[4], // Room Type
+                            details[5], // Amount Paid
+                            details[6], // Payment Datetime
+                    });
                 }
             }
         } catch (IOException e) {
@@ -541,8 +638,8 @@ public class ResidentMenuPage extends javax.swing.JFrame {
     private javax.swing.JTextField editResidentPasswordBox;
     private javax.swing.JButton editResidentProfileButton;
     private javax.swing.JTextField editResidentUsernameBox;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton6;
+    private javax.swing.JButton viewReceiptButton;
+    private javax.swing.JButton viewOverdueAmountButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;

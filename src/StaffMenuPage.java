@@ -659,12 +659,45 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
         for (String line : lines) {
             String[] details = line.split(",");
-            model.addRow(new Object[]{details[0], details[1],details[7], details[8],details[9], "Make Payment"});
+            model.addRow(new Object[]{details[0], details[1], details[7], details[8], details[9], "Make Payment"});
         }
 
         ResidentPaymentTable.setRowHeight(30); // Set the row height to 30 pixels
         ResidentPaymentTable.getColumn("Action").setCellRenderer(new ButtonRenderer());
         ResidentPaymentTable.getColumn("Action").setCellEditor(new ButtonEditor(new JCheckBox()));
+    }
+
+    private String generateUniquePaymentID() {
+        String lastID = "P" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "0000";
+        try (BufferedReader reader = new BufferedReader(new FileReader("Payment_Records.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                if (details.length > 0 && !details[0].isEmpty()) {
+                    lastID = details[0];
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading Payment_Records.txt: " + e.getMessage());
+        }
+
+        String datePart = lastID.substring(1, 9);
+        int idNumber = Integer.parseInt(lastID.substring(9)) + 1;
+        return String.format("P%s%04d", datePart, idNumber);
+    }
+
+    private void addPaymentRecord(String residentID, String residentName, String roomNumber, String roomType, double amountPaid) {
+        String paymentID = generateUniquePaymentID();
+        String paymentDatetime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        String record = String.join(",", paymentID, residentID, residentName, roomNumber, roomType, String.valueOf(amountPaid), paymentDatetime);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Payment_Records.txt", true))) {
+            writer.write(record);
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.println("Error writing to Payment_Records.txt: " + e.getMessage());
+        }
     }
 
 
@@ -803,15 +836,17 @@ public class StaffMenuPage extends javax.swing.JFrame {
             super(checkBox);
         }
 
-        public Component getTableCellEditorComponent(JTable table, Object value,
-                                                     boolean isSelected, int row, int column) {
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
             label = (value == null) ? "Make Payment" : value.toString();
             JButton button = new JButton(label);
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     fireEditingStopped();
                     String overdueAmount = (String) table.getValueAt(row, 4); // Assuming overdue amount is in the 5th column (index 4)
-                    String residentName = (String) table.getValueAt(row, 1); // Assuming resident name is in the 2nd column (index 1)
+                    String residentID = (String) table.getValueAt(row, 0);
+                    String residentName = (String) table.getValueAt(row, 1);
+                    String roomNumber = (String) table.getValueAt(row, 2);
+                    String roomType = (String) table.getValueAt(row, 3);
                     if ("RM00.00".equals(overdueAmount)) {
                         JOptionPane.showMessageDialog(null, residentName + " has no overdue amount.");
                     } else {
@@ -822,6 +857,8 @@ public class StaffMenuPage extends javax.swing.JFrame {
                                 JOptionPane.QUESTION_MESSAGE);
                         if (response == JOptionPane.YES_OPTION) {
                             updateOverdueAmount(row);
+                            addPaymentRecord(residentID, residentName, roomNumber, roomType, Double.parseDouble(overdueAmount.substring(2)));
+                            JOptionPane.showMessageDialog(null, "Payment made successfully for " + residentName + ".");
                         }
                     }
                 }

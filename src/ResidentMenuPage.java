@@ -561,6 +561,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         } catch (IOException e) {
             System.err.println("Error reading Payment_Records.txt: " + e.getMessage());
         }
+        paymentRecordsTable.setRowHeight(60);
     }
 
     private void searchPaymentRecords() {

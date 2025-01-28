@@ -12,7 +12,7 @@ public class Resident extends User {
     private String gender;
     private String roomNo;
     private String username;
-    private double overdueAmount;
+    private String overdueAmount;
     private boolean isLoggedIn = false;
     private Scanner sc = new Scanner(System.in);
 
@@ -32,13 +32,14 @@ public class Resident extends User {
         }
     }
 
-    public Resident(String id, String username, String password, String name, String contactNumber, String email, String gender, String roomType, String roomNo, double overdueAmount) {
+    public Resident(String id, String username, String password, String name, String contactNumber, String email, String gender, String roomNo, String roomType, String overdueAmount, String registerDate) {
         super(id, username, password, name, contactNumber, email);
         this.gender = gender;
         this.roomType = roomType;
         this.roomNo = roomNo;
         this.overdueAmount = overdueAmount;
     }
+
 
     public String getGender() {
         return gender;
@@ -64,11 +65,11 @@ public class Resident extends User {
         this.roomNo = roomNo;
     }
 
-    public double getOverdueAmount() {
+    public String getOverdueAmount() {
         return overdueAmount;
     }
 
-    public void setOverdueAmount(double overdueAmount) {
+    public void setOverdueAmount(String overdueAmount) {
         this.overdueAmount = overdueAmount;
     }
 

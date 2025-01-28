@@ -157,8 +157,9 @@ public class LoginPage extends javax.swing.JFrame {
                     String gender = line[6];
                     String roomNumber = line[7];
                     String roomType = line[8];
-                    double overdueAmount = Double.parseDouble(line[8]);
-                    Resident resident = new Resident(id, username, password, name, contactNumber, email, gender,roomNumber, roomType, overdueAmount);
+                    String overdueAmount = line[9];
+                    String registerDate = line[10];
+                    Resident resident = new Resident(id, username, password, name, contactNumber, email, gender, roomNumber, roomType, overdueAmount, registerDate);
                     ResidentMenuPage residentMenuPage = new ResidentMenuPage(resident);
                     residentMenuPage.setVisible(true);
                     this.dispose();

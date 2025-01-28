@@ -4,8 +4,11 @@
  */
 
 
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.*;
 
 /**
@@ -24,8 +27,9 @@ public class ResidentMenuPage extends javax.swing.JFrame {
     }
 
     public ResidentMenuPage(Resident resident) {
-        initComponents();
         this.resident = resident;
+        initComponents();
+        loadPaymentRecords();
     }
 
     /**
@@ -161,7 +165,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
                         {null, null, null, null}
                 },
                 new String [] {
-                        "Title 1", "Title 2", "Title 3", "Title 4"
+                        "Payment ID", "Resident ID", "Resident Name", "Room Number", "Room Type", "Amount Paid", "Payment Datetime"
                 }
         ));
         jScrollPane1.setViewportView(paymentRecordsTable);
@@ -234,6 +238,20 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         editResidentProfileButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editResidentProfileButtonActionPerformed(evt);
+            }
+        });
+
+        SearchBoxPaymentPage.addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent evt) {
+                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                    searchPaymentRecords();
+                }
+            }
+        });
+
+        confirmSearchButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                searchPaymentRecords();
             }
         });
 
@@ -373,6 +391,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }
 
+
     private void handleSubmitButtonClick() {
         String newRoomType = (String) roomTypeDropdownMenu.getSelectedItem();
         if ("Select Room Type...".equals(newRoomType)) {
@@ -386,29 +405,11 @@ public class ResidentMenuPage extends javax.swing.JFrame {
             return;
         }
 
-        String residentID = "R0001"; // Replace with the actual logged-in resident ID
-        String residentUsername = "";
-        String residentGender = "";
-        String currentRoomNumber = "";
-        String currentRoomType = "";
-
-        // Read resident information from Resident_Info.txt
-        try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] details = line.split(",");
-                if (details[0].equals(residentID)) {
-                    residentUsername = details[1];
-                    residentGender = details[6];
-                    currentRoomNumber = details[7];
-                    currentRoomType = details[8];
-                    break;
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading Resident_Info.txt: " + e.getMessage());
-            return;
-        }
+        String residentID = resident.getId();
+        String residentUsername = resident.getUsername();
+        String residentGender = resident.getGender();
+        String currentRoomNumber = resident.getRoomNo();
+        String currentRoomType = resident.getRoomType();
 
         // Generate a unique request ID
         String requestID = generateUniqueRequestID();
@@ -432,13 +433,64 @@ public class ResidentMenuPage extends javax.swing.JFrame {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] details = line.split(",");
-                lastID = details[0];
+                if (details.length > 0) {
+                    lastID = details[0];
+                }
             }
         } catch (IOException e) {
             System.err.println("Error reading Change_Room.txt: " + e.getMessage());
         }
-        int idNumber = Integer.parseInt(lastID.substring(1)) + 1;
-        return String.format("C%03d", idNumber);
+
+        if (lastID.length() > 1) {
+            int idNumber = Integer.parseInt(lastID.substring(1)) + 1;
+            return String.format("C%03d", idNumber);
+        } else {
+            return "C001";
+        }
+    }
+
+    private void loadPaymentRecords() {
+        DefaultTableModel model = (DefaultTableModel) paymentRecordsTable.getModel();
+        model.setRowCount(0); // Clear existing rows
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Payment_Records.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                if (details.length >= 7 && details[1].equals(resident.getId())) {
+                    model.addRow(details);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading Payment_Records.txt: " + e.getMessage());
+        }
+    }
+
+    private void searchPaymentRecords() {
+        String searchText = SearchBoxPaymentPage.getText().trim().toLowerCase();
+        DefaultTableModel model = (DefaultTableModel) paymentRecordsTable.getModel();
+        model.setRowCount(0); // Clear existing rows
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Payment_Records.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                if (details.length >= 7 && details[1].equals(resident.getId())) {
+                    boolean matches = false;
+                    for (String detail : details) {
+                        if (detail.toLowerCase().contains(searchText)) {
+                            matches = true;
+                            break;
+                        }
+                    }
+                    if (matches) {
+                        model.addRow(details);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading Payment_Records.txt: " + e.getMessage());
+        }
     }
     
 

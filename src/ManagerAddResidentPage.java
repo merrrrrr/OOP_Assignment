@@ -1,3 +1,6 @@
+import javax.swing.*;
+import java.io.*;
+
 /**
  *
  * @author Mervin Ooi
@@ -9,6 +12,24 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
      */
     public ManagerAddResidentPage() {
         initComponents();
+    }
+
+    public void getAvailableRooms() {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("Room_Info.txt"));
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                String[] roomInfo = line.split(",");
+                int availability = Integer.getInteger(roomInfo[2]);
+                if (Integer.getInteger(roomInfo[2]) != 0) {
+                    RoomNumberComboBox.addItem(roomInfo[0]);
+                }
+            }
+
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -70,27 +91,23 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
         ConfirmButton.setText("Confirm");
         ConfirmButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ConfirmButtonActionPerformed(evt);
+                try {
+                    ConfirmButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
-        ConfirmPasswordField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ConfirmPasswordFieldActionPerformed(evt);
-            }
-        });
 
         UsernameLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         UsernameLabel.setText("Username");
 
         GenderComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
-        GenderComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                GenderComboBoxActionPerformed(evt);
-            }
-        });
 
-        RoomNumberComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        RoomNumberComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {} ));
+        getAvailableRooms();
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -174,16 +191,55 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
-    private void ConfirmButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void ConfirmButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         // TODO add your handling code here:
-    }
+        BufferedReader br = new BufferedReader(new FileReader("Resident_Info.txt"));
+        int count = 0;
+        String residentID = "";
 
-    private void ConfirmPasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
+        while (br.readLine() != null) {
+            count++;
+        }
 
-    private void GenderComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        br.close();
+
+        if (count + 1 < 10) {
+            residentID = "R" + "000" + String.valueOf(count + 1);
+        } else if (count + 1 < 100) {
+            residentID = "R" + "00" + String.valueOf(count + 1);
+        } else if (count + 1 < 1000) {
+            residentID = "R" + "0" + String.valueOf(count + 1);
+        } else {
+            residentID = "R" + String.valueOf(count + 1);
+        }
+
+        String username = UsernameField.getText();
+        String password = PasswordField.getText();
+        String confirmPassword = ConfirmPasswordField.getText();
+        String name = NameField.getText();
+        String contact = ContactNumberField.getText();
+        String email = EmailField.getText();
+        String gender = GenderComboBox.getSelectedItem().toString();
+        String roomNumber = RoomNumberComboBox.getSelectedItem().toString();
+        String overdueAmount = "0.00";
+        String line = residentID + "," +  username + "," + password + "," + name + "," + contact + "," + email + "," + gender + "," + roomNumber + "," + overdueAmount;
+
+        if (password.equals(confirmPassword)) {
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter("Resident_Info.txt", true));
+                bw.write(line);
+                bw.close();
+                JOptionPane.showMessageDialog(null, "Resident added successfully");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Password does not match");
+        }
+
+        this.dispose();
     }
 
     /**

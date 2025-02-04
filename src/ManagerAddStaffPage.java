@@ -1,3 +1,6 @@
+import javax.swing.*;
+import java.io.*;
+
 /**
  *
  * @author Mervin Ooi
@@ -46,12 +49,6 @@ public class ManagerAddStaffPage extends javax.swing.JFrame {
         AddStaffLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         AddStaffLabel.setText("Add Staff");
 
-        UsernameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                UsernameFieldActionPerformed(evt);
-            }
-        });
-
         ConfirmPasswordLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         ConfirmPasswordLabel.setText("Confirm Password");
 
@@ -64,22 +61,15 @@ public class ManagerAddStaffPage extends javax.swing.JFrame {
         EmailLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         EmailLabel.setText("Email Address");
 
-        PasswordField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PasswordFieldActionPerformed(evt);
-            }
-        });
-
-        ConfirmPasswordField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ConfirmPasswordFieldActionPerformed(evt);
-            }
-        });
 
         ConfirmButton.setText("Confirm");
         ConfirmButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ConfirmButtonActionPerformed(evt);
+                try {
+                    ConfirmButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -150,21 +140,54 @@ public class ManagerAddStaffPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
-    private void ConfirmButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void ConfirmButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         // TODO add your handling code here:
+        BufferedReader br = new BufferedReader(new FileReader("Staff_Info.txt"));
+        int count = 0;
+        String staffID = "";
+
+        while (br.readLine() != null) {
+            count++;
+        }
+
+        br.close();
+
+        if (count + 1 < 10) {
+            staffID = "S" + "000" + String.valueOf(count + 1);
+        } else if (count + 1 < 100) {
+            staffID = "S" + "00" + String.valueOf(count + 1);
+        } else if (count + 1 < 1000) {
+            staffID = "S" + "0" + String.valueOf(count + 1);
+        } else {
+            staffID = "S" + String.valueOf(count + 1);
+        }
+
+        String username = UsernameField.getText();
+        String password = PasswordField.getText();
+        String confirmPassword = ConfirmPasswordField.getText();
+        String name = NameField.getText();
+        String contact = ContactNumberField.getText();
+        String email = EmailField.getText();
+        String line = staffID + "," +  username + "," + password + "," + name + "," + contact + "," + email;
+
+        if (password.equals(confirmPassword)) {
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter("Staff_Info.txt", true));
+                bw.write(line);
+                bw.close();
+                JOptionPane.showMessageDialog(null, "Staff added successfully");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Password does not match");
+        }
+
+        this.dispose();
     }
 
-    private void ConfirmPasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void PasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void UsernameFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
 
     /**
      * @param args the command line arguments

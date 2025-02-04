@@ -1,3 +1,6 @@
+import javax.swing.*;
+import java.io.*;
+
 /**
  *
  * @author Mervin Ooi
@@ -30,7 +33,7 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
         ConfirmPasswordField = new javax.swing.JPasswordField();
         ConfirmPasswordLabel = new javax.swing.JLabel();
         PasswordLabel = new javax.swing.JLabel();
-        PasswordField = new javax.swing.JTextField();
+        PasswordField = new javax.swing.JPasswordField();
         UsernameField = new javax.swing.JTextField();
         UsernameLabel = new javax.swing.JLabel();
         AddManagerLabel = new javax.swing.JLabel();
@@ -41,24 +44,16 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
         ConfirmButton.setText("Confirm");
         ConfirmButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ConfirmButtonActionPerformed(evt);
+                try {
+                    ConfirmButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
         EmailLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         EmailLabel.setText("Email Address");
-
-        EmailField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EmailFieldActionPerformed(evt);
-            }
-        });
-
-        ContactNumberField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ContactNumberFieldActionPerformed(evt);
-            }
-        });
 
         ContacNumbertLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         ContacNumbertLabel.setText("Contact Number");
@@ -66,36 +61,12 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
         NameLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         NameLabel.setText("Name");
 
-        NameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NameFieldActionPerformed(evt);
-            }
-        });
-
-        ConfirmPasswordField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ConfirmPasswordFieldActionPerformed(evt);
-            }
-        });
 
         ConfirmPasswordLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         ConfirmPasswordLabel.setText("Confirm Password");
 
         PasswordLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         PasswordLabel.setText("Password");
-
-        PasswordField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PasswordFieldActionPerformed(evt);
-            }
-        });
-
-        UsernameField.setPreferredSize(new java.awt.Dimension(209, 26));
-        UsernameField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                UsernameFieldActionPerformed(evt);
-            }
-        });
 
         UsernameLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         UsernameLabel.setText("Username");
@@ -173,32 +144,53 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
-    private void ConfirmPasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
 
-    private void EmailFieldActionPerformed(java.awt.event.ActionEvent evt) {
+    private void ConfirmButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         // TODO add your handling code here:
-    }
+        BufferedReader br = new BufferedReader(new FileReader("Manager_Info.txt"));
+        int count = 0;
+        String managerID = "";
 
-    private void PasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
+        while (br.readLine() != null) {
+            count++;
+        }
 
-    private void NameFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
+        br.close();
 
-    private void ContactNumberFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
+        if (count + 1 < 10) {
+            managerID = "M" + "000" + String.valueOf(count + 1);
+        } else if (count + 1 < 100) {
+            managerID = "M" + "00" + String.valueOf(count + 1);
+        } else if (count + 1 < 1000) {
+            managerID = "M" + "0" + String.valueOf(count + 1);
+        } else {
+            managerID = "M" + String.valueOf(count + 1);
+        }
 
-    private void UsernameFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
+        String username = UsernameField.getText();
+        String password = PasswordField.getText();
+        String confirmPassword = ConfirmPasswordField.getText();
+        String name = NameField.getText();
+        String contact = ContactNumberField.getText();
+        String email = EmailField.getText();
+        String line = managerID + "," +  username + "," + password + "," + name + "," + contact + "," + email;
 
-    private void ConfirmButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        if (password.equals(confirmPassword)) {
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter("Manager_Info.txt", true));
+                bw.write(line);
+                bw.close();
+                JOptionPane.showMessageDialog(null, "Manager added successfully");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Password does not match");
+        }
+
+        this.dispose();
     }
 
     /**
@@ -249,7 +241,7 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
     private javax.swing.JLabel EmailLabel;
     private javax.swing.JTextField NameField;
     private javax.swing.JLabel NameLabel;
-    private javax.swing.JTextField PasswordField;
+    private javax.swing.JPasswordField PasswordField;
     private javax.swing.JLabel PasswordLabel;
     private javax.swing.JTextField UsernameField;
     private javax.swing.JLabel UsernameLabel;

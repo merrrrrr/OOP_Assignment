@@ -268,28 +268,6 @@ public class ManagerMenuPage extends JFrame {
         return userInfo;
     }
 
-    public ArrayList getUserInfo(int userType) throws IOException {
-        String filename = "";
-        if (userType == 1) {
-            filename = "Manager_Info.txt";
-        } else if (userType == 2) {
-            filename = "Staff_Info.txt";
-        } else if (userType == 3) {
-            filename = "Resident_Info.txt";
-        }
-
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        ArrayList userInfo = new ArrayList();
-        String line;
-
-        while ((line = br.readLine()) != null) {
-            String[] parts = line.split(",");
-            userInfo.add(line);
-        }
-
-        return userInfo;
-    }
-
     public void setupTableSorter(JTable table) {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
@@ -423,54 +401,6 @@ public class ManagerMenuPage extends JFrame {
         } else if (choice >= 4) {
             model.setValueAt(value, row,  (choice + 2));
         }
-
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-//
-//        int userType = 0;
-//        if (filename.equals("Manager_Info.txt")) {
-//            userType = 1;
-//        } else if (filename.equals("Staff_Info.txt")) {
-//            userType = 2;
-//        } else if (filename.equals("Resident_Info.txt")) {
-//            userType = 3;
-//        }
-//
-//        ArrayList userInfoList = null;
-//        String userInfo = "";
-//        String line = "";
-//        id = "";
-//        String username = "";
-//        String password = "";
-//        String name = "";
-//        String contact = "";
-//        String email = "";
-//        String gender = "";
-//        String roomNumber = "";
-//        String overdueAmount = "";
-//
-//        for (int i = 0; i < getUserInfo(userType).size(); i++) {
-//            if ((getUserInfo(userType).get(i).toString().contains(id))) {
-//
-//                userInfoList = getUserInfo(userType);
-//                userInfo = userInfoList.get(i).toString();
-//
-//                userInfo.split(",");
-//                id = userInfo.split(",")[0];
-//                username = userInfo.split(",")[1];
-//                password = userInfo.split(",")[2];
-//                name = userInfo.split(",")[3];
-//                contact = userInfo.split(",")[4];
-//                email = userInfo.split(",")[5];
-//
-//                if (userType == 3) {
-//                    gender = userInfo.split(",")[6];
-//                    roomNumber = userInfo.split(",")[7];
-//                    overdueAmount = userInfo.split(",")[8];
-//                }
-//
-//
-//            }
-//        }
 
         if (filename.equals("Manager_Info.txt")) {
             updateUserInfoFile(1);
@@ -900,12 +830,117 @@ public class ManagerMenuPage extends JFrame {
 
     }
 
-    public void approveRoomChange() {
+    public void approveRoomChange() throws IOException {
+        DefaultTableModel model = (DefaultTableModel) RoomChangeRequestTable.getModel();
+        int row = RoomChangeRequestTable.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(null, "No row selected. Please select a row.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String requestID = RoomChangeRequestTable.getValueAt(row, 0).toString();
+        String residentID = RoomChangeRequestTable.getValueAt(row, 1).toString();
+        String residentName = RoomChangeRequestTable.getValueAt(row, 2).toString();
 
+        String currentRoomNumber = RoomChangeRequestTable.getValueAt(row, 4).toString();
+        String newRoomType = RoomChangeRequestTable.getValueAt(row, 6).toString();
+
+        model.setValueAt("Approved", row, 8);
+
+        BufferedReader br = new BufferedReader(new FileReader("Change_Room.txt"));
+        String line;
+        ArrayList roomChangeList = new ArrayList();
+        while ((line = br.readLine()) != null) {
+            roomChangeList.add(line);
+        }
+
+        for (int i = 0; i < roomChangeList.size(); i++) {
+            String[] parts = roomChangeList.get(i).toString().split(",");
+            if (parts[0].equals(requestID)) {
+                roomChangeList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + "Approved");
+            }
+        }
+
+        StringJoiner sj = new StringJoiner(System.lineSeparator());
+
+        for (int i = 0; i < roomChangeList.size(); i++) {
+            sj.add(roomChangeList.get(i).toString());
+        }
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter("Change_Room.txt"));
+        bw.write(sj.toString());
+        bw.close();
+
+        // update room info
+        BufferedReader roomInfoReader = new BufferedReader(new FileReader("Room_Info.txt"));
+        ArrayList roomInfoList = new ArrayList();
+        while ((line = roomInfoReader.readLine()) != null) {
+            roomInfoList.add(line);
+        }
+
+        for (int i = 0; i < roomInfoList.size(); i++) {
+            String[] parts = roomInfoList.get(i).toString().split(",");
+            if (parts[0].equals(currentRoomNumber)) {
+                roomInfoList.set(i, parts[0] + "," + parts[1] + "," + (Integer.valueOf(parts[2]) + 1) + "," + parts[3]);
+            }
+        }
+
+        for (int i = 0; i < roomInfoList.size(); i++) {
+            String[] parts = roomInfoList.get(i).toString().split(",");
+            if (parts[0].contains(newRoomType)) {
+                roomInfoList.set(i, parts[0] + "," + parts[1] + "," + (Integer.valueOf(parts[2]) - 1) + "," + parts[3]);
+            }
+        }
+
+        sj = new StringJoiner(System.lineSeparator());
+        for (int i = 0; i < roomInfoList.size(); i++) {
+            sj.add(roomInfoList.get(i).toString());
+        }
+
+        bw = new BufferedWriter(new FileWriter("Room_Info.txt"));
+        bw.write(sj.toString());
+        bw.close();
+
+        JOptionPane.showMessageDialog(null, "Room change request has been approved successfully.", "Approve Room Change", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public void rejectRoomChange() {
+    public void rejectRoomChange() throws IOException {
+        DefaultTableModel model = (DefaultTableModel) RoomChangeRequestTable.getModel();
+        int row = RoomChangeRequestTable.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(null, "No row selected. Please select a row.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String requestID = RoomChangeRequestTable.getValueAt(row, 0).toString();
+        String residentID = RoomChangeRequestTable.getValueAt(row, 1).toString();
+        String residentName = RoomChangeRequestTable.getValueAt(row, 2).toString();
 
+        model.setValueAt("Rejected", row, 8);
+
+        BufferedReader br = new BufferedReader(new FileReader("Change_Room.txt"));
+        String line;
+        ArrayList roomInfoList = new ArrayList();
+        while ((line = br.readLine()) != null) {
+            roomInfoList.add(line);
+        }
+
+        for (int i = 0; i < roomInfoList.size(); i++) {
+            String[] parts = roomInfoList.get(i).toString().split(",");
+            if (parts[0].equals(requestID)) {
+                roomInfoList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + "Rejected");
+            }
+        }
+
+        StringJoiner sj = new StringJoiner(System.lineSeparator());
+
+        for (int i = 0; i < roomInfoList.size(); i++) {
+            sj.add(roomInfoList.get(i).toString());
+        }
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter("Change_Room.txt"));
+        bw.write(sj.toString());
+        bw.close();
+
+        JOptionPane.showMessageDialog(null, "Room change request has been rejected successfully.", "Reject Room Change", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void searchRoomChange() {
@@ -1451,14 +1486,22 @@ public class ManagerMenuPage extends JFrame {
         RejectRoomChangeButton.setText("Reject");
         RejectRoomChangeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                RejectRoomChangeButtonActionPerformed(evt);
+                try {
+                    RejectRoomChangeButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
         ApproveRoomChangeButton.setText("Approve");
         ApproveRoomChangeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                ApproveRoomChangeButtonActionPerformed(evt);
+                try {
+                    ApproveRoomChangeButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -1587,52 +1630,23 @@ public class ManagerMenuPage extends JFrame {
 
 
         ManagerIDField.setEditable(false);
-        ManagerIDField.setText("M0001");
-        ManagerIDField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                ManagerIDFieldActionPerformed(evt);
-            }
-        });
+        ManagerIDField.setText(manager.getId());
 
         UsernameField.setEditable(false);
-        UsernameField.setText("mervin");
-        UsernameField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                UsernameFieldActionPerformed(evt);
-            }
-        });
+        UsernameField.setText(manager.getUsername());
+
 
         PasswordField.setEditable(false);
-        PasswordField.setText("123123");
-        PasswordField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                PasswordFieldActionPerformed(evt);
-            }
-        });
+        PasswordField.setText(manager.getPassword());
 
         NameField.setEditable(false);
-        NameField.setText("Mervin");
-        NameField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                NameFieldActionPerformed(evt);
-            }
-        });
+        NameField.setText(manager.getName());
 
         ContactField.setEditable(false);
-        ContactField.setText("0123456789");
-        ContactField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                ContactFieldActionPerformed(evt);
-            }
-        });
+        ContactField.setText(manager.getContactNumber());
 
         EmailField.setEditable(false);
-        EmailField.setText("mervinooi221@gmail.com");
-        EmailField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                EmailFieldActionPerformed(evt);
-            }
-        });
+        EmailField.setText(manager.getEmail());
 
         EditProfileButton.setText("Edit Profile");
         EditProfileButton.addActionListener(new ActionListener() {
@@ -1825,12 +1839,14 @@ public class ManagerMenuPage extends JFrame {
         // TODO add your handling code here:
     }
 
-    private void ApproveRoomChangeButtonActionPerformed(ActionEvent evt) {
+    private void ApproveRoomChangeButtonActionPerformed(ActionEvent evt) throws IOException {
         // TODO add your handling code here:
+        approveRoomChange();
     }
 
-    private void RejectRoomChangeButtonActionPerformed(ActionEvent evt) {
+    private void RejectRoomChangeButtonActionPerformed(ActionEvent evt) throws IOException {
         // TODO add your handling code here:
+        rejectRoomChange();
     }
 
     private void SearchRoomChangeButtonActionPerformed(ActionEvent evt) {
@@ -1845,30 +1861,6 @@ public class ManagerMenuPage extends JFrame {
     private void SearchPaymentButtonActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
         searchPayment();
-    }
-
-    private void ManagerIDFieldActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void UsernameFieldActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void PasswordFieldActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void NameFieldActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void ContactFieldActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void EmailFieldActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
     }
 
     private void EditProfileButtonActionPerformed(ActionEvent evt) throws IOException {

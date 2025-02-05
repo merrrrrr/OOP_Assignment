@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -27,6 +28,69 @@ public class ManagerMenuPage extends JFrame {
     public ManagerMenuPage(Manager manager) throws IOException {
         this.manager = manager;
         initComponents();
+    }
+
+    public boolean validatePassword(String password) {
+        if (password.length() < 8) {
+            return false;
+        }
+
+        boolean hasUpperCase = false;
+        boolean hasLowerCase = false;
+        boolean hasSpecialChar = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                hasUpperCase = true;
+            } else if (Character.isLowerCase(c)) {
+                hasLowerCase = true;
+            } else if (!Character.isLetterOrDigit(c) && c != ',') {
+                hasSpecialChar = true;
+            }
+        }
+
+        return hasUpperCase && hasLowerCase && hasSpecialChar;
+    }
+
+    public boolean validateEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern p = Pattern.compile(emailRegex);
+        if (email == null) {
+            return false;
+        }
+        return email != null && p.matcher(email).matches();
+    }
+
+    public boolean validateContactNumber(String contactNumber) {
+        if (contactNumber.length() >= 9 && contactNumber.length() <= 11) {
+            for (char c : contactNumber.toCharArray()) {
+                if (!Character.isDigit(c)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isUnique(String username, String contactNumber, String email, String filePath) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingUsername = parts[1];
+                String existingContactNumber = parts[4];
+                String existingEmail = parts[5];
+                if (existingUsername.equals(username) || existingContactNumber.equals(contactNumber) || existingEmail.equals(email)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+        return true;
     }
 
     public String[][] toUserInfoTable(int userType) throws IOException {
@@ -228,42 +292,28 @@ public class ManagerMenuPage extends JFrame {
         int tab = UserInfoTab.getSelectedIndex();
         DefaultTableModel model = null;
         JTable table = null;
-        int row = 0;
-        String id = "";
         String filename = "";
 
         if (tab == 1) {
             model = (DefaultTableModel) StaffInfoTable.getModel();
             table = StaffInfoTable;
-            row = StaffInfoTable.getSelectedRow();
-            id = StaffInfoTable.getValueAt(row, 0).toString();
             filename = "Staff_Info.txt";
 
         } else if (tab == 2) {
             model = (DefaultTableModel) ResidentInfoTable.getModel();
             table = ResidentInfoTable;
-            row = ResidentInfoTable.getSelectedRow();
-            id = ResidentInfoTable.getValueAt(row, 0).toString();
             filename = "Resident_Info.txt";
 
         } else if (tab == 0) {
             model = (DefaultTableModel) ManagerInfoTable.getModel();
             table = ManagerInfoTable;
-            row = ManagerInfoTable.getSelectedRow();
-            id = ManagerInfoTable.getValueAt(row, 0).toString();
             filename = "Manager_Info.txt";
         }
 
-        if (row == -1) {
-            JOptionPane.showMessageDialog(null, "No row selected. Please select a row first.", "Error", JOptionPane.ERROR_MESSAGE);
-            return userInfo;
-        }
 
         userInfo.add(tab);
         userInfo.add(model);
         userInfo.add(table);
-        userInfo.add(row);
-        userInfo.add(id);
         userInfo.add(filename);
         return userInfo;
     }
@@ -314,6 +364,49 @@ public class ManagerMenuPage extends JFrame {
         bw.close();
     }
 
+    public void refreshUserInfoTable() throws IOException {
+        int tab = UserInfoTab.getSelectedIndex();
+        DefaultTableModel model = null;
+        JTable table = null;
+        String filename = "";
+
+        if (tab == 1) {
+            model = (DefaultTableModel) StaffInfoTable.getModel();
+            table = StaffInfoTable;
+            filename = "Staff_Info.txt";
+        } else if (tab == 2) {
+            model = (DefaultTableModel) ResidentInfoTable.getModel();
+            table = ResidentInfoTable;
+            filename = "Resident_Info.txt";
+        } else if (tab == 0) {
+            model = (DefaultTableModel) ManagerInfoTable.getModel();
+            table = ManagerInfoTable;
+            filename = "Manager_Info.txt";
+        }
+
+        table.setRowSorter(null);
+        model.setRowCount(0);
+
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        ArrayList<String> userInfoList = new ArrayList<>();
+        String line;
+        while ((line = br.readLine()) != null) {
+            userInfoList.add(line);
+        }
+        br.close();
+
+        for (String userInfo : userInfoList) {
+            String[] parts = userInfo.split(",");
+            if (tab == 2) {
+                model.addRow(new Object[]{parts[0], parts[1], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8]});
+            } else {
+                model.addRow(new Object[]{parts[0], parts[1], parts[3], parts[4], parts[5]});
+            }
+        }
+
+        setupTableSorter(table);
+    }
+
     public void deleteUserInfo() throws IOException {
         int deleteUser = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this user?", "Delete User", JOptionPane.YES_NO_OPTION);
 
@@ -324,9 +417,10 @@ public class ManagerMenuPage extends JFrame {
             }
 
             DefaultTableModel model = (DefaultTableModel) userInfo.get(1);
-            int row = (int) userInfo.get(3);
-            String id = (String) userInfo.get(4);
-            String filename = (String) userInfo.get(5);
+            JTable table = (JTable) userInfo.get(2);
+            int row = table.getSelectedRow();
+            String id = table.getValueAt(row, 0).toString();
+            String filename = (String) userInfo.get(3);
             model.removeRow(row);
 
 
@@ -357,9 +451,10 @@ public class ManagerMenuPage extends JFrame {
         }
 
         DefaultTableModel model = (DefaultTableModel) userInfoTable.get(1);
-        int row = (int) userInfoTable.get(3);
-        String id = (String) userInfoTable.get(4);
-        String filename = (String) userInfoTable.get(5);
+        JTable table = (JTable) userInfoTable.get(2);
+        int row = table.getSelectedRow();
+        String id = table.getValueAt(row, 0).toString();
+        String filename = (String) userInfoTable.get(3);
 
         String[] changeType = null;
         int column = 0;
@@ -411,7 +506,7 @@ public class ManagerMenuPage extends JFrame {
         }
     }
 
-    public void searchUserInfo() throws IOException {
+    public void searchUserInfo() {
         String input = JOptionPane.showInputDialog(null, "Please enter any details to search user:", "Search User", JOptionPane.PLAIN_MESSAGE);
 
         if (input != null && !input.trim().isEmpty()) {
@@ -434,52 +529,27 @@ public class ManagerMenuPage extends JFrame {
         int tab = RegistrationRequestTab.getSelectedIndex();
         DefaultTableModel model = null;
         JTable table = null;
-        int row = 0;
-        String username = "";
         String filename = "";
 
         if (tab == 1) {
             model = (DefaultTableModel) StaffRegistrationTable.getModel();
             table = StaffRegistrationTable;
-            if (StaffRegistrationTable.getSelectedRow() == -1) {
-                row = 0;
-            } else {
-                row = StaffRegistrationTable.getSelectedRow();
-            }
-            username = StaffRegistrationTable.getValueAt(row, 0).toString();
             filename = "Staff_Registration.txt";
 
         } else if (tab == 2) {
             model = (DefaultTableModel) ResidentRegistrationTable.getModel();
             table = ResidentRegistrationTable;
-            if (ResidentRegistrationTable.getSelectedRow() == -1) {
-                row = 0;
-            } else {
-                row = ResidentRegistrationTable.getSelectedRow();
-            }            username = ResidentRegistrationTable.getValueAt(row, 0).toString();
             filename = "Resident_Registration.txt";
 
         } else if (tab == 0) {
             model = (DefaultTableModel) ManagerRegistrationTable.getModel();
             table = ManagerRegistrationTable;
-            if (ManagerRegistrationTable.getSelectedRow() == -1) {
-                row = 0;
-            } else {
-                row = ManagerRegistrationTable.getSelectedRow();
-            }            username = ManagerRegistrationTable.getValueAt(row, 0).toString();
             filename = "Manager_Registration.txt";
-        }
-
-        if (row == -1) {
-            JOptionPane.showMessageDialog(null, "No row selected. Please select a row first.", "Error", JOptionPane.ERROR_MESSAGE);
-            return userInfo;
         }
 
         userInfo.add(tab);
         userInfo.add(model);
         userInfo.add(table);
-        userInfo.add(row);
-        userInfo.add(username);
         userInfo.add(filename);
         return userInfo;
     }
@@ -491,8 +561,8 @@ public class ManagerMenuPage extends JFrame {
 
         DefaultTableModel model = (DefaultTableModel) getUserRegistrationTable().get(1);
         JTable table = (JTable) getUserRegistrationTable().get(2);
-        int row = (int) getUserRegistrationTable().get(3);
-        String selectedUsername = getUserRegistrationTable().get(4).toString();
+        int row = table.getSelectedRow();
+        String selectedUsername = table.getValueAt(row, 0).toString();
 
         StringJoiner sj = new StringJoiner((","));
 
@@ -500,7 +570,7 @@ public class ManagerMenuPage extends JFrame {
             sj.add(model.getValueAt(row, i).toString());
         }
 
-        String registrationFilename = (String) getUserRegistrationTable().get(5);
+        String registrationFilename = (String) getUserRegistrationTable().get(3);
         BufferedReader RegistrationFileReader = new BufferedReader(new FileReader(registrationFilename));
 
         String line;
@@ -678,9 +748,9 @@ public class ManagerMenuPage extends JFrame {
 
         DefaultTableModel model = (DefaultTableModel) getUserRegistrationTable().get(1);
         JTable table = (JTable) getUserRegistrationTable().get(2);
-        int row = (int) getUserRegistrationTable().get(3);
-        String selectedUsername = getUserRegistrationTable().get(4).toString();
-        String registrationFilename = (String) getUserRegistrationTable().get(5);
+        int row = table.getSelectedRow();
+        String selectedUsername = table.getValueAt(row, 0).toString();
+        String registrationFilename = (String) getUserRegistrationTable().get(3);
 
         model.removeRow(row);
 
@@ -727,6 +797,49 @@ public class ManagerMenuPage extends JFrame {
         } else {
             JOptionPane.showMessageDialog(null, "Search input cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public void refreshRegistration() throws IOException {
+        int tab = RegistrationRequestTab.getSelectedIndex();
+        DefaultTableModel model = null;
+        JTable table = null;
+        String filename = "";
+
+        if (tab == 1) {
+            model = (DefaultTableModel) StaffRegistrationTable.getModel();
+            table = StaffRegistrationTable;
+            filename = "Staff_Registration.txt";
+        } else if (tab == 2) {
+            model = (DefaultTableModel) ResidentRegistrationTable.getModel();
+            table = ResidentRegistrationTable;
+            filename = "Resident_Registration.txt";
+        } else if (tab == 0) {
+            model = (DefaultTableModel) ManagerRegistrationTable.getModel();
+            table = ManagerRegistrationTable;
+            filename = "Manager_Registration.txt";
+        }
+
+        table.setRowSorter(null);
+        model.setRowCount(0);
+
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        ArrayList<String> userRegistrationList = new ArrayList<>();
+        String line;
+        while ((line = br.readLine()) != null) {
+            userRegistrationList.add(line);
+        }
+        br.close();
+
+        for (String userRegistration : userRegistrationList) {
+            String[] parts = userRegistration.split(",");
+            if (tab == 2) {
+                model.addRow(new Object[]{parts[0], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8]});
+            } else {
+                model.addRow(new Object[]{parts[0], parts[2], parts[3], parts[4], parts[5]});
+            }
+        }
+
+        setupTableSorter(table);
     }
 
     public void updateRate() throws IOException {
@@ -809,8 +922,38 @@ public class ManagerMenuPage extends JFrame {
         JOptionPane.showMessageDialog(null, "Room availability has been updated successfully.", "Update Room Availability", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public void viewRoomInfoDetails() {
+    public void viewRoomInfoDetails() throws IOException {
+        DefaultTableModel model = (DefaultTableModel) RoomInfoTable.getModel();
+        int row = RoomInfoTable.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(null, "No row selected. Please select a row.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
+        String roomNumber = RoomInfoTable.getValueAt(row, 0).toString();
+        String roomType = RoomInfoTable.getValueAt(row, 1).toString();
+        String availability = RoomInfoTable.getValueAt(row, 2).toString();
+        String rate = RoomInfoTable.getValueAt(row, 3).toString();
+        ArrayList roomMemberList = new ArrayList();
+
+        BufferedReader br = new BufferedReader(new FileReader("Resident_Info.txt"));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts[7].equals(roomNumber)) {
+                roomMemberList.add(parts[1]);
+            }
+        }
+        br.close();
+
+        StringJoiner roomMember = new StringJoiner(", ");
+        for (int i = 0; i < roomMemberList.size(); i++) {
+            roomMember.add(roomMemberList.get(i).toString());
+        }
+
+        String roomInfo = "Room Number: " + roomNumber + "\nRoom Type: " + roomType + "\nAvailability: " + availability + "\nRate: " + rate + "\nRoom Members: " + roomMember;
+
+        JOptionPane.showMessageDialog(null, roomInfo, "Room Information", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void searchRoomInfo() {
@@ -826,8 +969,45 @@ public class ManagerMenuPage extends JFrame {
         }
     }
 
-    public void viewRoomChangeDetails() {
+    public void refreshRoomInfo() throws IOException {
+        DefaultTableModel model = (DefaultTableModel) RoomInfoTable.getModel();
+        JTable table = RoomInfoTable;
 
+        table.setRowSorter(null);
+        model.setRowCount(0);
+
+        BufferedReader br = new BufferedReader(new FileReader("Room_Info.txt"));
+        ArrayList<String> roomInfoList = new ArrayList<>();
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            model.addRow(new Object[]{parts[0], parts[1], parts[2], parts[3]});
+        }
+        br.close();
+
+        setupTableSorter(table);
+    }
+
+    public void viewRoomChangeDetails() {
+        DefaultTableModel model = (DefaultTableModel) RoomChangeRequestTable.getModel();
+        int row = RoomChangeRequestTable.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(null, "No row selected. Please select a row.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String requestID = RoomChangeRequestTable.getValueAt(row, 0).toString();
+        String residentID = RoomChangeRequestTable.getValueAt(row, 1).toString();
+        String residentName = RoomChangeRequestTable.getValueAt(row, 2).toString();
+        String gender = RoomChangeRequestTable.getValueAt(row, 3).toString();
+        String currentRoomNumber = RoomChangeRequestTable.getValueAt(row, 4).toString();
+        String currentRoomType = RoomChangeRequestTable.getValueAt(row, 5).toString();
+        String newRoomType = RoomChangeRequestTable.getValueAt(row, 6).toString();
+        String description = RoomChangeRequestTable.getValueAt(row, 7).toString();
+
+        String roomChangeInfo = "Request ID: " + requestID + "\nResident ID: " + residentID + "\nResident Name: " + residentName + "\nGender: " + gender
+                + "\nCurrent Room Number: " + currentRoomNumber + "\nCurrent Room Type: " + currentRoomType + "\nNew Room Type: " + newRoomType
+                + "\nDescription: " + description;
     }
 
     public void approveRoomChange() throws IOException {
@@ -956,8 +1136,28 @@ public class ManagerMenuPage extends JFrame {
         }
     }
 
-    public void viewPaymentDetails() {
+    public void viewReceipt() {
 
+    }
+
+    public void refreshRoomChangeRequest() throws IOException {
+        DefaultTableModel model = (DefaultTableModel) RoomChangeRequestTable.getModel();
+        JTable table = RoomChangeRequestTable;
+
+        table.setRowSorter(null);
+        model.setRowCount(0);
+
+        BufferedReader br = new BufferedReader(new FileReader("Change_Room.txt"));
+        ArrayList<String> requestList = new ArrayList<>();
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            model.addRow(new Object[]{parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8]});
+        }
+
+        br.close();
+
+        setupTableSorter(table);
     }
 
     public void searchPayment() {
@@ -971,6 +1171,26 @@ public class ManagerMenuPage extends JFrame {
         } else {
             JOptionPane.showMessageDialog(null, "Search input cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public void refreshPaymentRecord() throws IOException {
+        DefaultTableModel model = (DefaultTableModel) PaymentRecordTable.getModel();
+        JTable table = PaymentRecordTable;
+
+        table.setRowSorter(null);
+        model.setRowCount(0);
+
+        BufferedReader br = new BufferedReader(new FileReader("Payment_Record.txt"));
+        ArrayList<String> paymentList = new ArrayList<>();
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            model.addRow(new Object[]{parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]});
+        }
+
+        br.close();
+
+        setupTableSorter(table);
     }
 
     public void editProfile() throws IOException {
@@ -1066,6 +1286,7 @@ public class ManagerMenuPage extends JFrame {
         EditUserButton = new JButton();
         SearchUserInfoButton = new JButton();
         ViewUserDetailsButton = new JButton();
+        RefreshUserInfoButton = new JButton();
         RegistrationPanel = new JPanel();
         RegistrationRequestTab = new JTabbedPane();
         jScrollPane10 = new JScrollPane();
@@ -1077,12 +1298,14 @@ public class ManagerMenuPage extends JFrame {
         SearchRegistrationButton = new JButton();
         ApproveRegistrationButton = new JButton();
         RejectRegistrationButton = new JButton();
+        RefreshRegistrationButton = new JButton();
         RoomInformationPanel = new JPanel();
         jScrollPane2 = new JScrollPane();
         RoomInfoTable = new JTable();
         UpdateRoomAvailabilityButton = new JButton();
         ViewRoomInfoDetailsButton = new JButton();
         SearchRoomInfoButton = new JButton();
+        RefreshRoomInfoButton = new JButton();
         RoomChangeRequestPanel = new JPanel();
         jScrollPane3 = new JScrollPane();
         RoomChangeRequestTable = new JTable();
@@ -1090,11 +1313,13 @@ public class ManagerMenuPage extends JFrame {
         ApproveRoomChangeButton = new JButton();
         ViewRoomChangeDetailsButton = new JButton();
         SearchRoomChangeButton = new JButton();
+        RefreshRoomChangeRequestButton = new JButton();
         PaymentRecordPanel = new JPanel();
         jScrollPane5 = new JScrollPane();
         PaymentRecordTable = new JTable();
-        ViewPaymentDetailsButton = new JButton();
+        ViewReceiptButton = new JButton();
         SearchPaymentButton = new JButton();
+        RefreshPaymentButton = new JButton();
         ProfilePanel = new JPanel();
         UpdateRateButton = new JButton();
         UsernameLabel = new JLabel();
@@ -1118,7 +1343,7 @@ public class ManagerMenuPage extends JFrame {
         ManagerInfoTable.setModel(new DefaultTableModel(
                 toUserInfoTable(1),
                 new String [] {
-                        "ManagerID", "Username", "Name", "Contact Number", "Email Address"
+                        "Manager ID", "Username", "Name", "Contact Number", "Email Address"
                 }
         ) {
             Class[] types = new Class [] {
@@ -1224,6 +1449,17 @@ public class ManagerMenuPage extends JFrame {
             }
         });
 
+        RefreshUserInfoButton.setText("Refresh");
+        RefreshUserInfoButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    RefreshUserInfoButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         GroupLayout UserInfoPanelLayout = new GroupLayout(UserInfoPanel);
         UserInfoPanel.setLayout(UserInfoPanelLayout);
         UserInfoPanelLayout.setHorizontalGroup(
@@ -1238,6 +1474,8 @@ public class ManagerMenuPage extends JFrame {
                                                 .addComponent(DeleteUserButton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(EditUserButton)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(RefreshUserInfoButton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(SearchUserInfoButton)))
                                 .addContainerGap())
@@ -1252,7 +1490,8 @@ public class ManagerMenuPage extends JFrame {
                                         .addComponent(AddUserButton)
                                         .addComponent(DeleteUserButton)
                                         .addComponent(EditUserButton)
-                                        .addComponent(SearchUserInfoButton))
+                                        .addComponent(SearchUserInfoButton)
+                                        .addComponent(RefreshUserInfoButton))
                                 .addContainerGap(42, Short.MAX_VALUE))
         );
 
@@ -1343,6 +1582,17 @@ public class ManagerMenuPage extends JFrame {
             }
         });
 
+        RefreshRegistrationButton.setText("Refresh");
+        RefreshRegistrationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    RefreshRegistrationButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         GroupLayout jPanel1Layout = new GroupLayout(RegistrationPanel);
         RegistrationPanel.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -1353,9 +1603,11 @@ public class ManagerMenuPage extends JFrame {
                                         .addComponent(RegistrationRequestTab, GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
                                         .addGroup(jPanel1Layout.createSequentialGroup()
                                                 .addComponent(ApproveRegistrationButton)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(RejectRegistrationButton)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(RefreshRegistrationButton)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(SearchRegistrationButton)))
                                 .addContainerGap())
         );
@@ -1369,7 +1621,8 @@ public class ManagerMenuPage extends JFrame {
                                         .addComponent(SearchRegistrationButton)
                                         .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                                 .addComponent(ApproveRegistrationButton)
-                                                .addComponent(RejectRegistrationButton)))
+                                                .addComponent(RejectRegistrationButton)
+                                                .addComponent(RefreshRegistrationButton)))
                                 .addContainerGap(42, Short.MAX_VALUE))
         );
 
@@ -1417,7 +1670,11 @@ public class ManagerMenuPage extends JFrame {
         ViewRoomInfoDetailsButton.setText("View Details");
         ViewRoomInfoDetailsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                ViewRoomInfoDetailsButtonActionPerformed(evt);
+                try {
+                    ViewRoomInfoDetailsButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -1425,6 +1682,17 @@ public class ManagerMenuPage extends JFrame {
         SearchRoomInfoButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 SearchRoomInfoButtonActionPerformed(evt);
+            }
+        });
+
+        RefreshRoomInfoButton.setText("Refresh");
+        RefreshRoomInfoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    RefreshRoomInfoButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -1440,6 +1708,8 @@ public class ManagerMenuPage extends JFrame {
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(UpdateRoomAvailabilityButton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(RefreshRoomInfoButton)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(ViewRoomInfoDetailsButton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(SearchRoomInfoButton))
@@ -1458,7 +1728,8 @@ public class ManagerMenuPage extends JFrame {
                                         .addComponent(UpdateRoomAvailabilityButton)
                                         .addComponent(UpdateRateButton)
                                         .addComponent(ViewRoomInfoDetailsButton)
-                                        .addComponent(SearchRoomInfoButton))
+                                        .addComponent(SearchRoomInfoButton)
+                                        .addComponent(RefreshRoomInfoButton))
                                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
@@ -1517,6 +1788,16 @@ public class ManagerMenuPage extends JFrame {
             }
         });
 
+        RefreshRoomChangeRequestButton.setText("Refresh");
+        RefreshRoomChangeRequestButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    RefreshRoomChangeRequestButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         GroupLayout RoomChangeRequestPanelLayout = new GroupLayout(RoomChangeRequestPanel);
         RoomChangeRequestPanel.setLayout(RoomChangeRequestPanelLayout);
@@ -1530,6 +1811,8 @@ public class ManagerMenuPage extends JFrame {
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(RejectRoomChangeButton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(RefreshRoomChangeRequestButton)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(ViewRoomChangeDetailsButton)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(SearchRoomChangeButton))
@@ -1548,7 +1831,8 @@ public class ManagerMenuPage extends JFrame {
                                         .addComponent(RejectRoomChangeButton)
                                         .addComponent(ApproveRoomChangeButton)
                                         .addComponent(ViewRoomChangeDetailsButton)
-                                        .addComponent(SearchRoomChangeButton))
+                                        .addComponent(SearchRoomChangeButton)
+                                        .addComponent(RefreshRoomChangeRequestButton))
                                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
@@ -1571,10 +1855,10 @@ public class ManagerMenuPage extends JFrame {
         });
         jScrollPane5.setViewportView(PaymentRecordTable);
 
-        ViewPaymentDetailsButton.setText("View Details");
-        ViewPaymentDetailsButton.addActionListener(new ActionListener() {
+        ViewReceiptButton.setText("View Receipt");
+        ViewReceiptButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                ViewPaymentDetailsButtonActionPerformed(evt);
+                ViewReceiptButtonActionPerformed(evt);
             }
         });
 
@@ -1585,13 +1869,26 @@ public class ManagerMenuPage extends JFrame {
             }
         });
 
+        RefreshPaymentButton.setText("Refresh");
+        RefreshPaymentButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    RefreshPaymentButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         GroupLayout PaymentRecordPanelLayout = new GroupLayout(PaymentRecordPanel);
         PaymentRecordPanel.setLayout(PaymentRecordPanelLayout);
         PaymentRecordPanelLayout.setHorizontalGroup(
                 PaymentRecordPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(PaymentRecordPanelLayout.createSequentialGroup()
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(ViewPaymentDetailsButton)
+                                .addComponent(RefreshPaymentButton)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ViewReceiptButton)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(SearchPaymentButton)
                                 .addContainerGap())
@@ -1607,8 +1904,9 @@ public class ManagerMenuPage extends JFrame {
                                 .addComponent(jScrollPane5, GroupLayout.PREFERRED_SIZE, 381, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(PaymentRecordPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(ViewPaymentDetailsButton)
-                                        .addComponent(SearchPaymentButton))
+                                        .addComponent(ViewReceiptButton)
+                                        .addComponent(SearchPaymentButton)
+                                        .addComponent(RefreshPaymentButton))
                                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
@@ -1824,8 +2122,9 @@ public class ManagerMenuPage extends JFrame {
         updateRoomAvailability();
     }
 
-    private void ViewRoomInfoDetailsButtonActionPerformed(ActionEvent evt) {
+    private void ViewRoomInfoDetailsButtonActionPerformed(ActionEvent evt) throws IOException {
         // TODO add your handling code here:
+        viewRoomInfoDetails();
     }
 
     private void SearchRoomInfoButtonActionPerformed(ActionEvent evt) {
@@ -1835,6 +2134,7 @@ public class ManagerMenuPage extends JFrame {
 
     private void ViewRoomChangeDetailsButtonActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
+        viewRoomChangeDetails();
     }
 
     private void ApproveRoomChangeButtonActionPerformed(ActionEvent evt) throws IOException {
@@ -1852,7 +2152,7 @@ public class ManagerMenuPage extends JFrame {
         searchRoomChange();
     }
 
-    private void ViewPaymentDetailsButtonActionPerformed(ActionEvent evt) {
+    private void ViewReceiptButtonActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
     }
 
@@ -1873,6 +2173,32 @@ public class ManagerMenuPage extends JFrame {
             JOptionPane.showMessageDialog(null, "You have successfully logged out.\nThank you for using APU Hostel Management Payment System.", "Log Out", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
         }
+    }
+
+    private void RefreshRegistrationButtonActionPerformed(ActionEvent evt) throws IOException {
+        // TODO add your handling code here:
+        refreshRegistration();
+    }
+
+    private void RefreshRoomInfoButtonActionPerformed(ActionEvent evt) throws IOException {
+        // TODO add your handling code here:
+        refreshRoomInfo();
+    }
+
+    private void RefreshRoomChangeRequestButtonActionPerformed(ActionEvent evt) throws IOException {
+        // TODO add your handling code here:
+        refreshRoomChangeRequest();
+    }
+
+    private void RefreshPaymentButtonActionPerformed(ActionEvent evt) throws IOException {
+        // TODO add your handling code here:
+        refreshPaymentRecord();
+    }
+    
+
+    private void RefreshUserInfoButtonActionPerformed(ActionEvent evt) throws IOException {
+        // TODO add your handling code here:
+        refreshUserInfoTable();
     }
 
     /**
@@ -1940,6 +2266,11 @@ public class ManagerMenuPage extends JFrame {
     private JPanel PaymentRecordPanel;
     private JTable PaymentRecordTable;
     private JPanel ProfilePanel;
+    private JButton RefreshUserInfoButton;
+    private JButton RefreshPaymentButton;
+    private JButton RefreshRegistrationButton;
+    private JButton RefreshRoomChangeRequestButton;
+    private JButton RefreshRoomInfoButton;
     private JTabbedPane RegistrationRequestTab;
     private JButton RejectRegistrationButton;
     private JButton RejectRoomChangeButton;
@@ -1960,7 +2291,7 @@ public class ManagerMenuPage extends JFrame {
     private JTabbedPane UserInfoTab;
     private JTextField UsernameField;
     private JLabel UsernameLabel;
-    private JButton ViewPaymentDetailsButton;
+    private JButton ViewReceiptButton;
     private JButton ViewRoomChangeDetailsButton;
     private JButton ViewRoomInfoDetailsButton;
     private JButton ViewUserDetailsButton;

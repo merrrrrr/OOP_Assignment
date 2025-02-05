@@ -201,6 +201,13 @@ public class RegisterPage extends javax.swing.JFrame {
                                 .addContainerGap(32, Short.MAX_VALUE))
         );
 
+        if (userType == 1 || userType == 2) {
+            genderComboBox1.setVisible(false);
+            roomTypeComboBox1.setVisible(false);
+            jLabel11.setVisible(false);
+            jLabel12.setVisible(false);
+        }
+
         pack();
     }// </editor-fold>
 

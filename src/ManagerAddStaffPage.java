@@ -152,15 +152,32 @@ public class ManagerAddStaffPage extends javax.swing.JFrame {
 
         br.close();
 
-        if (count + 1 < 10) {
-            staffID = "S" + "000" + String.valueOf(count + 1);
-        } else if (count + 1 < 100) {
-            staffID = "S" + "00" + String.valueOf(count + 1);
-        } else if (count + 1 < 1000) {
-            staffID = "S" + "0" + String.valueOf(count + 1);
-        } else {
-            staffID = "S" + String.valueOf(count + 1);
+        boolean isIDExist = true;
+        while (isIDExist) {
+            if (count + 1 < 10) {
+                staffID = "S" + "000" + String.valueOf(count + 1);
+            } else if (count + 1 < 100) {
+                staffID = "S" + "00" + String.valueOf(count + 1);
+            } else if (count + 1 < 1000) {
+                staffID = "S" + "0" + String.valueOf(count + 1);
+            } else {
+                staffID = "S" + String.valueOf(count + 1);
+            }
+            isIDExist = false;
+            br = new BufferedReader(new FileReader("Staff_Info.txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] staffInfo = line.split(",");
+                if (staffID.equals(staffInfo[0])) {
+                    count++;
+                    isIDExist = true;
+                    break;
+                }
+            }
+            br.close();
         }
+
+        ManagerMenuPage managerMenuPage = new ManagerMenuPage();
 
         String username = UsernameField.getText();
         String password = PasswordField.getText();
@@ -168,11 +185,42 @@ public class ManagerAddStaffPage extends javax.swing.JFrame {
         String name = NameField.getText();
         String contact = ContactNumberField.getText();
         String email = EmailField.getText();
+
+        if (username == null || password == null || confirmPassword == null || name == null || contact == null || email == null) {
+            JOptionPane.showMessageDialog(null, "Please fill in all fields");
+            return;
+        } else if (username.trim().isEmpty() || password.trim().isEmpty() || confirmPassword.trim().isEmpty() || name.trim().isEmpty() || contact.trim().isEmpty() || email.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all fields");
+            return;
+        }else if (managerMenuPage.validateName(name) == false) {
+            JOptionPane.showMessageDialog(null, "Invalid name. No special characters or numbers allowed");
+            return;
+        } else if (managerMenuPage.validatePassword(password) == false) {
+            JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character");
+            return;
+        } else if (managerMenuPage.validateEmail(email) == false) {
+            JOptionPane.showMessageDialog(null, "Invalid email address. Please enter a valid email address");
+            return;
+        } else if (managerMenuPage.validateContactNumber(contact) == false) {
+            JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number without any special characters");
+            return;
+        } else if (managerMenuPage.isEmailUnique(email, "Staff_Info.txt") == false) {
+            JOptionPane.showMessageDialog(null, "Email address already exists. Please enter a different email address.");
+            return;
+        } else if (managerMenuPage.isUsernameUnique(username, "Staff_Info.txt") == false) {
+            JOptionPane.showMessageDialog(null, "Username already exists. Please enter a different username.");
+            return;
+        } else if (managerMenuPage.isContactNumberUnique(contact, "Staff_Info.txt") == false) {
+            JOptionPane.showMessageDialog(null, "Contact number already exists. Please enter a different contact number.");
+            return;
+        }
+
         String line = staffID + "," +  username + "," + password + "," + name + "," + contact + "," + email;
 
         if (password.equals(confirmPassword)) {
             try {
                 BufferedWriter bw = new BufferedWriter(new FileWriter("Staff_Info.txt", true));
+                bw.newLine();
                 bw.write(line);
                 bw.close();
                 JOptionPane.showMessageDialog(null, "Staff added successfully");

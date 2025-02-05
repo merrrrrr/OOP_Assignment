@@ -157,15 +157,32 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
 
         br.close();
 
-        if (count + 1 < 10) {
-            managerID = "M" + "000" + String.valueOf(count + 1);
-        } else if (count + 1 < 100) {
-            managerID = "M" + "00" + String.valueOf(count + 1);
-        } else if (count + 1 < 1000) {
-            managerID = "M" + "0" + String.valueOf(count + 1);
-        } else {
-            managerID = "M" + String.valueOf(count + 1);
+        boolean isIDExist = true;
+        while (isIDExist) {
+            if (count + 1 < 10) {
+                managerID = "M" + "000" + String.valueOf(count + 1);
+            } else if (count + 1 < 100) {
+                managerID = "M" + "00" + String.valueOf(count + 1);
+            } else if (count + 1 < 1000) {
+                managerID = "M" + "0" + String.valueOf(count + 1);
+            } else {
+                managerID = "M" + String.valueOf(count + 1);
+            }
+            isIDExist = false;
+            br = new BufferedReader(new FileReader("Manager_Info.txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] residentInfo = line.split(",");
+                if (managerID.equals(residentInfo[0])) {
+                    count++;
+                    isIDExist = true;
+                    break;
+                }
+            }
+            br.close();
         }
+
+        ManagerMenuPage managerMenuPage = new ManagerMenuPage();
 
         String username = UsernameField.getText();
         String password = PasswordField.getText();
@@ -175,9 +192,39 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
         String email = EmailField.getText();
         String line = managerID + "," +  username + "," + password + "," + name + "," + contact + "," + email;
 
+        if (username == null || password == null || confirmPassword == null || name == null || contact == null || email == null) {
+            JOptionPane.showMessageDialog(null, "Please fill in all fields");
+            return;
+        } else if (username.trim().isEmpty() || password.trim().isEmpty() || confirmPassword.trim().isEmpty() || name.trim().isEmpty() || contact.trim().isEmpty() || email.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all fields");
+            return;
+        } else if (managerMenuPage.validateName(name) == false) {
+            JOptionPane.showMessageDialog(null, "Invalid name. No special characters or numbers allowed");
+            return;
+        } else if (managerMenuPage.validatePassword(password) == false) {
+            JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character");
+            return;
+        } else if (managerMenuPage.validateEmail(email) == false) {
+            JOptionPane.showMessageDialog(null, "Invalid email address. Please enter a valid email address");
+            return;
+        } else if (managerMenuPage.validateContactNumber(contact) == false) {
+            JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number without any special characters");
+            return;
+        } else if (managerMenuPage.isUsernameUnique(username, "Manager_Info.txt") == false) {
+            JOptionPane.showMessageDialog(null, "Username already exists. Please enter a different username");
+            return;
+        } else if (managerMenuPage.isContactNumberUnique(contact, "Manager_Info.txt") == false) {
+            JOptionPane.showMessageDialog(null, "Contact number already exists. Please enter a different contact number");
+            return;
+        } else if (managerMenuPage.isEmailUnique(email, "Manager_Info.txt") == false) {
+            JOptionPane.showMessageDialog(null, "Email address already exists. Please enter a different email address");
+            return;
+        }
+
         if (password.equals(confirmPassword)) {
             try {
                 BufferedWriter bw = new BufferedWriter(new FileWriter("Manager_Info.txt", true));
+                bw.newLine();
                 bw.write(line);
                 bw.close();
                 JOptionPane.showMessageDialog(null, "Manager added successfully");

@@ -1,5 +1,8 @@
 import javax.swing.*;
 import java.io.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  *
@@ -20,9 +23,17 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
             String line = "";
             while ((line = br.readLine()) != null) {
                 String[] roomInfo = line.split(",");
-                int availability = Integer.getInteger(roomInfo[2]);
-                if (Integer.getInteger(roomInfo[2]) != 0) {
-                    RoomNumberComboBox.addItem(roomInfo[0]);
+                int availability = Integer.valueOf(roomInfo[2]);
+                if (GenderComboBox.getSelectedIndex() == 0 && Integer.valueOf(roomInfo[2]) != 0) {
+                    if (roomInfo[0].toString().charAt(0) == 'M') {
+                        RoomNumberComboBox.addItem(roomInfo[0]);
+                        RoomNumberComboBox.setVisible(true);
+                    }
+                } else if (GenderComboBox.getSelectedIndex() == 1 && Integer.valueOf(roomInfo[2]) != 0) {
+                    if (roomInfo[0].toString().charAt(0) == 'F') {
+                        RoomNumberComboBox.addItem(roomInfo[0]);
+                        RoomNumberComboBox.setVisible(true);
+                    }
                 }
             }
 
@@ -104,10 +115,15 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
         UsernameLabel.setText("Username");
 
         GenderComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
-
+        GenderComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RoomNumberComboBox.removeAllItems();
+                getAvailableRooms();
+            }
+        });
 
         RoomNumberComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {} ));
-        getAvailableRooms();
+        RoomNumberComboBox.setVisible(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -203,14 +219,29 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
 
         br.close();
 
-        if (count + 1 < 10) {
-            residentID = "R" + "000" + String.valueOf(count + 1);
-        } else if (count + 1 < 100) {
-            residentID = "R" + "00" + String.valueOf(count + 1);
-        } else if (count + 1 < 1000) {
-            residentID = "R" + "0" + String.valueOf(count + 1);
-        } else {
-            residentID = "R" + String.valueOf(count + 1);
+        boolean isIDExist = true;
+        while (isIDExist) {
+            if (count + 1 < 10) {
+                residentID = "R" + "000" + String.valueOf(count + 1);
+            } else if (count + 1 < 100) {
+                residentID = "R" + "00" + String.valueOf(count + 1);
+            } else if (count + 1 < 1000) {
+                residentID = "R" + "0" + String.valueOf(count + 1);
+            } else {
+                residentID = "R" + String.valueOf(count + 1);
+            }
+            isIDExist = false;
+            br = new BufferedReader(new FileReader("Resident_Info.txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] residentInfo = line.split(",");
+                if (residentID.equals(residentInfo[0])) {
+                    count++;
+                    isIDExist = true;
+                    break;
+                }
+            }
+            br.close();
         }
 
         String username = UsernameField.getText();
@@ -221,12 +252,53 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
         String email = EmailField.getText();
         String gender = GenderComboBox.getSelectedItem().toString();
         String roomNumber = RoomNumberComboBox.getSelectedItem().toString();
-        String overdueAmount = "0.00";
-        String line = residentID + "," +  username + "," + password + "," + name + "," + contact + "," + email + "," + gender + "," + roomNumber + "," + overdueAmount;
+        String roomType = "";
+        if (roomNumber.charAt(1) == 'S') {
+            roomType = "Single Room";
+        } else if (roomNumber.charAt(1) == 'D') {
+            roomType = "Double Sharing Room";
+        } else if (roomNumber.charAt(1) == 'T') {
+            roomType = "Triple Sharing Room";
+        }
+        String overdueAmount = "RM00.00";
+        LocalDate date = LocalDate.now();
+        String line = residentID + "," +  username + "," + password + "," + name + "," + contact + "," + email + "," + gender + "," + roomNumber + "," + roomType + "," + overdueAmount + "," + date.toString();
+
+        ManagerMenuPage managerMenuPage = new ManagerMenuPage();
+
+        if (username == null || password == null || confirmPassword == null || name == null || contact == null || email == null) {
+            JOptionPane.showMessageDialog(null, "Please fill in all fields");
+            return;
+        } else if (username.trim().isEmpty() || password.trim().isEmpty() || confirmPassword.trim().isEmpty() || name.trim().isEmpty() || contact.trim().isEmpty() || email.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all fields");
+            return;
+        } else if (managerMenuPage.validateName(name) == false) {
+            JOptionPane.showMessageDialog(null, "Invalid name. No special characters or numbers allowed");
+            return;
+        } else if (managerMenuPage.validatePassword(password) == false) {
+            JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character");
+            return;
+        } else if (managerMenuPage.validateEmail(email) == false) {
+            JOptionPane.showMessageDialog(null, "Invalid email address. Please enter a valid email address");
+            return;
+        } else if (managerMenuPage.validateContactNumber(contact) == false) {
+            JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number without any special characters");
+            return;
+        } else if (managerMenuPage.isUsernameUnique(username, "Resident_Info.txt") == false) {
+            JOptionPane.showMessageDialog(null, "Username already exists. Please enter a different username");
+            return;
+        } else if (managerMenuPage.isEmailUnique(email, "Resident_Info.txt") == false) {
+            JOptionPane.showMessageDialog(null, "Email already exists. Please enter a different email");
+            return;
+        } else if (managerMenuPage.isContactNumberUnique(contact, "Resident_Info.txt") == false) {
+            JOptionPane.showMessageDialog(null, "Contact number already exists. Please enter a different contact number");
+            return;
+        }
 
         if (password.equals(confirmPassword)) {
             try {
                 BufferedWriter bw = new BufferedWriter(new FileWriter("Resident_Info.txt", true));
+                bw.newLine();
                 bw.write(line);
                 bw.close();
                 JOptionPane.showMessageDialog(null, "Resident added successfully");

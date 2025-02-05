@@ -30,6 +30,13 @@ public class ManagerMenuPage extends JFrame {
         initComponents();
     }
 
+    public boolean validateName(String name) {
+        if (name == null || name.isEmpty()) {
+            return false;
+        }
+        return name.matches("[a-zA-Z]+");
+    }
+
     public boolean validatePassword(String password) {
         if (password.length() < 8) {
             return false;
@@ -74,16 +81,48 @@ public class ManagerMenuPage extends JFrame {
         return false;
     }
 
-    public boolean isUnique(String username, String contactNumber, String email, String filePath) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filePath));
+    public boolean isUsernameUnique(String username, String filename) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filename));
         String line;
         while ((line = br.readLine()) != null) {
             String[] parts = line.split(",");
             if (parts.length > 0) {
                 String existingUsername = parts[1];
-                String existingContactNumber = parts[4];
-                String existingEmail = parts[5];
-                if (existingUsername.equals(username) || existingContactNumber.equals(contactNumber) || existingEmail.equals(email)) {
+                if (existingUsername.equals(username)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+        return true;
+    }
+
+    public boolean isEmailUnique(String email, String filename) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingEmail = parts[5]; // Assuming the email is the 5th element in the CSV
+                if (existingEmail.equals(email)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+        return true;
+    }
+
+    public boolean isContactNumberUnique(String contactNumber, String filename) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingContactNumber = parts[4]; // Assuming the contact number is the 4th element in the CSV
+                if (existingContactNumber.equals(contactNumber)) {
                     br.close();
                     return false;
                 }
@@ -108,7 +147,7 @@ public class ManagerMenuPage extends JFrame {
         if (userType == 1 || userType == 2) {
             tableInfo = new String[lineCount][5];
         } else if (userType == 3) {
-            tableInfo = new String[lineCount][8];
+            tableInfo = new String[lineCount][9];
         }
 
         br = new BufferedReader(new FileReader(filename));
@@ -126,7 +165,9 @@ public class ManagerMenuPage extends JFrame {
             if (userType == 3) {
                 tableInfo[i][5] = parts[6]; // gender
                 tableInfo[i][6] = parts[7]; // room number
-                tableInfo[i][7] = parts[8]; // overdue amount
+                tableInfo[i][7] = parts[8]; // room type
+                tableInfo[i][8] = parts[9]; // overdue amount
+
             }
 
             i++;
@@ -398,7 +439,7 @@ public class ManagerMenuPage extends JFrame {
         for (String userInfo : userInfoList) {
             String[] parts = userInfo.split(",");
             if (tab == 2) {
-                model.addRow(new Object[]{parts[0], parts[1], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8]});
+                model.addRow(new Object[]{parts[0], parts[1], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8], parts[9]});
             } else {
                 model.addRow(new Object[]{parts[0], parts[1], parts[3], parts[4], parts[5]});
             }
@@ -408,6 +449,16 @@ public class ManagerMenuPage extends JFrame {
     }
 
     public void deleteUserInfo() throws IOException {
+        DefaultTableModel model = (DefaultTableModel) getUserInfoTable().get(1);
+        JTable table = (JTable) getUserInfoTable().get(2);
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(null, "No row selected. Please select a row.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String id = table.getValueAt(row, 0).toString();
+        String filename = (String) getUserInfoTable().get(3);
+
         int deleteUser = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this user?", "Delete User", JOptionPane.YES_NO_OPTION);
 
         if (deleteUser == JOptionPane.YES_OPTION) {
@@ -416,11 +467,7 @@ public class ManagerMenuPage extends JFrame {
                 return;
             }
 
-            DefaultTableModel model = (DefaultTableModel) userInfo.get(1);
-            JTable table = (JTable) userInfo.get(2);
-            int row = table.getSelectedRow();
-            String id = table.getValueAt(row, 0).toString();
-            String filename = (String) userInfo.get(3);
+
             model.removeRow(row);
 
 
@@ -453,15 +500,40 @@ public class ManagerMenuPage extends JFrame {
         DefaultTableModel model = (DefaultTableModel) userInfoTable.get(1);
         JTable table = (JTable) userInfoTable.get(2);
         int row = table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(null, "No row selected. Please select a row.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         String id = table.getValueAt(row, 0).toString();
         String filename = (String) userInfoTable.get(3);
 
         String[] changeType = null;
         int column = 0;
         String value = null;
+        String[] availableRooms = null;
 
         if (filename.equals("Resident_Info.txt")) {
+            BufferedReader roomInfoReader = new BufferedReader(new FileReader("Room_Info.txt"));
+            String line;
+            int roomCount = 0;
+            while ((line = roomInfoReader.readLine()) != null) {
+                if (!line.split(",")[2].equals("0")) {
+                    roomCount++;
+                }
+            }
+
+            availableRooms = new String[roomCount];
+
             changeType = new String[]{"Username", "Name", "Contact Number", "Email Address", "Room Number", "Overdue Amount"};
+            int count = 0;
+            line = "";
+            roomInfoReader = new BufferedReader(new FileReader("Room_Info.txt"));
+            while ((line = roomInfoReader.readLine()) != null) {
+                if (!line.split(",")[2].equals("0")) {
+                    availableRooms[count] = line.split(",")[0];
+                    count++;
+                }
+            }
 
         } else if (filename.equals("Manager_Info.txt") || filename.equals("Staff_Info.txt")) {
             changeType = new String[]{"Username", "Name", "Contact Number", "Email Address"};
@@ -475,16 +547,84 @@ public class ManagerMenuPage extends JFrame {
 
         if (choice == 0) {
             value = JOptionPane.showInputDialog("Enter new username: ");
+            if (value == null) {
+                return;
+            } else if (!isUsernameUnique(value, filename)) {
+                JOptionPane.showMessageDialog(null, "Username already exists. Please enter other username.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         } else if (choice == 1) {
             value = JOptionPane.showInputDialog("Enter new name: ");
+            if (value == null) {
+                return;
+            } else if (!validateName(value)) {
+                JOptionPane.showMessageDialog(null, "Invalid name. Please enter a valid name.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         } else if (choice == 2) {
             value = JOptionPane.showInputDialog("Enter new contact number: ");
+            if (value == null) {
+                return;
+            } else if (!validateContactNumber(value)) {
+                JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a contact number with 9 to 11 digit number.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (!isContactNumberUnique(value, filename)) {
+                JOptionPane.showMessageDialog(null, "Contact number already exists. Please enter other contact number.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         } else if (choice == 3) {
             value = JOptionPane.showInputDialog("Enter new email address: ");
+            if (value == null) {
+                return;
+            } else if (!validateEmail(value)) {
+                JOptionPane.showMessageDialog(null, "Invalid email address. Please enter a valid email address.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (!isEmailUnique(value, filename)) {
+                JOptionPane.showMessageDialog(null, "Email address already exists. Please enter other email address.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         } else if (choice == 4) {
-            value = JOptionPane.showInputDialog("Enter new room number: ");
+            value = JOptionPane.showInputDialog(null, "Select new room number:", "Edit Room Number", JOptionPane.PLAIN_MESSAGE, null, availableRooms, availableRooms[0]).toString();
+            String currentRoomNumber = table.getValueAt(row, 6).toString();
+            String newRoomNumber = value;
+
+            BufferedReader roomInfoReader = new BufferedReader(new FileReader("Room_Info.txt"));
+            ArrayList roomInfoList = new ArrayList();
+            String line;
+            while ((line = roomInfoReader.readLine()) != null) {
+                roomInfoList.add(line);
+            }
+
+            for (int i = 0; i < roomInfoList.size(); i++) {
+                String[] parts = roomInfoList.get(i).toString().split(",");
+                if (parts[0].equals(currentRoomNumber)) {
+                    roomInfoList.set(i, parts[0] + "," + parts[1] + "," + (Integer.valueOf(parts[2]) + 1) + "," + parts[3]);
+                }
+            }
+
+            for (int i = 0; i < roomInfoList.size(); i++) {
+                String[] parts = roomInfoList.get(i).toString().split(",");
+                if (parts[0].equals(newRoomNumber)) {
+                    roomInfoList.set(i, parts[0] + "," + parts[1] + "," + (Integer.valueOf(parts[2]) - 1) + "," + parts[3]);
+                }
+            }
+
+            StringJoiner sj = new StringJoiner(System.lineSeparator());
+            for (int i = 0; i < roomInfoList.size(); i++) {
+                sj.add(roomInfoList.get(i).toString());
+            }
+
+            BufferedWriter bw = new BufferedWriter(new FileWriter("Room_Info.txt"));
+            bw.write(sj.toString());
+            bw.close();
         } else if (choice == 5) {
             value = JOptionPane.showInputDialog("Enter new overdue amount: ");
+            if (value == null) {
+                return;
+            } else if (Double.valueOf(value) < 0) {
+                JOptionPane.showMessageDialog(null, "Overdue amount cannot be negative.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
         }
 
         if (value == null) {
@@ -519,7 +659,11 @@ public class ManagerMenuPage extends JFrame {
             if (table != null) {
                 table.setRowSorter(sorter);
             }
-        } else {
+
+        } else if (input == null) {
+            return;
+        }
+        else if (input.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Search input cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -555,13 +699,13 @@ public class ManagerMenuPage extends JFrame {
     }
 
     public void approveRegistration() throws IOException {
-        if (getUserRegistrationTable().isEmpty()) {
-            return;
-        }
-
         DefaultTableModel model = (DefaultTableModel) getUserRegistrationTable().get(1);
         JTable table = (JTable) getUserRegistrationTable().get(2);
         int row = table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(null, "No row selected. Please select a row.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         String selectedUsername = table.getValueAt(row, 0).toString();
 
         StringJoiner sj = new StringJoiner((","));
@@ -742,13 +886,13 @@ public class ManagerMenuPage extends JFrame {
     }
 
     public void rejectRegistration() throws IOException {
-        if (getUserRegistrationTable().isEmpty()) {
-            return;
-        }
-
         DefaultTableModel model = (DefaultTableModel) getUserRegistrationTable().get(1);
         JTable table = (JTable) getUserRegistrationTable().get(2);
         int row = table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(null, "No row selected. Please select a row.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         String selectedUsername = table.getValueAt(row, 0).toString();
         String registrationFilename = (String) getUserRegistrationTable().get(3);
 
@@ -794,7 +938,10 @@ public class ManagerMenuPage extends JFrame {
             if (table != null) {
                 table.setRowSorter(sorter);
             }
-        } else {
+        } else if (input == null) {
+            return;
+
+        } else if (input.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Search input cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -844,7 +991,14 @@ public class ManagerMenuPage extends JFrame {
 
     public void updateRate() throws IOException {
         int updateType = JOptionPane.showOptionDialog(null, "Please select room type to update rate.", "Update Rate", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Single Room", "Double Sharing Room", "Triple Sharing Room"}, "Single Room");
+        if (updateType == JOptionPane.CLOSED_OPTION) {
+            return;
+        }
         int newRate = Integer.valueOf(JOptionPane.showInputDialog(null, "Please enter new rate for the room type:", "Update Rate", JOptionPane.PLAIN_MESSAGE));
+        if (newRate < 0) {
+            JOptionPane.showMessageDialog(null, "Rate cannot be negative.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         BufferedReader br = new BufferedReader(new FileReader("Room_Type.txt"));
 
@@ -888,10 +1042,24 @@ public class ManagerMenuPage extends JFrame {
     public void updateRoomAvailability() throws IOException {
         DefaultTableModel model = (DefaultTableModel) RoomInfoTable.getModel();
         int row = RoomInfoTable.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(null, "No row selected. Please select a row.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         String roomNumber = RoomInfoTable.getValueAt(row, 0).toString();
         int availablity = Integer.valueOf(RoomInfoTable.getValueAt(row, 2).toString());
 
-        int newAvailibility = Integer.valueOf(JOptionPane.showInputDialog(null, "Please enter new availability for the room:", "Update Room Availability", JOptionPane.PLAIN_MESSAGE));
+        String newAvailibility = JOptionPane.showInputDialog(null, "Please enter new availability for the room:", "Update Room Availability", JOptionPane.PLAIN_MESSAGE);
+
+        if (newAvailibility == null) {
+            return;
+        } else if (newAvailibility.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Availability cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (Integer.valueOf(newAvailibility) < 0) {
+            JOptionPane.showMessageDialog(null, "Availability cannot be negative.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         model.setValueAt(newAvailibility, row, 2);
 
@@ -964,7 +1132,11 @@ public class ManagerMenuPage extends JFrame {
             TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
             sorter.setRowFilter(RowFilter.regexFilter("(?i)" + input));
             RoomInfoTable.setRowSorter(sorter);
-        } else {
+
+        } else if (input == null) {
+            return;
+
+        }  else if (input.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Search input cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -976,12 +1148,31 @@ public class ManagerMenuPage extends JFrame {
         table.setRowSorter(null);
         model.setRowCount(0);
 
-        BufferedReader br = new BufferedReader(new FileReader("Room_Info.txt"));
-        ArrayList<String> roomInfoList = new ArrayList<>();
+        String[] rateList = new String[3];
+
+        BufferedReader br = new BufferedReader(new FileReader("Room_Type.txt"));
         String line;
+        int i = 0;
         while ((line = br.readLine()) != null) {
             String[] parts = line.split(",");
-            model.addRow(new Object[]{parts[0], parts[1], parts[2], parts[3]});
+            rateList[i] = parts[1];
+            i++;
+        }
+
+        br = new BufferedReader(new FileReader("Room_Info.txt"));
+        ArrayList<String> roomInfoList = new ArrayList<>();
+        String rate = "";
+        line = "";
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts[1].equals("Single Room")) {
+                rate = rateList[0];
+            } else if (parts[1].equals("Double Sharing Room")) {
+                rate = rateList[1];
+            } else if (parts[1].equals("Triple Sharing Room")) {
+                rate = rateList[2];
+            }
+            model.addRow(new Object[]{parts[0], parts[1], parts[2], rate});
         }
         br.close();
 
@@ -1008,6 +1199,8 @@ public class ManagerMenuPage extends JFrame {
         String roomChangeInfo = "Request ID: " + requestID + "\nResident ID: " + residentID + "\nResident Name: " + residentName + "\nGender: " + gender
                 + "\nCurrent Room Number: " + currentRoomNumber + "\nCurrent Room Type: " + currentRoomType + "\nNew Room Type: " + newRoomType
                 + "\nDescription: " + description;
+
+        JOptionPane.showMessageDialog(null, roomChangeInfo, "Room Change Information", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void approveRoomChange() throws IOException {
@@ -1020,67 +1213,75 @@ public class ManagerMenuPage extends JFrame {
         String requestID = RoomChangeRequestTable.getValueAt(row, 0).toString();
         String residentID = RoomChangeRequestTable.getValueAt(row, 1).toString();
         String residentName = RoomChangeRequestTable.getValueAt(row, 2).toString();
-
         String currentRoomNumber = RoomChangeRequestTable.getValueAt(row, 4).toString();
         String newRoomType = RoomChangeRequestTable.getValueAt(row, 6).toString();
+        String status = RoomChangeRequestTable.getValueAt(row, 8).toString();
 
-        model.setValueAt("Approved", row, 8);
+        if (status.equalsIgnoreCase("Approved")) {
+            JOptionPane.showMessageDialog(null, "Room change request has already been approved.", "Approve Room Change", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (status.equalsIgnoreCase("Rejected")) {
+            JOptionPane.showMessageDialog(null, "Room change request has already been rejected.", "Approve Room Change", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else {
+            model.setValueAt("Approved", row, 8);
 
-        BufferedReader br = new BufferedReader(new FileReader("Change_Room.txt"));
-        String line;
-        ArrayList roomChangeList = new ArrayList();
-        while ((line = br.readLine()) != null) {
-            roomChangeList.add(line);
-        }
-
-        for (int i = 0; i < roomChangeList.size(); i++) {
-            String[] parts = roomChangeList.get(i).toString().split(",");
-            if (parts[0].equals(requestID)) {
-                roomChangeList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + "Approved");
+            BufferedReader br = new BufferedReader(new FileReader("Change_Room.txt"));
+            String line;
+            ArrayList roomChangeList = new ArrayList();
+            while ((line = br.readLine()) != null) {
+                roomChangeList.add(line);
             }
-        }
 
-        StringJoiner sj = new StringJoiner(System.lineSeparator());
-
-        for (int i = 0; i < roomChangeList.size(); i++) {
-            sj.add(roomChangeList.get(i).toString());
-        }
-
-        BufferedWriter bw = new BufferedWriter(new FileWriter("Change_Room.txt"));
-        bw.write(sj.toString());
-        bw.close();
-
-        // update room info
-        BufferedReader roomInfoReader = new BufferedReader(new FileReader("Room_Info.txt"));
-        ArrayList roomInfoList = new ArrayList();
-        while ((line = roomInfoReader.readLine()) != null) {
-            roomInfoList.add(line);
-        }
-
-        for (int i = 0; i < roomInfoList.size(); i++) {
-            String[] parts = roomInfoList.get(i).toString().split(",");
-            if (parts[0].equals(currentRoomNumber)) {
-                roomInfoList.set(i, parts[0] + "," + parts[1] + "," + (Integer.valueOf(parts[2]) + 1) + "," + parts[3]);
+            for (int i = 0; i < roomChangeList.size(); i++) {
+                String[] parts = roomChangeList.get(i).toString().split(",");
+                if (parts[0].equals(requestID)) {
+                    roomChangeList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + "Approved");
+                }
             }
-        }
 
-        for (int i = 0; i < roomInfoList.size(); i++) {
-            String[] parts = roomInfoList.get(i).toString().split(",");
-            if (parts[0].contains(newRoomType)) {
-                roomInfoList.set(i, parts[0] + "," + parts[1] + "," + (Integer.valueOf(parts[2]) - 1) + "," + parts[3]);
+            StringJoiner sj = new StringJoiner(System.lineSeparator());
+
+            for (int i = 0; i < roomChangeList.size(); i++) {
+                sj.add(roomChangeList.get(i).toString());
             }
+
+            BufferedWriter bw = new BufferedWriter(new FileWriter("Change_Room.txt"));
+            bw.write(sj.toString());
+            bw.close();
+
+            // update room info
+            BufferedReader roomInfoReader = new BufferedReader(new FileReader("Room_Info.txt"));
+            ArrayList roomInfoList = new ArrayList();
+            while ((line = roomInfoReader.readLine()) != null) {
+                roomInfoList.add(line);
+            }
+
+            for (int i = 0; i < roomInfoList.size(); i++) {
+                String[] parts = roomInfoList.get(i).toString().split(",");
+                if (parts[0].equals(currentRoomNumber)) {
+                    roomInfoList.set(i, parts[0] + "," + parts[1] + "," + (Integer.valueOf(parts[2]) + 1) + "," + parts[3]);
+                }
+            }
+
+            for (int i = 0; i < roomInfoList.size(); i++) {
+                String[] parts = roomInfoList.get(i).toString().split(",");
+                if (parts[0].contains(newRoomType)) {
+                    roomInfoList.set(i, parts[0] + "," + parts[1] + "," + (Integer.valueOf(parts[2]) - 1) + "," + parts[3]);
+                }
+            }
+
+            sj = new StringJoiner(System.lineSeparator());
+            for (int i = 0; i < roomInfoList.size(); i++) {
+                sj.add(roomInfoList.get(i).toString());
+            }
+
+            bw = new BufferedWriter(new FileWriter("Room_Info.txt"));
+            bw.write(sj.toString());
+            bw.close();
+
+            JOptionPane.showMessageDialog(null, "Room change request has been approved successfully.", "Approve Room Change", JOptionPane.INFORMATION_MESSAGE);
         }
-
-        sj = new StringJoiner(System.lineSeparator());
-        for (int i = 0; i < roomInfoList.size(); i++) {
-            sj.add(roomInfoList.get(i).toString());
-        }
-
-        bw = new BufferedWriter(new FileWriter("Room_Info.txt"));
-        bw.write(sj.toString());
-        bw.close();
-
-        JOptionPane.showMessageDialog(null, "Room change request has been approved successfully.", "Approve Room Change", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void rejectRoomChange() throws IOException {
@@ -1131,7 +1332,9 @@ public class ManagerMenuPage extends JFrame {
             TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
             sorter.setRowFilter(RowFilter.regexFilter("(?i)" + input));
             RoomChangeRequestTable.setRowSorter(sorter);
-        } else {
+        } else if (input == null) {
+            return;
+        } else if (input.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Search input cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -1168,7 +1371,9 @@ public class ManagerMenuPage extends JFrame {
             TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
             sorter.setRowFilter(RowFilter.regexFilter("(?i)" + input));
             PaymentRecordTable.setRowSorter(sorter);
-        } else {
+        } else if (input == null) {
+            return;
+        } else if (input.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Search input cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -1207,9 +1412,29 @@ public class ManagerMenuPage extends JFrame {
             return;
         } else if (attribute == 0) {
             String newUsername = JOptionPane.showInputDialog(null, "Please enter new username: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
+            if (newUsername == null) {
+                return;
+            } else if (newUsername.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Username cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (isUsernameUnique(newUsername, "Manager_Info.txt") == false) {
+                JOptionPane.showMessageDialog(null, "This username already exists. Please enter other username.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             myInfo[1] = newUsername;
+
         } else if (attribute == 1) {
             String newPassword = JOptionPane.showInputDialog(null, "Please enter new password: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
+            if (newPassword == null) {
+                return;
+            } else if (newPassword.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (validatePassword(newPassword) == false) {
+                JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit and one special character.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             String newConfirmPassword = JOptionPane.showInputDialog(null, "Please re-enter new password: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
             if (newPassword.equals(newConfirmPassword)) {
                 myInfo[2] = newPassword;
@@ -1217,18 +1442,52 @@ public class ManagerMenuPage extends JFrame {
                 JOptionPane.showMessageDialog(null, "Passwords do not match. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
         } else if (attribute == 2) {
             String newName = JOptionPane.showInputDialog(null, "Please enter new name: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
+            if (newName == null) {
+                return;
+            } else if (newName.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (validateName(newName) == false) {
+                JOptionPane.showMessageDialog(null, "Name must only contain alphabets.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             myInfo[3] = newName;
 
         } else if (attribute == 3) {
             String newContact = JOptionPane.showInputDialog(null, "Please enter new contact number: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
+            if (newContact == null) {
+                return;
+            } else if (newContact.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Contact number cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (validateContactNumber(newContact) == false) {
+                JOptionPane.showMessageDialog(null, "Contact number must between 9 and 11 digits number.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (isContactNumberUnique(newContact, "Manager_Info.txt") == false) {
+                JOptionPane.showMessageDialog(null, "This contact number already exists. Please enter other contact number.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+
+            }
             myInfo[4] = newContact;
 
         } else if (attribute == 4) {
             String newEmail = JOptionPane.showInputDialog(null, "Please enter new email address: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
+            if (newEmail == null) {
+                return;
+            } else if (newEmail.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Email address cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (validateEmail(newEmail) == false) {
+                JOptionPane.showMessageDialog(null, "Invalid email address format.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (isEmailUnique(newEmail, "Manager_Info.txt") == false) {
+                JOptionPane.showMessageDialog(null, "This email address already exists. Please enter other email address.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             myInfo[5] = newEmail;
-
         }
 
         StringJoiner sj = new StringJoiner(",");
@@ -1383,11 +1642,11 @@ public class ManagerMenuPage extends JFrame {
         ResidentInfoTable.setModel(new DefaultTableModel(
                 toUserInfoTable(3),
                 new String [] {
-                        "Resident ID", "Username", "Name", "Contact Number", "Email Address", "Gender", "Room Number", "Overdue Amount"
+                        "Resident ID", "Username", "Name", "Contact Number", "Email Address", "Gender", "Room Number", "Room Type", "Overdue Amount"
                 }
         ) {
             Class[] types = new Class [] {
-                    String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class
+                    String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class
             };
 
             public Class getColumnClass(int columnIndex) {

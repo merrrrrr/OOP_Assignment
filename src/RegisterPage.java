@@ -1,5 +1,8 @@
 import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -20,6 +23,109 @@ public class RegisterPage extends javax.swing.JFrame {
         this.userType = userType;
         initComponents();
     }
+
+    public boolean validatePassword(String password) {
+        if (password.length() < 8) {
+            return false;
+        }
+
+        boolean hasUpperCase = false;
+        boolean hasLowerCase = false;
+        boolean hasSpecialChar = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                hasUpperCase = true;
+            } else if (Character.isLowerCase(c)) {
+                hasLowerCase = true;
+            } else if (!Character.isLetterOrDigit(c) && c != ',') {
+                hasSpecialChar = true;
+            }
+        }
+
+        return hasUpperCase && hasLowerCase && hasSpecialChar;
+    }
+
+    public boolean validateEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern p = Pattern.compile(emailRegex);
+        if (email == null) {
+            return false;
+        }
+        return email != null && p.matcher(email).matches();
+    }
+
+    public boolean validateContactNumber(String contactNumber) {
+        if (contactNumber.length() >= 9 && contactNumber.length() <= 11) {
+            for (char c : contactNumber.toCharArray()) {
+                if (!Character.isDigit(c)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean validateName(String name) {
+        if (name == null || name.isEmpty()) {
+            return false;
+        }
+        return name.matches("[a-zA-Z]+");
+    }
+
+    public boolean isUsernameUnique(String username, String filename) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingUsername = parts[1];
+                if (existingUsername.equals(username)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+        return true;
+    }
+
+    public boolean isEmailUnique(String email, String filename) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingEmail = parts[5]; // Assuming the email is the 5th element in the CSV
+                if (existingEmail.equals(email)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+        return true;
+    }
+
+    public boolean isContactNumberUnique(String contactNumber, String filename) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingContactNumber = parts[4]; // Assuming the contact number is the 4th element in the CSV
+                if (existingContactNumber.equals(contactNumber)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+        return true;
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -220,6 +326,7 @@ public class RegisterPage extends javax.swing.JFrame {
 
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         // TODO add your handling code here:
+        User user = new User();
         String registerInfo;
 
         String username = usernameField.getText();
@@ -228,6 +335,35 @@ public class RegisterPage extends javax.swing.JFrame {
         String name = nameField.getText();
         String contactNumber = contactNumberField.getText();
         String email = emailField.getText();
+
+        if (username == null || password == null || confirmPassword == null || name == null || contactNumber == null || email == null) {
+            JOptionPane.showMessageDialog(null, "Please fill in all the fields");
+            return;
+        }else if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || name.isEmpty() || contactNumber.isEmpty() || email.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please fill in all the fields");
+            return;
+        } else if (validateName(name) == false) {
+            JOptionPane.showMessageDialog(null, "Invalid name. No special characters or numbers allowed");
+            return;
+        } else if (validatePassword(password) == false) {
+            JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character");
+            return;
+        } else if (validateEmail(email) == false) {
+            JOptionPane.showMessageDialog(null, "Invalid email address. Please enter a valid email address");
+            return;
+        } else if (validateContactNumber(contactNumber) == false) {
+            JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number without any special characters");
+            return;
+        } else if (isUsernameUnique(username, user.getInfoFilename(userType)) == false) {
+            JOptionPane.showMessageDialog(null, "Username already exists. Please choose another username");
+            return;
+        } else if (isEmailUnique(email, user.getInfoFilename(userType)) == false) {
+            JOptionPane.showMessageDialog(null, "Email already exists. Please choose another email");
+            return;
+        } else if (isContactNumberUnique(contactNumber, user.getInfoFilename(userType)) == false) {
+            JOptionPane.showMessageDialog(null, "Contact number already exists. Please choose another contact number");
+            return;
+        }
 
         if (userType == 3) {
             String gender = genderComboBox1.getSelectedItem().toString();
@@ -239,7 +375,6 @@ public class RegisterPage extends javax.swing.JFrame {
         }
 
         if (password.equals(confirmPassword)) {
-            User user = new User();
             user.register(userType, registerInfo);
             JOptionPane.showMessageDialog(null, "Registration successful. Please wait for approval from the manager.");
             LoginPage LoginPage = new LoginPage(userType);

@@ -25,6 +25,8 @@ import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.StringJoiner;
+import java.util.regex.Pattern;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumnModel;
@@ -63,6 +65,232 @@ public class StaffMenuPage extends javax.swing.JFrame {
         populateRoomChangeData();
         setupGenerateReceiptTable();
     }
+
+    public boolean validateName(String name) {
+        if (name == null || name.isEmpty()) {
+            return false;
+        }
+        return name.matches("[a-zA-Z]+");
+    }
+
+    public boolean validatePassword(String password) {
+        if (password.length() < 8) {
+            return false;
+        }
+
+        boolean hasUpperCase = false;
+        boolean hasLowerCase = false;
+        boolean hasSpecialChar = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                hasUpperCase = true;
+            } else if (Character.isLowerCase(c)) {
+                hasLowerCase = true;
+            } else if (!Character.isLetterOrDigit(c) && c != ',') {
+                hasSpecialChar = true;
+            }
+        }
+
+        return hasUpperCase && hasLowerCase && hasSpecialChar;
+    }
+
+    public boolean validateEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern p = Pattern.compile(emailRegex);
+        if (email == null) {
+            return false;
+        }
+        return email != null && p.matcher(email).matches();
+    }
+
+    public boolean validateContactNumber(String contactNumber) {
+        if (contactNumber.length() >= 9 && contactNumber.length() <= 11) {
+            for (char c : contactNumber.toCharArray()) {
+                if (!Character.isDigit(c)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isUsernameUnique(String username, String filename) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingUsername = parts[1];
+                if (existingUsername.equals(username)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+        return true;
+    }
+
+    public boolean isEmailUnique(String email, String filename) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingEmail = parts[5]; // Assuming the email is the 5th element in the CSV
+                if (existingEmail.equals(email)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+        return true;
+    }
+
+    public boolean isContactNumberUnique(String contactNumber, String filename) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingContactNumber = parts[4]; // Assuming the contact number is the 4th element in the CSV
+                if (existingContactNumber.equals(contactNumber)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+        return true;
+    }
+
+    public void editProfile() throws IOException {
+        String[] myInfo = new String[6];
+        myInfo[0] = staff.getId();
+        myInfo[1] = staff.getUsername();
+        myInfo[2] = staff.getPassword();
+        myInfo[3] = staff.getName();
+        myInfo[4] = staff.getContactNumber();
+        myInfo[5] = staff.getEmail();
+
+        int attribute = JOptionPane.showOptionDialog(null, "Please select attribute you want to edit.", "Edit Profile", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Username", "Password", "Name", "Contact Number", "Email Address"}, "Username");
+        if (attribute == JOptionPane.CLOSED_OPTION) {
+            return;
+        } else if (attribute == 0) {
+            String newUsername = JOptionPane.showInputDialog(null, "Please enter new username: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
+            if (newUsername == null) {
+                return;
+            } else if (newUsername.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Username cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (isUsernameUnique(newUsername, "Manager_Info.txt") == false) {
+                JOptionPane.showMessageDialog(null, "This username already exists. Please enter other username.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            myInfo[1] = newUsername;
+
+        } else if (attribute == 1) {
+            String newPassword = JOptionPane.showInputDialog(null, "Please enter new password: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
+            if (newPassword == null) {
+                return;
+            } else if (newPassword.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (validatePassword(newPassword) == false) {
+                JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit and one special character.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String newConfirmPassword = JOptionPane.showInputDialog(null, "Please re-enter new password: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
+            if (newPassword.equals(newConfirmPassword)) {
+                myInfo[2] = newPassword;
+            } else {
+                JOptionPane.showMessageDialog(null, "Passwords do not match. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+        } else if (attribute == 2) {
+            String newName = JOptionPane.showInputDialog(null, "Please enter new name: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
+            if (newName == null) {
+                return;
+            } else if (newName.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (validateName(newName) == false) {
+                JOptionPane.showMessageDialog(null, "Name must only contain alphabets.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            myInfo[3] = newName;
+
+        } else if (attribute == 3) {
+            String newContact = JOptionPane.showInputDialog(null, "Please enter new contact number: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
+            if (newContact == null) {
+                return;
+            } else if (newContact.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Contact number cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (validateContactNumber(newContact) == false) {
+                JOptionPane.showMessageDialog(null, "Contact number must between 9 and 11 digits number.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (isContactNumberUnique(newContact, "Manager_Info.txt") == false) {
+                JOptionPane.showMessageDialog(null, "This contact number already exists. Please enter other contact number.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+
+            }
+            myInfo[4] = newContact;
+
+        } else if (attribute == 4) {
+            String newEmail = JOptionPane.showInputDialog(null, "Please enter new email address: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
+            if (newEmail == null) {
+                return;
+            } else if (newEmail.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Email address cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (validateEmail(newEmail) == false) {
+                JOptionPane.showMessageDialog(null, "Invalid email address format.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else if (isEmailUnique(newEmail, "Manager_Info.txt") == false) {
+                JOptionPane.showMessageDialog(null, "This email address already exists. Please enter other email address.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            myInfo[5] = newEmail;
+        }
+
+        StringJoiner sj = new StringJoiner(",");
+
+        for (int i = 0; i < myInfo.length; i++) {
+            sj.add(myInfo[i]);
+        }
+
+        BufferedReader br = new BufferedReader(new FileReader("Staff_Info.txt"));
+        String line;
+        ArrayList staffInfo = new ArrayList();
+        while ((line = br.readLine()) != null) {
+            staffInfo.add(line);
+        }
+
+        for (int i = 0; i < staffInfo.size(); i++) {
+            String[] parts = staffInfo.get(i).toString().split(",");
+            if (parts[0].equals(staff.getId())) {
+                staffInfo.set(i, sj.toString());
+            }
+        }
+
+        sj = new StringJoiner(System.lineSeparator());
+
+        for (int i = 0; i < staffInfo.size(); i++) {
+            sj.add(staffInfo.get(i).toString());
+        }
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter("Staff_Info.txt"));
+        bw.write(sj.toString());
+        bw.close();
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.

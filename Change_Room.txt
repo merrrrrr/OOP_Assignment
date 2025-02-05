@@ -1,7 +1,7 @@
-C001,R0001,khong,female,FT001,Triple Sharing Room,Single Room,no privacy,approved
-C002,R0002,kynax,male,MD002,Double Sharing Room,Single Room,no privacy,rejected
-C001,R0001,khong,female,FS002,Single Room,Double Sharing Room,too expensive,pending
-C002,R0002,kynax,male,MS001,Single Room,Double Sharing Room,expensive sia,approved
+C001,R0001,khong,female,FT001,Triple Sharing Room,Single Room,no privacy,Approved
+C002,R0002,kynax,male,MD002,Double Sharing Room,Single Room,no privacy,Approved
+C001,R0001,khong,female,FS002,Single Room,Double Sharing Room,too expensive,Approved
+C002,R0002,kynax,male,MS001,Single Room,Double Sharing Room,expensive sia,Approved
 C003,R0001,khong,female,FS002,Single Room,Triple Sharing Room,no friends,pending
 C004,R0001,khong,female,FS002,Single Room,Double Sharing Room,i need partner,approved
 C005,R0001,khong,female,FD003,Double Sharing Room,Double Sharing Room,my partner not good,approved

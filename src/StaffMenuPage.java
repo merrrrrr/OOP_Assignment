@@ -659,7 +659,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
         for (String line : lines) {
             String[] details = line.split(",");
-            model.addRow(new Object[]{details[0], details[1], details[7], details[8], details[9], "Make Payment"});
+            model.addRow(new Object[]{details[0], details[1], details[7], details[8], "Make Payment"});
         }
 
         ResidentPaymentTable.setRowHeight(30); // Set the row height to 30 pixels

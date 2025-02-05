@@ -596,7 +596,7 @@ public class ManagerMenuPage extends JFrame {
             }
 
             // assign room number
-            ArrayList availableRooms = null;
+            ArrayList availableRooms = new ArrayList();
             BufferedReader roomInfoReader = new BufferedReader(new FileReader("Room_Info.txt"));
 
             gender = registeredUser[5];
@@ -628,9 +628,9 @@ public class ManagerMenuPage extends JFrame {
             roomInfoReader.close();
 
             for (int i = 0; i < availableRooms.size(); i++) {
-                String[] parts = line.split(",");
+                String[] parts = availableRooms.get(i).toString().split(",");
                 String availableRoom = parts[0];
-                int availbility = Integer.getInteger(parts[2]);
+                int availbility = Integer.valueOf(parts[2]);
 
                 if (availableRoom.contains(prefix) && availbility > 0) {
                     roomNumber = availableRoom;
@@ -1041,8 +1041,6 @@ public class ManagerMenuPage extends JFrame {
         bw.write(sj.toString());
         bw.close();
     }
-
-
 
 
     /**

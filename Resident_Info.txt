@@ -1,3 +1,4 @@
-R0001,khong,Kcl1208!,nig,0199999999,khong@gmail.com,female,FD002,RM00.00
-R0002,kynax,Justin123!,ng,0128934392,kynax@gmail.com,male,MD002,RM00.00
-R0002,mermer,12341234,Ooi,0123456789,mervinnotgay@gmail.com,Male,MS001,RM00.00
+R0001,khong,Kcl1208!,nig,0199999999,khong@gmail.com,female,FS002,Single Room,RM700.00,2024-12-24
+R0002,kynax,Justin123!,ng,0128934392,kynax@gmail.com,male,MS001,Single Room,RM00.00,2024-12-24
+R0001,khong,Kcl1208!,nig,0199999999,khong@gmail.com,female,FD002,Double Sharing Room,RM00.00,2024-12-24
+R0002,kynax,Justin123!,ng,0128934392,kynax@gmail.com,male,MD002,Double Sharing Room,RM00.00,2024-12-24

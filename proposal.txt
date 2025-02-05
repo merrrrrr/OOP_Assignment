@@ -36,7 +36,7 @@ Assumption:
 4. Every input has validation
 5. New manager can only be approved by old manager/s
 6. Only manager can approve new manager,staff and resident
-7. Every Month first day must pay the rent
+7. Every Month 5th day must pay the rent, if not penalty 10% of the rent
 
 Manager_Registration: Username, Password, Name, Contact_Number, Email, Request Datetime
 Staff_Registration: Username, Password, Name, Contact_Number, Email, Request Datetime

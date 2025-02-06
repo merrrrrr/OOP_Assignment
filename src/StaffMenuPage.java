@@ -896,7 +896,8 @@ public class StaffMenuPage extends javax.swing.JFrame {
     }
 
     private String generateUniquePaymentID() {
-        String lastID = "P" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "0000";
+        String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String lastID = "P" + currentDate + "0000";
         try (BufferedReader reader = new BufferedReader(new FileReader("Payment_Records.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -911,6 +912,10 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
         String datePart = lastID.substring(1, 9);
         int idNumber = Integer.parseInt(lastID.substring(9)) + 1;
+        if (!datePart.equals(currentDate)) {
+            datePart = currentDate;
+            idNumber = 1;
+        }
         return String.format("P%s%04d", datePart, idNumber);
     }
 
@@ -1250,25 +1255,27 @@ public class StaffMenuPage extends javax.swing.JFrame {
     }
 
     private String generateUniqueReceiptID() {
-        int maxID = 0;
+        String lastID = "P" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "0000";
         try (BufferedReader reader = new BufferedReader(new FileReader("Receipt.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] details = line.split(",");
-                if (details.length > 0 && details[0].startsWith("REC")) {
-                    String id = details[0].substring(3); // Remove "REC" prefix
-                    int currentID = Integer.parseInt(id);
-                    if (currentID > maxID) {
-                        maxID = currentID;
-                    }
+                if (details.length > 0 && !details[0].isEmpty()) {
+                    lastID = details[0];
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading the file: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            System.err.println("Error parsing receipt ID: " + e.getMessage());
+            System.err.println("Error reading Receipt.txt: " + e.getMessage());
         }
-        return "REC" + String.format("%04d", maxID + 1);
+
+        if (lastID.length() >= 9) {
+            String datePart = lastID.substring(1, 9); // Extract the date part
+            int idNumber = Integer.parseInt(lastID.substring(9)) + 1; // Increment the ID number
+            return String.format("P%s%04d", datePart, idNumber);
+        } else {
+            // Handle the case where lastID is not in the expected format
+            return "P" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "0001";
+        }
     }
 
     // Method to handle the "Approve" button click

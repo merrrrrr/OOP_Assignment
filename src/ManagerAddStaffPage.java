@@ -38,7 +38,7 @@ public class ManagerAddStaffPage extends javax.swing.JFrame {
         EmailField = new javax.swing.JTextField();
         ConfirmButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         PasswordLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         PasswordLabel.setText("Password");

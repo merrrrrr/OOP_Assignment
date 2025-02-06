@@ -45,12 +45,13 @@ public class ResidentMenuPage extends javax.swing.JFrame {
     }
 
     public boolean validatePassword(String password) {
-        if (password.length() < 8) {
+        if (password == null || password.length() < 8) {
             return false;
         }
 
         boolean hasUpperCase = false;
         boolean hasLowerCase = false;
+        boolean hasNumber = false;
         boolean hasSpecialChar = false;
 
         for (char c : password.toCharArray()) {
@@ -58,12 +59,14 @@ public class ResidentMenuPage extends javax.swing.JFrame {
                 hasUpperCase = true;
             } else if (Character.isLowerCase(c)) {
                 hasLowerCase = true;
+            } else if (Character.isDigit(c)) {
+                hasNumber = true;
             } else if (!Character.isLetterOrDigit(c) && c != ',') {
                 hasSpecialChar = true;
             }
         }
 
-        return hasUpperCase && hasLowerCase && hasSpecialChar;
+        return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
     }
 
     public boolean validateEmail(String email) {
@@ -140,7 +143,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
     }
 
     public void editProfile() throws IOException {
-        String[] myInfo = new String[6];
+        String[] myInfo = new String[11];
         myInfo[0] = resident.getId();
         myInfo[1] = resident.getUsername();
         myInfo[2] = resident.getPassword();
@@ -151,6 +154,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         myInfo[7] = resident.getRoomNo();
         myInfo[8] = resident.getRoomType();
         myInfo[9] = resident.getOverdueAmount();
+        myInfo[10] = resident.getCreatedDate();
 
         int attribute = JOptionPane.showOptionDialog(null, "Please select attribute you want to edit.", "Edit Profile", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Username", "Password", "Name", "Contact Number", "Email Address"}, "Username");
         if (attribute == JOptionPane.CLOSED_OPTION) {
@@ -167,6 +171,8 @@ public class ResidentMenuPage extends javax.swing.JFrame {
                 return;
             }
             myInfo[1] = newUsername;
+            resident.setUsername(newUsername);
+            UsernameField.setText(newUsername);
 
         } else if (attribute == 1) {
             String newPassword = JOptionPane.showInputDialog(null, "Please enter new password: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
@@ -182,6 +188,8 @@ public class ResidentMenuPage extends javax.swing.JFrame {
             String newConfirmPassword = JOptionPane.showInputDialog(null, "Please re-enter new password: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
             if (newPassword.equals(newConfirmPassword)) {
                 myInfo[2] = newPassword;
+                resident.setPassword(newPassword);
+                PasswordField.setText(newPassword);
             } else {
                 JOptionPane.showMessageDialog(null, "Passwords do not match. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -199,6 +207,8 @@ public class ResidentMenuPage extends javax.swing.JFrame {
 
             }
             myInfo[3] = newName;
+            resident.setName(newName);
+            NameField.setText(newName);
 
         } else if (attribute == 3) {
             String newContact = JOptionPane.showInputDialog(null, "Please enter new contact number: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
@@ -215,6 +225,8 @@ public class ResidentMenuPage extends javax.swing.JFrame {
                 return;
             }
             myInfo[4] = newContact;
+            resident.setContactNumber(newContact);
+            ContactField.setText(newContact);
 
         } else if (attribute == 4) {
             String newEmail = JOptionPane.showInputDialog(null, "Please enter new email address: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
@@ -231,6 +243,8 @@ public class ResidentMenuPage extends javax.swing.JFrame {
                 return;
             }
             myInfo[5] = newEmail;
+            resident.setEmail(newEmail);
+            EmailField.setText(newEmail);
         }
 
         StringJoiner sj = new StringJoiner(",");
@@ -241,25 +255,25 @@ public class ResidentMenuPage extends javax.swing.JFrame {
 
         BufferedReader br = new BufferedReader(new FileReader("Resident_Info.txt"));
         String line;
-        ArrayList managerInfo = new ArrayList();
+        ArrayList residentInfo = new ArrayList();
         while ((line = br.readLine()) != null) {
-            managerInfo.add(line);
+            residentInfo.add(line);
         }
 
-        for (int i = 0; i < managerInfo.size(); i++) {
-            String[] parts = managerInfo.get(i).toString().split(",");
+        for (int i = 0; i < residentInfo.size(); i++) {
+            String[] parts = residentInfo.get(i).toString().split(",");
             if (parts[0].equals(resident.getId())) {
-                managerInfo.set(i, sj.toString());
+                residentInfo.set(i, sj.toString());
             }
         }
 
         sj = new StringJoiner(System.lineSeparator());
 
-        for (int i = 0; i < managerInfo.size(); i++) {
-            sj.add(managerInfo.get(i).toString());
+        for (int i = 0; i < residentInfo.size(); i++) {
+            sj.add(residentInfo.get(i).toString());
         }
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter("Manager_Info.txt"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("Resident_Info.txt"));
         bw.write(sj.toString());
         bw.close();
     }
@@ -306,6 +320,20 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jPanel8 = new javax.swing.JPanel();
         ResidentLogOutButton = new javax.swing.JButton();
+        ProfilePanel = new JPanel();
+        UsernameLabel = new JLabel();
+        PasswordLabel = new JLabel();
+        NameLabel = new JLabel();
+        ContactLabel = new JLabel();
+        EmailLabel = new JLabel();
+        ResidentIDLabel = new JLabel();
+        ResidentIDField = new JTextField();
+        UsernameField = new JTextField();
+        PasswordField = new JPasswordField();
+        NameField = new JTextField();
+        ContactField = new JTextField();
+        EmailField = new JTextField();
+        EditProfileButton = new JButton();
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -576,6 +604,110 @@ public class ResidentMenuPage extends javax.swing.JFrame {
 
         ResidentTab.addTab("Edit Profile", jPanel6);
 
+        ResidentIDLabel.setText("Resident ID");
+
+        UsernameLabel.setText("Username");
+
+        PasswordLabel.setText("Password");
+
+        NameLabel.setText("Name");
+
+        ContactLabel.setText("Contact Number");
+
+        EmailLabel.setText("Email Address");
+
+
+        ResidentIDField.setEditable(false);
+        ResidentIDField.setText(resident.getId());
+
+        UsernameField.setEditable(false);
+        UsernameField.setText(resident.getUsername());
+
+        PasswordField.setEditable(false);
+        PasswordField.setText(resident.getPassword());
+
+        NameField.setEditable(false);
+        NameField.setText(resident.getName());
+
+        ContactField.setEditable(false);
+        ContactField.setText(resident.getContactNumber());
+
+        EmailField.setEditable(false);
+        EmailField.setText(resident.getEmail());
+
+        EditProfileButton.setText("Edit Profile");
+        EditProfileButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    EditProfileButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        GroupLayout ProfilePanelLayout = new GroupLayout(ProfilePanel);
+        ProfilePanel.setLayout(ProfilePanelLayout);
+        ProfilePanelLayout.setHorizontalGroup(
+                ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(GroupLayout.Alignment.TRAILING, ProfilePanelLayout.createSequentialGroup()
+                                .addGap(290, 290, 290)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(EmailLabel)
+                                        .addComponent(ResidentIDLabel)
+                                        .addComponent(UsernameLabel)
+                                        .addComponent(NameLabel)
+                                        .addComponent(ContactLabel)
+                                        .addComponent(PasswordLabel))
+                                .addGap(45, 45, 45)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(ResidentIDField)
+                                        .addComponent(UsernameField)
+                                        .addComponent(PasswordField)
+                                        .addComponent(NameField)
+                                        .addComponent(ContactField)
+                                        .addComponent(EmailField, GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
+                                .addGap(285, 285, 285))
+                        .addGroup(ProfilePanelLayout.createSequentialGroup()
+                                .addGap(400, 400, 400)
+                                .addComponent(EditProfileButton)
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        ProfilePanelLayout.setVerticalGroup(
+                ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(ProfilePanelLayout.createSequentialGroup()
+                                .addGap(48, 48, 48)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(ResidentIDLabel)
+                                        .addComponent(ResidentIDField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(UsernameLabel)
+                                        .addComponent(UsernameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(PasswordLabel)
+                                        .addComponent(PasswordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(NameLabel)
+                                        .addComponent(NameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(ContactLabel)
+                                        .addComponent(ContactField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(EmailLabel)
+                                        .addComponent(EmailField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGap(32, 32, 32)
+                                .addComponent(EditProfileButton)
+                                .addContainerGap(103, Short.MAX_VALUE))
+        );
+
+        ResidentTab.addTab("Profile", ProfilePanel);
+
+
         ResidentLogOutButton.setText("Log Out");
         ResidentLogOutButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -622,6 +754,11 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
+    private void EditProfileButtonActionPerformed(ActionEvent evt) throws IOException {
+        // TODO add your handling code here:
+        editProfile();
+
+    }
     private void roomTypeDropdownMenuActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
     }
@@ -890,5 +1027,19 @@ public class ResidentMenuPage extends javax.swing.JFrame {
     private javax.swing.JTable paymentRecordsTable;
     private javax.swing.JComboBox<String> roomTypeDropdownMenu;
     private javax.swing.JButton submitButton;
+    private JTextField ContactField;
+    private JLabel ContactLabel;
+    private JButton EditProfileButton;
+    private JTextField EmailField;
+    private JLabel EmailLabel;
+    private JTextField ResidentIDField;
+    private JLabel ResidentIDLabel;
+    private JTextField NameField;
+    private JLabel NameLabel;
+    private JPasswordField PasswordField;
+    private JLabel PasswordLabel;
+    private JTextField UsernameField;
+    private JLabel UsernameLabel;
+    private JPanel ProfilePanel;
     // End of variables declaration
 }

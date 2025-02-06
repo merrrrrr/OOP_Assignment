@@ -38,7 +38,7 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
         UsernameLabel = new javax.swing.JLabel();
         AddManagerLabel = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         ConfirmButton.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         ConfirmButton.setText("Confirm");

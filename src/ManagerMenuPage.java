@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,12 +39,13 @@ public class ManagerMenuPage extends JFrame {
     }
 
     public boolean validatePassword(String password) {
-        if (password.length() < 8) {
+        if (password == null || password.length() < 8) {
             return false;
         }
 
         boolean hasUpperCase = false;
         boolean hasLowerCase = false;
+        boolean hasNumber = false;
         boolean hasSpecialChar = false;
 
         for (char c : password.toCharArray()) {
@@ -51,12 +53,14 @@ public class ManagerMenuPage extends JFrame {
                 hasUpperCase = true;
             } else if (Character.isLowerCase(c)) {
                 hasLowerCase = true;
+            } else if (Character.isDigit(c)) {
+                hasNumber = true;
             } else if (!Character.isLetterOrDigit(c) && c != ',') {
                 hasSpecialChar = true;
             }
         }
 
-        return hasUpperCase && hasLowerCase && hasSpecialChar;
+        return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
     }
 
     public boolean validateEmail(String email) {
@@ -1340,6 +1344,29 @@ public class ManagerMenuPage extends JFrame {
     }
 
     public void viewReceipt() {
+        java.util.List<String> receipts = new ArrayList<>();
+        List<String> displayReceipts = new ArrayList<>();
+        JTable table = PaymentRecordTable;
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "No row selected. Please select a row.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String residentID = table.getValueAt(row, 2).toString();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Receipt.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts[0].equals(table.getValueAt(row, 0).toString())) {
+                    JOptionPane.showMessageDialog(null, String.format("ReceiptID: %s\nDate of Issue: %s\nResident Name: %s\nRoom Number: %s\nRoom Type: %s\nStaff in Charge: %s",
+                            parts[0], parts[1], parts[3], parts[4], parts[5], parts[7]));
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading Receipt.txt: " + e.getMessage());
+            return;
+        }
 
     }
 
@@ -1385,12 +1412,12 @@ public class ManagerMenuPage extends JFrame {
         table.setRowSorter(null);
         model.setRowCount(0);
 
-        BufferedReader br = new BufferedReader(new FileReader("Payment_Record.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("Payment_Records.txt"));
         ArrayList<String> paymentList = new ArrayList<>();
         String line;
         while ((line = br.readLine()) != null) {
             String[] parts = line.split(",");
-            model.addRow(new Object[]{parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]});
+            model.addRow(new Object[]{parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]});
         }
 
         br.close();
@@ -1422,6 +1449,8 @@ public class ManagerMenuPage extends JFrame {
                 return;
             }
             myInfo[1] = newUsername;
+            manager.setUsername(newUsername);
+            UsernameField.setText(newUsername);
 
         } else if (attribute == 1) {
             String newPassword = JOptionPane.showInputDialog(null, "Please enter new password: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
@@ -1438,6 +1467,8 @@ public class ManagerMenuPage extends JFrame {
             String newConfirmPassword = JOptionPane.showInputDialog(null, "Please re-enter new password: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
             if (newPassword.equals(newConfirmPassword)) {
                 myInfo[2] = newPassword;
+                manager.setPassword(newPassword);
+                PasswordField.setText(newPassword);
             } else {
                 JOptionPane.showMessageDialog(null, "Passwords do not match. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -1455,6 +1486,8 @@ public class ManagerMenuPage extends JFrame {
                 return;
             }
             myInfo[3] = newName;
+            manager.setName(newName);
+            NameField.setText(newName);
 
         } else if (attribute == 3) {
             String newContact = JOptionPane.showInputDialog(null, "Please enter new contact number: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
@@ -1472,6 +1505,8 @@ public class ManagerMenuPage extends JFrame {
 
             }
             myInfo[4] = newContact;
+            manager.setContactNumber(newContact);
+            ContactField.setText(newContact);
 
         } else if (attribute == 4) {
             String newEmail = JOptionPane.showInputDialog(null, "Please enter new email address: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
@@ -1488,6 +1523,8 @@ public class ManagerMenuPage extends JFrame {
                 return;
             }
             myInfo[5] = newEmail;
+            manager.setEmail(newEmail);
+            EmailField.setText(newEmail);
         }
 
         StringJoiner sj = new StringJoiner(",");
@@ -2117,7 +2154,11 @@ public class ManagerMenuPage extends JFrame {
         ViewReceiptButton.setText("View Receipt");
         ViewReceiptButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                ViewReceiptButtonActionPerformed(evt);
+                try {
+                    ViewReceiptButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -2411,8 +2452,9 @@ public class ManagerMenuPage extends JFrame {
         searchRoomChange();
     }
 
-    private void ViewReceiptButtonActionPerformed(ActionEvent evt) {
+    private void ViewReceiptButtonActionPerformed(ActionEvent evt) throws IOException {
         // TODO add your handling code here:
+        viewReceipt();
     }
 
     private void SearchPaymentButtonActionPerformed(ActionEvent evt) {
@@ -2431,6 +2473,8 @@ public class ManagerMenuPage extends JFrame {
         if (JOptionPane.YES_OPTION == 0) {
             JOptionPane.showMessageDialog(null, "You have successfully logged out.\nThank you for using APU Hostel Management Payment System.", "Log Out", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
+            MainPage mainPage = new MainPage();
+            mainPage.setVisible(true);
         }
     }
 

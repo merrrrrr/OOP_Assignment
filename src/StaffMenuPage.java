@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Component;
 import java.io.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,12 +75,13 @@ public class StaffMenuPage extends javax.swing.JFrame {
     }
 
     public boolean validatePassword(String password) {
-        if (password.length() < 8) {
+        if (password == null || password.length() < 8) {
             return false;
         }
 
         boolean hasUpperCase = false;
         boolean hasLowerCase = false;
+        boolean hasNumber = false;
         boolean hasSpecialChar = false;
 
         for (char c : password.toCharArray()) {
@@ -87,12 +89,14 @@ public class StaffMenuPage extends javax.swing.JFrame {
                 hasUpperCase = true;
             } else if (Character.isLowerCase(c)) {
                 hasLowerCase = true;
+            } else if (Character.isDigit(c)) {
+                hasNumber = true;
             } else if (!Character.isLetterOrDigit(c) && c != ',') {
                 hasSpecialChar = true;
             }
         }
 
-        return hasUpperCase && hasLowerCase && hasSpecialChar;
+        return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
     }
 
     public boolean validateEmail(String email) {
@@ -187,11 +191,13 @@ public class StaffMenuPage extends javax.swing.JFrame {
             } else if (newUsername.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Username cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (isUsernameUnique(newUsername, "Manager_Info.txt") == false) {
+            } else if (isUsernameUnique(newUsername, "Staff_Info.txt") == false) {
                 JOptionPane.showMessageDialog(null, "This username already exists. Please enter other username.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             myInfo[1] = newUsername;
+            staff.setUsername(newUsername);
+            UsernameField.setText(newUsername);
 
         } else if (attribute == 1) {
             String newPassword = JOptionPane.showInputDialog(null, "Please enter new password: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
@@ -208,6 +214,8 @@ public class StaffMenuPage extends javax.swing.JFrame {
             String newConfirmPassword = JOptionPane.showInputDialog(null, "Please re-enter new password: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
             if (newPassword.equals(newConfirmPassword)) {
                 myInfo[2] = newPassword;
+                staff.setPassword(newPassword);
+                PasswordField.setText(newPassword);
             } else {
                 JOptionPane.showMessageDialog(null, "Passwords do not match. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -225,6 +233,8 @@ public class StaffMenuPage extends javax.swing.JFrame {
                 return;
             }
             myInfo[3] = newName;
+            staff.setName(newName);
+            NameField.setText(newName);
 
         } else if (attribute == 3) {
             String newContact = JOptionPane.showInputDialog(null, "Please enter new contact number: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
@@ -236,12 +246,14 @@ public class StaffMenuPage extends javax.swing.JFrame {
             } else if (validateContactNumber(newContact) == false) {
                 JOptionPane.showMessageDialog(null, "Contact number must between 9 and 11 digits number.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (isContactNumberUnique(newContact, "Manager_Info.txt") == false) {
+            } else if (isContactNumberUnique(newContact, "Staff_Info.txt") == false) {
                 JOptionPane.showMessageDialog(null, "This contact number already exists. Please enter other contact number.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
 
             }
             myInfo[4] = newContact;
+            staff.setContactNumber(newContact);
+            ContactField.setText(newContact);
 
         } else if (attribute == 4) {
             String newEmail = JOptionPane.showInputDialog(null, "Please enter new email address: ", "Edit Profile", JOptionPane.PLAIN_MESSAGE);
@@ -253,11 +265,13 @@ public class StaffMenuPage extends javax.swing.JFrame {
             } else if (validateEmail(newEmail) == false) {
                 JOptionPane.showMessageDialog(null, "Invalid email address format.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (isEmailUnique(newEmail, "Manager_Info.txt") == false) {
+            } else if (isEmailUnique(newEmail, "Staff_Info.txt") == false) {
                 JOptionPane.showMessageDialog(null, "This email address already exists. Please enter other email address.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             myInfo[5] = newEmail;
+            staff.setEmail(newEmail);
+            EmailField.setText(newEmail);
         }
 
         StringJoiner sj = new StringJoiner(",");
@@ -335,6 +349,20 @@ public class StaffMenuPage extends javax.swing.JFrame {
         editProfileButton = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         logOutButton = new javax.swing.JButton();
+        ProfilePanel = new JPanel();
+        UsernameLabel = new JLabel();
+        PasswordLabel = new JLabel();
+        NameLabel = new JLabel();
+        ContactLabel = new JLabel();
+        EmailLabel = new JLabel();
+        StaffIDLabel = new JLabel();
+        StaffIDField = new JTextField();
+        UsernameField = new JTextField();
+        PasswordField = new JPasswordField();
+        NameField = new JTextField();
+        ContactField = new JTextField();
+        EmailField = new JTextField();
+        EditProfileButton = new JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -560,69 +588,109 @@ public class StaffMenuPage extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addGap(83, 83, 83)
-                                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                .addGap(40, 40, 40)
-                                                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                                        .addComponent(editUsernameBox)
-                                                                        .addComponent(editPasswordBox)
-                                                                        .addComponent(editNameBox)
-                                                                        .addComponent(editContactNumberBox)
-                                                                        .addComponent(editEmailAddressBox, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                                .addGap(189, 189, 189)
-                                                                .addComponent(editProfileButton))))
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addGap(235, 235, 235)
-                                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addContainerGap(107, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(49, 49, 49)
-                                .addComponent(jLabel4)
+
+        StaffIDLabel.setText("Staff ID");
+
+        UsernameLabel.setText("Username");
+
+        PasswordLabel.setText("Password");
+
+        NameLabel.setText("Name");
+
+        ContactLabel.setText("Contact Number");
+
+        EmailLabel.setText("Email Address");
+
+        StaffIDField.setEditable(false);
+        StaffIDField.setText(staff.getId());
+
+        UsernameField.setEditable(false);
+        UsernameField.setText(staff.getUsername());
+
+
+        PasswordField.setEditable(false);
+        PasswordField.setText(staff.getPassword());
+
+        NameField.setEditable(false);
+        NameField.setText(staff.getName());
+
+        ContactField.setEditable(false);
+        ContactField.setText(staff.getContactNumber());
+
+        EmailField.setEditable(false);
+        EmailField.setText(staff.getEmail());
+
+        EditProfileButton.setText("Edit Profile");
+        EditProfileButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    EditProfileButtonActionPerformed(evt);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        GroupLayout ProfilePanelLayout = new GroupLayout(ProfilePanel);
+        ProfilePanel.setLayout(ProfilePanelLayout);
+        ProfilePanelLayout.setHorizontalGroup(
+                ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(GroupLayout.Alignment.TRAILING, ProfilePanelLayout.createSequentialGroup()
+                                .addGap(290, 290, 290)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(EmailLabel)
+                                        .addComponent(StaffIDLabel)
+                                        .addComponent(UsernameLabel)
+                                        .addComponent(NameLabel)
+                                        .addComponent(ContactLabel)
+                                        .addComponent(PasswordLabel))
                                 .addGap(45, 45, 45)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel5)
-                                        .addComponent(editUsernameBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(StaffIDField)
+                                        .addComponent(UsernameField)
+                                        .addComponent(PasswordField)
+                                        .addComponent(NameField)
+                                        .addComponent(ContactField)
+                                        .addComponent(EmailField, GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
+                                .addGap(285, 285, 285))
+                        .addGroup(ProfilePanelLayout.createSequentialGroup()
+                                .addGap(400, 400, 400)
+                                .addComponent(EditProfileButton)
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        ProfilePanelLayout.setVerticalGroup(
+                ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(ProfilePanelLayout.createSequentialGroup()
+                                .addGap(48, 48, 48)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(StaffIDLabel)
+                                        .addComponent(StaffIDField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel6)
-                                        .addComponent(editPasswordBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(UsernameLabel)
+                                        .addComponent(UsernameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel7)
-                                        .addComponent(editNameBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(PasswordLabel)
+                                        .addComponent(PasswordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel8)
-                                        .addComponent(editContactNumberBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(NameLabel)
+                                        .addComponent(NameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel9)
-                                        .addComponent(editEmailAddressBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(46, 46, 46)
-                                .addComponent(editProfileButton)
-                                .addContainerGap(184, Short.MAX_VALUE))
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(ContactLabel)
+                                        .addComponent(ContactField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(ProfilePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(EmailLabel)
+                                        .addComponent(EmailField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGap(32, 32, 32)
+                                .addComponent(EditProfileButton)
+                                .addContainerGap(103, Short.MAX_VALUE))
         );
 
-        StaffTab.addTab("Update Profile", jPanel2);
+        StaffTab.addTab("Edit Profile", ProfilePanel);
 
         logOutButton.setText("Log Out");
         logOutButton.addActionListener(new java.awt.event.ActionListener() {
@@ -671,6 +739,10 @@ public class StaffMenuPage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>
 
+    private void EditProfileButtonActionPerformed(ActionEvent evt) throws IOException {
+        // TODO add your handling code here:
+        editProfile();
+    }
 
     private void GenerateReceiptSearchBoxActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
@@ -1251,24 +1323,29 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
     private String generateUniqueReceiptID() {
         int maxID = 0;
+        String formatDate = null;
         try (BufferedReader reader = new BufferedReader(new FileReader("Receipt.txt"))) {
+            LocalDate date = LocalDate.now();
+            formatDate = date.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] details = line.split(",");
-                if (details.length > 0 && details[0].startsWith("REC")) {
-                    String id = details[0].substring(3); // Remove "REC" prefix
+                if (details.length > 0 && details[0].startsWith("P")) {
+                    String id = details[0].substring(9);
                     int currentID = Integer.parseInt(id);
                     if (currentID > maxID) {
                         maxID = currentID;
                     }
                 }
             }
+
+
         } catch (IOException e) {
             System.err.println("Error reading the file: " + e.getMessage());
         } catch (NumberFormatException e) {
             System.err.println("Error parsing receipt ID: " + e.getMessage());
         }
-        return "REC" + String.format("%04d", maxID + 1);
+        return "P" + String.format("%s%04d", formatDate, maxID + 1);
     }
 
     // Method to handle the "Approve" button click
@@ -1516,5 +1593,20 @@ public class StaffMenuPage extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton logOutButton;
     private javax.swing.JTextField roomChangeRequestTextBox;
+    private JTextField ContactField;
+    private JLabel ContactLabel;
+    private JTextField EmailField;
+    private JLabel EmailLabel;
+    private JButton EditProfileButton;
+    private JTextField UsernameField;
+    private JLabel UsernameLabel;
+    private JTextField NameField;
+    private JLabel NameLabel;
+    private JPasswordField PasswordField;
+    private JLabel PasswordLabel;
+    private JPanel ProfilePanel;
+    private JTextField StaffIDField;
+    private JLabel StaffIDLabel;
+
     // End of variables declaration
 }

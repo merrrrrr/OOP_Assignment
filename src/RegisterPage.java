@@ -25,12 +25,13 @@ public class RegisterPage extends javax.swing.JFrame {
     }
 
     public boolean validatePassword(String password) {
-        if (password.length() < 8) {
+        if (password == null || password.length() < 8) {
             return false;
         }
 
         boolean hasUpperCase = false;
         boolean hasLowerCase = false;
+        boolean hasNumber = false;
         boolean hasSpecialChar = false;
 
         for (char c : password.toCharArray()) {
@@ -38,12 +39,14 @@ public class RegisterPage extends javax.swing.JFrame {
                 hasUpperCase = true;
             } else if (Character.isLowerCase(c)) {
                 hasLowerCase = true;
+            } else if (Character.isDigit(c)) {
+                hasNumber = true;
             } else if (!Character.isLetterOrDigit(c) && c != ',') {
                 hasSpecialChar = true;
             }
         }
 
-        return hasUpperCase && hasLowerCase && hasSpecialChar;
+        return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
     }
 
     public boolean validateEmail(String email) {

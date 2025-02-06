@@ -166,8 +166,6 @@ public class LoginPage extends javax.swing.JFrame {
                     break;
             }
 
-
-
         } else {
             JOptionPane.showMessageDialog(null, "Login Failed\nInvalid username or password");
         }

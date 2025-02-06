@@ -72,7 +72,7 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
         GenderComboBox = new javax.swing.JComboBox<>();
         RoomNumberComboBox = new javax.swing.JComboBox<>();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         AddResidentLabel.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         AddResidentLabel.setText("Add Resident");

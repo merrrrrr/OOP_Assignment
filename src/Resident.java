@@ -15,13 +15,12 @@ public class Resident extends User {
 
     }
 
-    public Resident(String id, String username, String password, String name, String contactNumber, String email, String gender, String roomNo, String roomType, String overdueAmount, String createdDate) {
+    public Resident(String id, String username, String password, String name, String contactNumber, String email, String gender, String roomNo, String roomType, String overdueAmount) {
         super(id, username, password, name, contactNumber, email);
         this.gender = gender;
         this.roomType = roomType;
         this.roomNo = roomNo;
         this.overdueAmount = overdueAmount;
-        this.createdDate = createdDate;
     }
 
 
@@ -57,14 +56,6 @@ public class Resident extends User {
         this.overdueAmount = overdueAmount;
     }
 
-    public String getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(String createdDate) {
-        this.createdDate = createdDate;
-
-    }
 
     @Override
     public String toString() {

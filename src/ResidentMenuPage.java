@@ -52,7 +52,6 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         myInfo[7] = resident.getRoomNo();
         myInfo[8] = resident.getRoomType();
         myInfo[9] = resident.getOverdueAmount();
-        myInfo[10] = resident.getCreatedDate();
 
         int attribute = JOptionPane.showOptionDialog(null, "Please select attribute you want to edit.", "Edit Profile", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Username", "Password", "Name", "Contact Number", "Email Address"}, "Username");
         if (attribute == JOptionPane.CLOSED_OPTION) {
@@ -593,7 +592,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
             while ((line = reader.readLine()) != null) {
                 String[] details = line.split(",");
                 if (details.length >= 9 && details[1].equals(residentID)) {
-                    String request = "From: " + details[4] + " To: " + details[6] + " Status: " + details[8];
+                    String request = "From: " + details[4] + " To: " + details[9] + " Status: " + details[8];
                     requests.add(request);
                 }
             }

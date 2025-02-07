@@ -222,7 +222,7 @@ public class RegisterPage extends javax.swing.JFrame {
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-        LoginPage lp = new LoginPage();
+        LoginPage lp = new LoginPage(userType, user);
         lp.setVisible(true);
         this.dispose();
     }
@@ -255,7 +255,7 @@ public class RegisterPage extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Invalid email address. Please enter a valid email address");
             return;
         } else if (!user.validateContactNumber(contactNumber)) {
-            JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number without any special characters");
+            JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number between 9 and 11 digit without any special characters");
             return;
         } else if (!user.isUsernameUnique(username)) {
             JOptionPane.showMessageDialog(null, "Username already exists. Please choose another username");

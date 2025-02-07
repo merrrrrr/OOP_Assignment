@@ -217,7 +217,7 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Invalid email address. Please enter a valid email address");
             return;
         } else if (!manager.validateContactNumber(contact)) {
-            JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number without any special characters");
+            JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number between 9 and 11 digit without any special characters");
             return;
         } else if (!manager.isUsernameUnique(username)) {
             JOptionPane.showMessageDialog(null, "Username already exists. Please enter a different username");
@@ -228,23 +228,25 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
         } else if (!manager.isEmailUnique(email)) {
             JOptionPane.showMessageDialog(null, "Email address already exists. Please enter a different email address");
             return;
-        }
-
-        if (password.equals(confirmPassword)) {
-            try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter("Manager_Info.txt", true));
-                bw.newLine();
-                bw.write(line);
-                bw.close();
-                JOptionPane.showMessageDialog(null, "Manager added successfully");
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        } else {
+        } else if (!password.equals(confirmPassword)) {
             JOptionPane.showMessageDialog(null, "Password does not match");
+            return;
         }
+
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("Manager_Info.txt", true));
+
+            if (count != 0) {
+                bw.newLine();
+            }
+            bw.write(line);
+            bw.close();
+            JOptionPane.showMessageDialog(null, "Manager added successfully");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         this.dispose();
     }

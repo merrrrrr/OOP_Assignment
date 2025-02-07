@@ -2,7 +2,9 @@ import javax.swing.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.StringJoiner;
 
 /**
  *
@@ -47,6 +49,7 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
             }
 
             br.close();
+            return;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -220,7 +223,6 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
         // TODO add your handling code here:
         BufferedReader br = new BufferedReader(new FileReader("Resident_Info.txt"));
         int count = 0;
-        String residentID = "";
 
         while (br.readLine() != null) {
             count++;
@@ -228,31 +230,7 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
 
         br.close();
 
-        boolean isIDExist = true;
-        while (isIDExist) {
-            if (count + 1 < 10) {
-                residentID = "R" + "000" + String.valueOf(count + 1);
-            } else if (count + 1 < 100) {
-                residentID = "R" + "00" + String.valueOf(count + 1);
-            } else if (count + 1 < 1000) {
-                residentID = "R" + "0" + String.valueOf(count + 1);
-            } else {
-                residentID = "R" + String.valueOf(count + 1);
-            }
-            isIDExist = false;
-            br = new BufferedReader(new FileReader("Resident_Info.txt"));
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] residentInfo = line.split(",");
-                if (residentID.equals(residentInfo[0])) {
-                    count++;
-                    isIDExist = true;
-                    break;
-                }
-            }
-            br.close();
-        }
-
+        String residentID = manager.generateId("Resident_Info.txt");
         String username = UsernameField.getText();
         String password = PasswordField.getText();
         String confirmPassword = ConfirmPasswordField.getText();
@@ -291,7 +269,7 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Invalid email address. Please enter a valid email address");
             return;
         } else if (!manager.validateContactNumber(contact)) {
-            JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number without any special characters");
+            JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number between 9 and 11 digit without any special characters");
             return;
         } else if (!manager.isUsernameUnique(username)) {
             JOptionPane.showMessageDialog(null, "Username already exists. Please enter a different username");
@@ -302,23 +280,51 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
         } else if (!manager.isContactNumberUnique(contact)) {
             JOptionPane.showMessageDialog(null, "Contact number already exists. Please enter a different contact number");
             return;
+        } else if (!password.equals(confirmPassword)) {
+            JOptionPane.showMessageDialog(null, "Password does not match");
+            return;
         }
 
-        if (password.equals(confirmPassword)) {
-            try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter("Resident_Info.txt", true));
-                bw.newLine();
-                bw.write(line);
-                bw.close();
-                JOptionPane.showMessageDialog(null, "Resident added successfully");
 
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            BufferedReader roomInfoReader = new BufferedReader(new FileReader("Room_Info.txt"));
+            String roomInfoLine = "";
+            ArrayList<String> roomInfoList = new ArrayList<>();
+            while ((roomInfoLine = roomInfoReader.readLine()) != null) {
+                roomInfoList.add(roomInfoLine);
             }
 
-        } else {
-            JOptionPane.showMessageDialog(null, "Password does not match");
+            for (int i = 0; i < roomInfoList.size(); i++) {
+                String[] roomInfo = roomInfoList.get(i).split(",");
+                if (roomInfo[0].equals(roomNumber)) {
+                    roomInfo[2] = String.valueOf(Integer.valueOf(roomInfo[2]) - 1);
+                    roomInfoList.set(i, roomInfo[0] + "," + roomInfo[1] + "," + roomInfo[2] + "," + roomInfo[3]);
+                    break;
+                }
+            }
+
+            StringJoiner sj = new StringJoiner(System.lineSeparator());
+            for (String s : roomInfoList) {
+                sj.add(s);
+            }
+
+            BufferedWriter roomInfoWriter = new BufferedWriter(new FileWriter("Room_Info.txt"));
+            roomInfoWriter.write(sj.toString());
+            roomInfoWriter.close();
+
+            BufferedWriter bw = new BufferedWriter(new FileWriter("Resident_Info.txt", true));
+
+            if (count != 0) {
+                bw.newLine();
+            }
+            bw.write(line);
+            bw.close();
+            JOptionPane.showMessageDialog(null, "Resident added successfully");
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
 
         this.dispose();
     }

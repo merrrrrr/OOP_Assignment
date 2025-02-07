@@ -73,7 +73,6 @@ public class User {
     Scanner sc = new Scanner(System.in);
 
     public boolean register(int userType, String registerInfo) throws IOException {
-        boolean registerSuccessful = false;
         String filename = getRegisterFilename(userType);
         BufferedReader userRegistration = new BufferedReader(new FileReader(filename));
         BufferedWriter userRegistrationWriter = new BufferedWriter(new FileWriter(filename, true));
@@ -83,13 +82,11 @@ public class User {
         }
 
         userRegistrationWriter.write(registerInfo);
-        registerSuccessful = true;
-        System.out.println("Your registration request has been sent to manager for approval.");
 
         userRegistrationWriter.close();
         userRegistration.close();
 
-        return registerSuccessful;
+        return true;
     }
 
     public String login(int userType, String usernameInput, String passwordInput) throws IOException {
@@ -145,7 +142,7 @@ public class User {
         if (name == null || name.isEmpty()) {
             return false;
         }
-        return name.matches("[a-zA-Z]+");
+        return name.matches("[a-zA-Z ]+");
     }
 
     public boolean validatePassword(String password) {

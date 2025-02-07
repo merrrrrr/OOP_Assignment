@@ -121,7 +121,7 @@ public class RegisterPage extends javax.swing.JFrame {
         genderComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
         genderComboBox1.setMinimumSize(new java.awt.Dimension(150, 26));
 
-        roomTypeComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Single Room", "Double Room", "Triple Room" }));
+        roomTypeComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Single Room", "Double Sharing Room", "Triple Sharing Room" }));
         roomTypeComboBox1.setMinimumSize(new java.awt.Dimension(150, 26));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -282,8 +282,8 @@ public class RegisterPage extends javax.swing.JFrame {
         if (password.equals(confirmPassword)) {
             user.register(userType, registerInfo);
             JOptionPane.showMessageDialog(null, "Registration successful. Please wait for approval from the manager.");
-            LoginPage LoginPage = new LoginPage(userType, user);
-            LoginPage.setVisible(true);
+            MainPage mainPage = new MainPage();
+            mainPage.setVisible(true);
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(null, "Password does not match");

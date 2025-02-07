@@ -1,1 +1,2 @@
+R0001,justin,Justin123!,justin ng,123122342,justin@gmail.com,Male,MS003,Single Room,RM123,2025-01-01
 R0002,kynax,Kynax1234!,ng,0172371281,kynax@gmail.com,Female,FD002,Double Sharing Room,RM00.00,2025-01-01

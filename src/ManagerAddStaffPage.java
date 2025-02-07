@@ -211,7 +211,7 @@ public class ManagerAddStaffPage extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Invalid email address. Please enter a valid email address");
             return;
         } else if (!manager.validateContactNumber(contact)) {
-            JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number without any special characters");
+            JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number between 9 and 11 digit without any special characters");
             return;
         } else if (!manager.isEmailUnique(email)) {
             JOptionPane.showMessageDialog(null, "Email address already exists. Please enter a different email address.");
@@ -222,25 +222,28 @@ public class ManagerAddStaffPage extends javax.swing.JFrame {
         } else if (!manager.isContactNumberUnique(contact)) {
             JOptionPane.showMessageDialog(null, "Contact number already exists. Please enter a different contact number.");
             return;
+        } else if (!password.equals(confirmPassword)) {
+            JOptionPane.showMessageDialog(null, "Password does not match");
+            return;
         }
 
         String line = staffID + "," +  username + "," + password + "," + name + "," + contact + "," + email;
 
-        if (password.equals(confirmPassword)) {
-            try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter("Staff_Info.txt", true));
+
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("Staff_Info.txt", true));
+
+            if (count != 0) {
                 bw.newLine();
-                bw.write(line);
-                bw.close();
-                JOptionPane.showMessageDialog(null, "Staff added successfully");
-
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            bw.write(line);
+            bw.close();
+            JOptionPane.showMessageDialog(null, "Staff added successfully");
 
-        } else {
-            JOptionPane.showMessageDialog(null, "Password does not match");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
 
         this.dispose();
     }

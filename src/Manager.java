@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class Manager extends User{
 
     public Manager() {
@@ -15,6 +20,34 @@ public class Manager extends User{
                 + ", name = " + getName()
                 + ", contactNumber = " + getContactNumber()
                 + ", email = " + getEmail() + "}";
+    }
+
+    public String generateId(String infoFilename) throws IOException {
+
+        BufferedReader br = new BufferedReader(new FileReader(infoFilename));
+        String line;
+        int count = 0;
+        while ((line = br.readLine()) != null) {
+            count++;
+        }
+        br.close();
+
+        String prefix = "";
+        switch (infoFilename) {
+            case "Manager_Info.txt":
+                prefix = "M";
+                break;
+            case "Staff_Info.txt":
+                prefix = "S";
+                break;
+            case "Resident_Info.txt":
+                prefix = "R";
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid user type");
+        }
+
+        return String.format("%s%04d", prefix, count + 1);
     }
 
 }

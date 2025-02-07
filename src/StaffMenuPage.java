@@ -959,7 +959,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
         for (String line : lines) {
             String[] details = line.split(",");
-            model.addRow(new Object[]{details[0], details[1], details[7], details[8], "Make Payment"});
+            model.addRow(new Object[]{details[0], details[1], details[7], details[8], details[9], "Make Payment"});
         }
 
         ResidentPaymentTable.setRowHeight(30); // Set the row height to 30 pixels
@@ -1318,9 +1318,9 @@ public class StaffMenuPage extends javax.swing.JFrame {
         // Write receipt details to Receipt.txt
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("Receipt.txt", true))) {
             writer.write(receipt);
-            writer.newLine();
+            writer.newLine(); // Add a new line after writing the receipt
         } catch (IOException e) {
-            System.err.println("Error writing to the file: " + e.getMessage());
+            System.err.println("Error writing to Receipt.txt: " + e.getMessage());
         }
 
         // Refresh the generateReceiptTable

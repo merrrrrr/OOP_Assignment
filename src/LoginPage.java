@@ -3,11 +3,8 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
 
 public class LoginPage extends javax.swing.JFrame {
-
-    Scanner sc = new Scanner(System.in);
 
     int userType;
     User user = new User();

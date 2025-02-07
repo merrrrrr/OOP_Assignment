@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class ManagerAddResidentPage extends javax.swing.JFrame {
 
-    Manager manager;
+    private Manager manager;
 
     /**
      * Creates new form ManagerAddManagerPage
@@ -23,6 +23,7 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
     public ManagerAddResidentPage(Manager manager) {
         this.manager = manager;
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     public void getAvailableRooms() {
@@ -272,7 +273,7 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
         LocalDate date = LocalDate.now();
         String line = residentID + "," +  username + "," + password + "," + name + "," + contact + "," + email + "," + gender + "," + roomNumber + "," + roomType + "," + overdueAmount + "," + date.toString();
 
-        ManagerMenuPage managerMenuPage = new ManagerMenuPage();
+        ManagerMenuPage managerMenuPage = new ManagerMenuPage(manager);
 
         if (username == null || password == null || confirmPassword == null || name == null || contact == null || email == null) {
             JOptionPane.showMessageDialog(null, "Please fill in all fields");

@@ -7,7 +7,7 @@ import java.io.*;
  */
 public class ManagerAddManagerPage extends javax.swing.JFrame {
 
-    Manager manager;
+    private Manager manager;
 
     /**
      * Creates new form ManagerAddResidentPAge
@@ -20,6 +20,7 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
     public ManagerAddManagerPage(Manager manager) {
         this.manager = manager;
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -190,7 +191,7 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
             br.close();
         }
 
-        ManagerMenuPage managerMenuPage = new ManagerMenuPage();
+        ManagerMenuPage managerMenuPage = new ManagerMenuPage(manager);
 
         String username = UsernameField.getText();
         String password = PasswordField.getText();

@@ -531,7 +531,7 @@ public class ManagerMenuPage extends JFrame {
             return;
         }
 
-        if (choice > 0 && choice < 4) {
+        if (choice >= 0 && choice < 4) {
             model.setValueAt(value, row, (choice + 1));
         } else if (choice >= 4) {
             model.setValueAt(value, row,  (choice + 2));

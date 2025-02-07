@@ -1,3 +1,2 @@
 Register
 contact number validation - separate character message and counting message
-name validation - name become invalid if contains space

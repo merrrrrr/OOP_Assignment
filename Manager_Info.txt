@@ -1,1 +1,2 @@
-M0001,admin,Admin123!,Admin,0164158567,admin@apu.com
+M0001,admin,Admin123!,kum,0164158567,admin@apu.com
+M0003,mervin,Mervin1234!,fukit,0182712712,kum@gmail.com

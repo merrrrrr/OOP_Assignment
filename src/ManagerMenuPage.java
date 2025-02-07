@@ -24,11 +24,13 @@ public class ManagerMenuPage extends JFrame {
 
     public ManagerMenuPage() throws IOException {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     public ManagerMenuPage(Manager manager) throws IOException {
         this.manager = manager;
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     public boolean validateName(String name) {

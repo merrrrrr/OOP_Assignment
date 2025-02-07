@@ -15,6 +15,7 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
      */
     public ManagerAddResidentPage() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     public void getAvailableRooms() {

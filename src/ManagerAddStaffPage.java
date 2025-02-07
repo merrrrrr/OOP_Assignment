@@ -12,6 +12,7 @@ public class ManagerAddStaffPage extends javax.swing.JFrame {
      */
     public ManagerAddStaffPage() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**

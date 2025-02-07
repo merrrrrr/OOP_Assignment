@@ -12,6 +12,7 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
      */
     public ManagerAddManagerPage() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**

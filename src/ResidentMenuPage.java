@@ -29,12 +29,14 @@ public class ResidentMenuPage extends javax.swing.JFrame {
      */
     public ResidentMenuPage() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     public ResidentMenuPage(Resident resident) {
         this.resident = resident;
         initComponents();
         loadPaymentRecords();
+        setLocationRelativeTo(null);
     }
 
 

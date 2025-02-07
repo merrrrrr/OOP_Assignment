@@ -56,6 +56,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         populateGenerateReceiptTable();
         populateRoomChangeData();
         setupGenerateReceiptTable();
+        setLocationRelativeTo(null);
     }
 
     public StaffMenuPage(Staff staff) {
@@ -65,6 +66,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         populateGenerateReceiptTable();
         populateRoomChangeData();
         setupGenerateReceiptTable();
+        setLocationRelativeTo(null);
     }
 
     public void editProfile() throws IOException {

@@ -19,12 +19,14 @@ public class RegisterPage extends javax.swing.JFrame {
 
     public RegisterPage() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     public RegisterPage(int userType, User user) {
         this.userType = userType;
         this.user = user;
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     public boolean validatePassword(String password) {

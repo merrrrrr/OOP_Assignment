@@ -1,1 +1,3 @@
 C001,R0002,kynax,Female,FD002,Double Sharing Room,Single Room,privacy,approved,FS003
+C002,R0002,kynax,Female,FS003,Single Room,Triple Sharing Room,cheap,pending,-
+C003,R0002,kynax,Female,FS003,Single Room,Single Room,privacy,pending,-

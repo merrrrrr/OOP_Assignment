@@ -399,7 +399,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
                         {null, null, null, null}
                 },
                 new String [] {
-                        "Request ID", "Resident ID", "Resident Name", "gender", "Current Room Number", "Current Room Type", "New Room Type", "Description","Action","Status","New Room Number"
+                        "Request ID", "Resident ID", "Resident Name", "gender", "Current Room Number", "Current Room Type", "Requested Room Type", "Description","Action","Status","New Room Number"
                 }
         ));
         jScrollPane1.setViewportView(ManageRoomChangeTable);

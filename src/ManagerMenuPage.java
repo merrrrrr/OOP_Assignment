@@ -766,7 +766,7 @@ public class ManagerMenuPage extends JFrame {
             name = registeredUser[2];
             contact = registeredUser[3];
             email = registeredUser[4];
-            userInfo = id + "," + username + "," + password + "," + name + "," + contact + "," + email + "," + gender + "," + roomNumber + "," + "RM00.00";
+            userInfo = id + "," + username + "," + password + "," + name + "," + contact + "," + email + "," + gender + "," + roomNumber + "," + roomType + "," + "RM00.00";
         }
 
         BufferedReader infoFileReader = new BufferedReader(new FileReader(infoFilename));

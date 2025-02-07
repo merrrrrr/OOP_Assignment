@@ -67,111 +67,6 @@ public class StaffMenuPage extends javax.swing.JFrame {
         setupGenerateReceiptTable();
     }
 
-    public boolean validateName(String name) {
-        if (name == null || name.isEmpty()) {
-            return false;
-        }
-        return name.matches("[a-zA-Z]+");
-    }
-
-    public boolean validatePassword(String password) {
-        if (password == null || password.length() < 8) {
-            return false;
-        }
-
-        boolean hasUpperCase = false;
-        boolean hasLowerCase = false;
-        boolean hasNumber = false;
-        boolean hasSpecialChar = false;
-
-        for (char c : password.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                hasUpperCase = true;
-            } else if (Character.isLowerCase(c)) {
-                hasLowerCase = true;
-            } else if (Character.isDigit(c)) {
-                hasNumber = true;
-            } else if (!Character.isLetterOrDigit(c) && c != ',') {
-                hasSpecialChar = true;
-            }
-        }
-
-        return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
-    }
-
-    public boolean validateEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        Pattern p = Pattern.compile(emailRegex);
-        if (email == null) {
-            return false;
-        }
-        return email != null && p.matcher(email).matches();
-    }
-
-    public boolean validateContactNumber(String contactNumber) {
-        if (contactNumber.length() >= 9 && contactNumber.length() <= 11) {
-            for (char c : contactNumber.toCharArray()) {
-                if (!Character.isDigit(c)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean isUsernameUnique(String username, String filename) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] parts = line.split(",");
-            if (parts.length > 0) {
-                String existingUsername = parts[1];
-                if (existingUsername.equals(username)) {
-                    br.close();
-                    return false;
-                }
-            }
-        }
-        br.close();
-        return true;
-    }
-
-    public boolean isEmailUnique(String email, String filename) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] parts = line.split(",");
-            if (parts.length > 0) {
-                String existingEmail = parts[5]; // Assuming the email is the 5th element in the CSV
-                if (existingEmail.equals(email)) {
-                    br.close();
-                    return false;
-                }
-            }
-        }
-        br.close();
-        return true;
-    }
-
-    public boolean isContactNumberUnique(String contactNumber, String filename) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] parts = line.split(",");
-            if (parts.length > 0) {
-                String existingContactNumber = parts[4]; // Assuming the contact number is the 4th element in the CSV
-                if (existingContactNumber.equals(contactNumber)) {
-                    br.close();
-                    return false;
-                }
-            }
-        }
-        br.close();
-        return true;
-    }
-
     public void editProfile() throws IOException {
         String[] myInfo = new String[6];
         myInfo[0] = staff.getId();
@@ -191,7 +86,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
             } else if (newUsername.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Username cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (isUsernameUnique(newUsername, "Staff_Info.txt") == false) {
+            } else if (!staff.isUsernameUnique(newUsername)) {
                 JOptionPane.showMessageDialog(null, "This username already exists. Please enter other username.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -206,7 +101,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
             } else if (newPassword.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (validatePassword(newPassword) == false) {
+            } else if (!staff.validatePassword(newPassword)) {
                 JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit and one special character.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -228,7 +123,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
             } else if (newName.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (validateName(newName) == false) {
+            } else if (!staff.validateName(newName)) {
                 JOptionPane.showMessageDialog(null, "Name must only contain alphabets.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -243,10 +138,10 @@ public class StaffMenuPage extends javax.swing.JFrame {
             } else if (newContact.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Contact number cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (validateContactNumber(newContact) == false) {
+            } else if (!staff.validateContactNumber(newContact)) {
                 JOptionPane.showMessageDialog(null, "Contact number must between 9 and 11 digits number.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (isContactNumberUnique(newContact, "Staff_Info.txt") == false) {
+            } else if (!staff.isContactNumberUnique(newContact)) {
                 JOptionPane.showMessageDialog(null, "This contact number already exists. Please enter other contact number.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
 
@@ -262,10 +157,10 @@ public class StaffMenuPage extends javax.swing.JFrame {
             } else if (newEmail.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Email address cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (validateEmail(newEmail) == false) {
+            } else if (!staff.validateEmail(newEmail)) {
                 JOptionPane.showMessageDialog(null, "Invalid email address format.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (isEmailUnique(newEmail, "Staff_Info.txt") == false) {
+            } else if (!staff.isEmailUnique(newEmail)) {
                 JOptionPane.showMessageDialog(null, "This email address already exists. Please enter other email address.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }

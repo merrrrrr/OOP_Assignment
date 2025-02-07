@@ -10,13 +10,15 @@ public class LoginPage extends javax.swing.JFrame {
     Scanner sc = new Scanner(System.in);
 
     int userType;
+    User user = new User();
 
     /**
      * Creates new form Login
      */
 
-    public LoginPage(int userType) {
+    public LoginPage(int userType, User user) {
         this.userType = userType;
+        this.user = user;
         initComponents();
     }
 
@@ -173,7 +175,7 @@ public class LoginPage extends javax.swing.JFrame {
 
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-        RegisterPage registerPage = new RegisterPage(userType);
+        RegisterPage registerPage = new RegisterPage(userType, user);
         registerPage.setVisible(true);
         this.dispose();
     }

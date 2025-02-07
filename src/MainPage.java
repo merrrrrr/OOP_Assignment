@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class MainPage extends javax.swing.JFrame {
 
     int userType;
+    User user = new User();
 
     /**
      * Creates new form MainPage
@@ -100,7 +101,7 @@ public class MainPage extends javax.swing.JFrame {
     private void managerButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         // TODO add your handling code here:
         userType = 1;
-        LoginPage loginPage = new LoginPage(userType);
+        LoginPage loginPage = new LoginPage(userType, user);
         loginPage.setVisible(true);
         this.dispose();
 
@@ -109,7 +110,7 @@ public class MainPage extends javax.swing.JFrame {
     private void staffButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         // TODO add your handling code here:
         userType = 2;
-        LoginPage loginPage = new LoginPage(userType);
+        LoginPage loginPage = new LoginPage(userType, user);
         loginPage.setVisible(true);
         this.dispose();
     }
@@ -117,7 +118,7 @@ public class MainPage extends javax.swing.JFrame {
     private void residentButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
         userType = 3;
-        LoginPage loginPage = new LoginPage(userType);
+        LoginPage loginPage = new LoginPage(userType, user);
         loginPage.setVisible(true);
         this.dispose();
     }

@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class User {
     private String id;
@@ -138,6 +139,296 @@ public class User {
         }
 
         return filename;
+    }
+
+    public boolean validateName(String name) {
+        if (name == null || name.isEmpty()) {
+            return false;
+        }
+        return name.matches("[a-zA-Z]+");
+    }
+
+    public boolean validatePassword(String password) {
+        if (password == null || password.length() < 8) {
+            return false;
+        }
+
+        boolean hasUpperCase = false;
+        boolean hasLowerCase = false;
+        boolean hasNumber = false;
+        boolean hasSpecialChar = false;
+
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                hasUpperCase = true;
+            } else if (Character.isLowerCase(c)) {
+                hasLowerCase = true;
+            } else if (Character.isDigit(c)) {
+                hasNumber = true;
+            } else if (!Character.isLetterOrDigit(c) && c != ',') {
+                hasSpecialChar = true;
+            }
+        }
+
+        return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
+    }
+
+    public boolean validateEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern p = Pattern.compile(emailRegex);
+        if (email == null) {
+            return false;
+        }
+        return email != null && p.matcher(email).matches();
+    }
+
+    public boolean validateContactNumber(String contactNumber) {
+        if (contactNumber.length() >= 9 && contactNumber.length() <= 11) {
+            for (char c : contactNumber.toCharArray()) {
+                if (!Character.isDigit(c)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isUsernameUnique(String username) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("Manager_Info.txt"));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingUsername = parts[1];
+                if (existingUsername.equals(username)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+
+        br = new BufferedReader(new FileReader("Staff_Info.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingUsername = parts[1];
+                if (existingUsername.equals(username)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+
+        br = new BufferedReader(new FileReader("Resident_Info.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingUsername = parts[1];
+                if (existingUsername.equals(username)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+
+        br = new BufferedReader(new FileReader("Manager_Registration.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingUsername = parts[0];
+                if (existingUsername.equals(username)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+
+        br = new BufferedReader(new FileReader("Staff_Registration.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingUsername = parts[0];
+                if (existingUsername.equals(username)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+
+        br = new BufferedReader(new FileReader("Resident_Registration.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingUsername = parts[0];
+                if (existingUsername.equals(username)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public boolean isEmailUnique(String email) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("Manager_Info.txt"));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingEmail = parts[5];
+                if (existingEmail.equals(email)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+
+        br = new BufferedReader(new FileReader("Staff_Info.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingEmail = parts[5];
+                if (existingEmail.equals(email)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+
+        br = new BufferedReader(new FileReader("Resident_Info.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingEmail = parts[5];
+                if (existingEmail.equals(email)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+
+        br = new BufferedReader(new FileReader("Manager_Registration.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingEmail = parts[4];
+                if (existingEmail.equals(email)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+
+        br = new BufferedReader(new FileReader("Staff_Registration.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingEmail = parts[4];
+                if (existingEmail.equals(email)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+
+        br = new BufferedReader(new FileReader("Resident_Registration.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingEmail = parts[4];
+                if (existingEmail.equals(email)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public boolean isContactNumberUnique(String contactNumber) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader("Manager_Info.txt"));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingContactNumber = parts[4];
+                if (existingContactNumber.equals(contactNumber)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+        br.close();
+
+        br = new BufferedReader(new FileReader("Staff_Info.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingContactNumber = parts[4];
+                if (existingContactNumber.equals(contactNumber)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+
+        br = new BufferedReader(new FileReader("Resident_Info.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingContactNumber = parts[4];
+                if (existingContactNumber.equals(contactNumber)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+
+        br = new BufferedReader(new FileReader("Manager_Registration.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingContactNumber = parts[3];
+                if (existingContactNumber.equals(contactNumber)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+
+        br = new BufferedReader(new FileReader("Staff_Registration.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingContactNumber = parts[3];
+                if (existingContactNumber.equals(contactNumber)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+
+        br = new BufferedReader(new FileReader("Resident_Registration.txt"));
+        while ((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length > 0) {
+                String existingContactNumber = parts[3];
+                if (existingContactNumber.equals(contactNumber)) {
+                    br.close();
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
 }

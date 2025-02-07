@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 /**
@@ -14,13 +15,15 @@ public class RegisterPage extends javax.swing.JFrame {
      * Creates new form RegisterPage
      */
     int userType;
+    User user = new User();
 
     public RegisterPage() {
         initComponents();
     }
 
-    public RegisterPage(int userType) {
+    public RegisterPage(int userType, User user) {
         this.userType = userType;
+        this.user = user;
         initComponents();
     }
 
@@ -76,57 +79,6 @@ public class RegisterPage extends javax.swing.JFrame {
             return false;
         }
         return name.matches("[a-zA-Z]+");
-    }
-
-    public boolean isUsernameUnique(String username, String filename) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] parts = line.split(",");
-            if (parts.length > 0) {
-                String existingUsername = parts[1];
-                if (existingUsername.equals(username)) {
-                    br.close();
-                    return false;
-                }
-            }
-        }
-        br.close();
-        return true;
-    }
-
-    public boolean isEmailUnique(String email, String filename) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] parts = line.split(",");
-            if (parts.length > 0) {
-                String existingEmail = parts[5]; // Assuming the email is the 5th element in the CSV
-                if (existingEmail.equals(email)) {
-                    br.close();
-                    return false;
-                }
-            }
-        }
-        br.close();
-        return true;
-    }
-
-    public boolean isContactNumberUnique(String contactNumber, String filename) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] parts = line.split(",");
-            if (parts.length > 0) {
-                String existingContactNumber = parts[4]; // Assuming the contact number is the 4th element in the CSV
-                if (existingContactNumber.equals(contactNumber)) {
-                    br.close();
-                    return false;
-                }
-            }
-        }
-        br.close();
-        return true;
     }
 
 
@@ -345,42 +297,44 @@ public class RegisterPage extends javax.swing.JFrame {
         }else if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || name.isEmpty() || contactNumber.isEmpty() || email.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please fill in all the fields");
             return;
-        } else if (validateName(name) == false) {
+        } else if (!validateName(name)) {
             JOptionPane.showMessageDialog(null, "Invalid name. No special characters or numbers allowed");
             return;
-        } else if (validatePassword(password) == false) {
+        } else if (!validatePassword(password)) {
             JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character");
             return;
-        } else if (validateEmail(email) == false) {
+        } else if (!validateEmail(email)) {
             JOptionPane.showMessageDialog(null, "Invalid email address. Please enter a valid email address");
             return;
-        } else if (validateContactNumber(contactNumber) == false) {
+        } else if (!validateContactNumber(contactNumber)) {
             JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number without any special characters");
             return;
-        } else if (isUsernameUnique(username, user.getInfoFilename(userType)) == false) {
+        } else if (!user.isUsernameUnique(username)) {
             JOptionPane.showMessageDialog(null, "Username already exists. Please choose another username");
             return;
-        } else if (isEmailUnique(email, user.getInfoFilename(userType)) == false) {
+        } else if (!user.isEmailUnique(email)) {
             JOptionPane.showMessageDialog(null, "Email already exists. Please choose another email");
             return;
-        } else if (isContactNumberUnique(contactNumber, user.getInfoFilename(userType)) == false) {
+        } else if (!user.isContactNumberUnique(contactNumber)) {
             JOptionPane.showMessageDialog(null, "Contact number already exists. Please choose another contact number");
             return;
         }
 
+        LocalDateTime datetime = LocalDateTime.now();
+
         if (userType == 3) {
             String gender = genderComboBox1.getSelectedItem().toString();
             String roomType = roomTypeComboBox1.getSelectedItem().toString();
-            registerInfo = username + "," + password + "," + name + "," + contactNumber + "," + email + "," + gender +  "," + roomType;
+            registerInfo = username + "," + password + "," + name + "," + contactNumber + "," + email + "," + gender +  "," + roomType + "," + datetime;
 
         } else {
-            registerInfo = username + "," + password + "," + name + "," + contactNumber + "," + email;
+            registerInfo = username + "," + password + "," + name + "," + contactNumber + "," + email + "," + datetime;
         }
 
         if (password.equals(confirmPassword)) {
             user.register(userType, registerInfo);
             JOptionPane.showMessageDialog(null, "Registration successful. Please wait for approval from the manager.");
-            LoginPage LoginPage = new LoginPage(userType);
+            LoginPage LoginPage = new LoginPage(userType, user);
             LoginPage.setVisible(true);
             this.dispose();
         } else {

@@ -232,6 +232,15 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         ContactField = new JTextField();
         EmailField = new JTextField();
         EditProfileButton = new JButton();
+        viewRequest = new javax.swing.JButton();
+
+
+        viewRequest.setText("View Request");
+        viewRequest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewRequestActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -283,6 +292,8 @@ public class ResidentMenuPage extends javax.swing.JFrame {
                                                 .addGap(243, 243, 243)
                                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                                .addGap(166, 166, 166)
+                                                .addComponent(viewRequest)
                                                 .addGap(290, 290, 290)
                                                 .addComponent(submitButton))
                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
@@ -310,7 +321,8 @@ public class ResidentMenuPage extends javax.swing.JFrame {
                                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
                                 .addComponent(submitButton)
-                                .addGap(67, 67, 67))
+                                .addComponent(viewRequest))
+                        .addGap(67, 67, 67)
         );
 
         ResidentTab.addTab("Change Room Type Request", jPanel1);
@@ -571,6 +583,40 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }
 
+    private void viewRequestActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO add your handling code here:
+        String residentID = resident.getId();
+        java.util.List<String> requests = new java.util.ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("Change_Room.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                if (details.length >= 9 && details[1].equals(residentID)) {
+                    String request = "From: " + details[4] + " To: " + details[6] + " Status: " + details[8];
+                    requests.add(request);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading Change_Room.txt: " + e.getMessage());
+            return;
+        }
+
+        if (requests.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "No requests found.", "Info", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // Create a dropdown menu with the requests
+        String[] requestArray = requests.toArray(new String[0]);
+        String selectedRequest = (String) javax.swing.JOptionPane.showInputDialog(this, "Select a request:", "View Request",
+                javax.swing.JOptionPane.PLAIN_MESSAGE, null, requestArray, requestArray[0]);
+
+        if (selectedRequest != null) {
+            javax.swing.JOptionPane.showMessageDialog(this, selectedRequest, "Request Details", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
     private void ResidentLogOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
         int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to log out?", "Confirm Log Out", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (response == JOptionPane.YES_OPTION) {
@@ -644,6 +690,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         }
     }
 
+
     private void handleSubmitButtonClick() {
         String newRoomType = (String) roomTypeDropdownMenu.getSelectedItem();
         if ("Select Room Type...".equals(newRoomType)) {
@@ -668,15 +715,18 @@ public class ResidentMenuPage extends javax.swing.JFrame {
 
         // Add the new request to Change_Room.txt
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("Change_Room.txt", true))) {
-            writer.write(String.join(",", requestID, residentID, residentUsername, residentGender, currentRoomNumber, currentRoomType, newRoomType, changeReason, "pending"));
+            writer.write(String.join(",", requestID, residentID, residentUsername, residentGender, currentRoomNumber, currentRoomType, newRoomType, changeReason, "pending","-"));
             writer.newLine();
         } catch (IOException e) {
             System.err.println("Error writing to Change_Room.txt: " + e.getMessage());
-            return;
         }
 
         // Show a popup message indicating the request has been submitted
         javax.swing.JOptionPane.showMessageDialog(this, "Room change request submitted successfully.", "Success", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+        // Refresh the dropdown menu and text box
+        roomTypeDropdownMenu.setSelectedIndex(0);
+        changeReasonTextBox.setText("");
     }
 
     private String generateUniqueRequestID() {
@@ -752,7 +802,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
             System.err.println("Error reading Payment_Records.txt: " + e.getMessage());
         }
     }
-    
+
 
     /**
      * @param args the command line arguments
@@ -837,5 +887,6 @@ public class ResidentMenuPage extends javax.swing.JFrame {
     private JTextField UsernameField;
     private JLabel UsernameLabel;
     private JPanel ProfilePanel;
+    private JButton viewRequest;
     // End of variables declaration
 }

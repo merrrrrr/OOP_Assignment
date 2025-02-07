@@ -11,9 +11,9 @@
 
 import javax.swing.*;
 import javax.swing.table.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Component;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -399,7 +399,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
                         {null, null, null, null}
                 },
                 new String [] {
-                        "Request ID", "Resident ID", "Resident Name", "gender", "Current Room Number", "Current Room Type", "New Room Type", "Description","Action","Status"
+                        "Request ID", "Resident ID", "Resident Name", "gender", "Current Room Number", "Current Room Type", "New Room Type", "Description","Action","Status","New Room Number"
                 }
         ));
         jScrollPane1.setViewportView(ManageRoomChangeTable);
@@ -659,8 +659,8 @@ public class StaffMenuPage extends javax.swing.JFrame {
                     continue; // Skip empty lines
                 }
                 String[] details = line.split(",");
-                if (details.length >= 9) { // Ensure there are at least 9 elements
-                    model.addRow(new Object[]{details[0], details[1], details[2], details[3], details[4], details[5], details[6], details[7], "", details[8]});
+                if (details.length >= 10) { // Ensure there are at least 10 elements
+                    model.addRow(new Object[]{details[0], details[1], details[2], details[3], details[4], details[5], details[6], details[7], "", details[8], details[9]});
                 } else {
                     System.err.println("Invalid line format: " + line);
                 }
@@ -941,7 +941,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
         public ActionButtonRenderer() {
             setOpaque(true);
-            setLayout(new java.awt.GridLayout(1, 2));
+            setLayout(new java.awt.GridLayout(2, 1)); // Change to vertical layout
             approveButton = new JButton("Approve");
             rejectButton = new JButton("Reject");
             completedLabel = new JLabel("Completed", SwingConstants.CENTER);
@@ -952,7 +952,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
             String status = (String) table.getValueAt(row, 9); // Assuming status is in the 10th column (index 9)
             removeAll();
             if ("approved".equalsIgnoreCase(status) || "rejected".equalsIgnoreCase(status)) {
-                add(completedLabel);
+                add(completedLabel, new GridBagConstraints()); // Center the label
             } else {
                 add(approveButton);
                 add(rejectButton);
@@ -971,7 +971,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
         public ActionButtonEditor(JCheckBox checkBox) {
             super(checkBox);
-            panel = new JPanel(new java.awt.GridLayout(1, 2));
+            panel = new JPanel(new java.awt.GridLayout(2, 1)); // Change to vertical layout
             approveButton = new JButton("Approve");
             rejectButton = new JButton("Reject");
             completedLabel = new JLabel("Completed", SwingConstants.CENTER);
@@ -981,16 +981,16 @@ public class StaffMenuPage extends javax.swing.JFrame {
             approveButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    fireEditingStopped();
                     handleApproveButtonClick(currentRow);
+                    fireEditingStopped();
                 }
             });
 
             rejectButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    fireEditingStopped();
                     handleRejectButtonClick(currentRow);
+                    fireEditingStopped();
                 }
             });
         }
@@ -1264,6 +1264,32 @@ public class StaffMenuPage extends javax.swing.JFrame {
             updateRoomInfo(currentRoomNumber, selectedRoom);
             updateChangeRoomStatus(row, "approved");
             updateResidentInfo(residentID, selectedRoom, newRoomType);
+            ManageRoomChangeTable.setValueAt(selectedRoom, row, 10); // Update the "New Room" column
+
+            // Update the Change_Room.txt file
+            try {
+                List<String> lines = new ArrayList<>();
+                try (BufferedReader reader = new BufferedReader(new FileReader("Change_Room.txt"))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        lines.add(line);
+                    }
+                }
+
+                String[] details = lines.get(row).split(",");
+                details[9] = selectedRoom; // Update the new room number
+                lines.set(row, String.join(",", details));
+
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter("Change_Room.txt"))) {
+                    for (String line : lines) {
+                        writer.write(line);
+                        writer.newLine();
+                    }
+                }
+            } catch (IOException e) {
+                System.err.println("Error updating the file: " + e.getMessage());
+            }
+
             populateRoomChangeData();
         }
     }
@@ -1302,6 +1328,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to reject this request?", "Confirm Rejection", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (response == JOptionPane.YES_OPTION) {
             updateChangeRoomStatus(row, "rejected");
+            ManageRoomChangeTable.setValueAt("-", row, 10); // Update the "New Room" column
             populateRoomChangeData(); // Repopulate the table
         }
     }

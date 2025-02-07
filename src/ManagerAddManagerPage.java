@@ -7,12 +7,19 @@ import java.io.*;
  */
 public class ManagerAddManagerPage extends javax.swing.JFrame {
 
+    Manager manager;
+
     /**
      * Creates new form ManagerAddResidentPAge
      */
     public ManagerAddManagerPage() {
         initComponents();
         setLocationRelativeTo(null);
+    }
+
+    public ManagerAddManagerPage(Manager manager) {
+        this.manager = manager;
+        initComponents();
     }
 
     /**
@@ -199,25 +206,25 @@ public class ManagerAddManagerPage extends javax.swing.JFrame {
         } else if (username.trim().isEmpty() || password.trim().isEmpty() || confirmPassword.trim().isEmpty() || name.trim().isEmpty() || contact.trim().isEmpty() || email.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please fill in all fields");
             return;
-        } else if (managerMenuPage.validateName(name) == false) {
+        } else if (!manager.validateName(name)) {
             JOptionPane.showMessageDialog(null, "Invalid name. No special characters or numbers allowed");
             return;
-        } else if (managerMenuPage.validatePassword(password) == false) {
+        } else if (!manager.validatePassword(password)) {
             JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character");
             return;
-        } else if (managerMenuPage.validateEmail(email) == false) {
+        } else if (!manager.validateEmail(email)) {
             JOptionPane.showMessageDialog(null, "Invalid email address. Please enter a valid email address");
             return;
-        } else if (managerMenuPage.validateContactNumber(contact) == false) {
+        } else if (!manager.validateContactNumber(contact)) {
             JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number without any special characters");
             return;
-        } else if (managerMenuPage.isUsernameUnique(username, "Manager_Info.txt") == false) {
+        } else if (!manager.isUsernameUnique(username)) {
             JOptionPane.showMessageDialog(null, "Username already exists. Please enter a different username");
             return;
-        } else if (managerMenuPage.isContactNumberUnique(contact, "Manager_Info.txt") == false) {
+        } else if (!manager.isContactNumberUnique(contact)) {
             JOptionPane.showMessageDialog(null, "Contact number already exists. Please enter a different contact number");
             return;
-        } else if (managerMenuPage.isEmailUnique(email, "Manager_Info.txt") == false) {
+        } else if (!manager.isEmailUnique(email)) {
             JOptionPane.showMessageDialog(null, "Email address already exists. Please enter a different email address");
             return;
         }

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -31,111 +30,6 @@ public class ManagerMenuPage extends JFrame {
         this.manager = manager;
         initComponents();
         setLocationRelativeTo(null);
-    }
-
-    public boolean validateName(String name) {
-        if (name == null || name.isEmpty()) {
-            return false;
-        }
-        return name.matches("[a-zA-Z]+");
-    }
-
-    public boolean validatePassword(String password) {
-        if (password == null || password.length() < 8) {
-            return false;
-        }
-
-        boolean hasUpperCase = false;
-        boolean hasLowerCase = false;
-        boolean hasNumber = false;
-        boolean hasSpecialChar = false;
-
-        for (char c : password.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                hasUpperCase = true;
-            } else if (Character.isLowerCase(c)) {
-                hasLowerCase = true;
-            } else if (Character.isDigit(c)) {
-                hasNumber = true;
-            } else if (!Character.isLetterOrDigit(c) && c != ',') {
-                hasSpecialChar = true;
-            }
-        }
-
-        return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
-    }
-
-    public boolean validateEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        Pattern p = Pattern.compile(emailRegex);
-        if (email == null) {
-            return false;
-        }
-        return email != null && p.matcher(email).matches();
-    }
-
-    public boolean validateContactNumber(String contactNumber) {
-        if (contactNumber.length() >= 9 && contactNumber.length() <= 11) {
-            for (char c : contactNumber.toCharArray()) {
-                if (!Character.isDigit(c)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean isUsernameUnique(String username, String filename) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] parts = line.split(",");
-            if (parts.length > 0) {
-                String existingUsername = parts[1];
-                if (existingUsername.equals(username)) {
-                    br.close();
-                    return false;
-                }
-            }
-        }
-        br.close();
-        return true;
-    }
-
-    public boolean isEmailUnique(String email, String filename) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] parts = line.split(",");
-            if (parts.length > 0) {
-                String existingEmail = parts[5]; // Assuming the email is the 5th element in the CSV
-                if (existingEmail.equals(email)) {
-                    br.close();
-                    return false;
-                }
-            }
-        }
-        br.close();
-        return true;
-    }
-
-    public boolean isContactNumberUnique(String contactNumber, String filename) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] parts = line.split(",");
-            if (parts.length > 0) {
-                String existingContactNumber = parts[4]; // Assuming the contact number is the 4th element in the CSV
-                if (existingContactNumber.equals(contactNumber)) {
-                    br.close();
-                    return false;
-                }
-            }
-        }
-        br.close();
-        return true;
     }
 
     public String[][] toUserInfoTable(int userType) throws IOException {
@@ -555,7 +449,7 @@ public class ManagerMenuPage extends JFrame {
             value = JOptionPane.showInputDialog("Enter new username: ");
             if (value == null) {
                 return;
-            } else if (!isUsernameUnique(value, filename)) {
+            } else if (!manager.isUsernameUnique(value)) {
                 JOptionPane.showMessageDialog(null, "Username already exists. Please enter other username.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -563,7 +457,7 @@ public class ManagerMenuPage extends JFrame {
             value = JOptionPane.showInputDialog("Enter new name: ");
             if (value == null) {
                 return;
-            } else if (!validateName(value)) {
+            } else if (!manager.validateName(value)) {
                 JOptionPane.showMessageDialog(null, "Invalid name. Please enter a valid name.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -571,10 +465,10 @@ public class ManagerMenuPage extends JFrame {
             value = JOptionPane.showInputDialog("Enter new contact number: ");
             if (value == null) {
                 return;
-            } else if (!validateContactNumber(value)) {
+            } else if (!manager.validateContactNumber(value)) {
                 JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a contact number with 9 to 11 digit number.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (!isContactNumberUnique(value, filename)) {
+            } else if (!manager.isContactNumberUnique(value)) {
                 JOptionPane.showMessageDialog(null, "Contact number already exists. Please enter other contact number.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -582,10 +476,10 @@ public class ManagerMenuPage extends JFrame {
             value = JOptionPane.showInputDialog("Enter new email address: ");
             if (value == null) {
                 return;
-            } else if (!validateEmail(value)) {
+            } else if (!manager.validateEmail(value)) {
                 JOptionPane.showMessageDialog(null, "Invalid email address. Please enter a valid email address.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (!isEmailUnique(value, filename)) {
+            } else if (!manager.isEmailUnique(value)) {
                 JOptionPane.showMessageDialog(null, "Email address already exists. Please enter other email address.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -1446,7 +1340,7 @@ public class ManagerMenuPage extends JFrame {
             } else if (newUsername.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Username cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (isUsernameUnique(newUsername, "Manager_Info.txt") == false) {
+            } else if (!manager.isUsernameUnique(newUsername)) {
                 JOptionPane.showMessageDialog(null, "This username already exists. Please enter other username.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -1461,7 +1355,7 @@ public class ManagerMenuPage extends JFrame {
             } else if (newPassword.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (validatePassword(newPassword) == false) {
+            } else if (!manager.validatePassword(newPassword)) {
                 JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit and one special character.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -1483,7 +1377,7 @@ public class ManagerMenuPage extends JFrame {
             } else if (newName.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Name cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (validateName(newName) == false) {
+            } else if (!manager.validateName(newName)) {
                 JOptionPane.showMessageDialog(null, "Name must only contain alphabets.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -1498,10 +1392,10 @@ public class ManagerMenuPage extends JFrame {
             } else if (newContact.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Contact number cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (validateContactNumber(newContact) == false) {
+            } else if (!manager.validateContactNumber(newContact)) {
                 JOptionPane.showMessageDialog(null, "Contact number must between 9 and 11 digits number.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (isContactNumberUnique(newContact, "Manager_Info.txt") == false) {
+            } else if (!manager.isContactNumberUnique(newContact)) {
                 JOptionPane.showMessageDialog(null, "This contact number already exists. Please enter other contact number.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
 
@@ -1517,10 +1411,10 @@ public class ManagerMenuPage extends JFrame {
             } else if (newEmail.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Email address cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (validateEmail(newEmail) == false) {
+            } else if (manager.validateEmail(newEmail) == false) {
                 JOptionPane.showMessageDialog(null, "Invalid email address format.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
-            } else if (isEmailUnique(newEmail, "Manager_Info.txt") == false) {
+            } else if (manager.isEmailUnique(newEmail) == false) {
                 JOptionPane.showMessageDialog(null, "This email address already exists. Please enter other email address.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -1583,7 +1477,6 @@ public class ManagerMenuPage extends JFrame {
         DeleteUserButton = new JButton();
         EditUserButton = new JButton();
         SearchUserInfoButton = new JButton();
-        ViewUserDetailsButton = new JButton();
         RefreshUserInfoButton = new JButton();
         RegistrationPanel = new JPanel();
         RegistrationRequestTab = new JTabbedPane();
@@ -1726,13 +1619,6 @@ public class ManagerMenuPage extends JFrame {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }
-        });
-
-        ViewUserDetailsButton.setText("View Details");
-        ViewUserDetailsButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                ViewUserDetailsButtonActionPerformed(evt);
             }
         });
 
@@ -2368,13 +2254,13 @@ public class ManagerMenuPage extends JFrame {
         int tab = UserInfoTab.getSelectedIndex();
 
         if (tab == 1) {
-            ManagerAddStaffPage addStaffPage = new ManagerAddStaffPage();
+            ManagerAddStaffPage addStaffPage = new ManagerAddStaffPage(manager);
             addStaffPage.setVisible(true);
         } else if (tab == 2) {
-            ManagerAddResidentPage addResidentPage = new ManagerAddResidentPage();
+            ManagerAddResidentPage addResidentPage = new ManagerAddResidentPage(manager);
             addResidentPage.setVisible(true);
         } else if (tab == 0) {
-            ManagerAddManagerPage addManagerPage = new ManagerAddManagerPage();
+            ManagerAddManagerPage addManagerPage = new ManagerAddManagerPage(manager);
             addManagerPage.setVisible(true);
         }
 
@@ -2388,10 +2274,6 @@ public class ManagerMenuPage extends JFrame {
     private void EditUserButtonActionPerformed(ActionEvent evt) throws IOException {
         // TODO add your handling code here:
         editUserInfo();
-    }
-
-    private void ViewUserDetailsButtonActionPerformed(ActionEvent evt) {
-        // TODO add your handling code here:
     }
 
     private void SearchUserInfoButtonActionPerformed(ActionEvent evt) throws IOException {
@@ -2599,7 +2481,6 @@ public class ManagerMenuPage extends JFrame {
     private JButton ViewReceiptButton;
     private JButton ViewRoomChangeDetailsButton;
     private JButton ViewRoomInfoDetailsButton;
-    private JButton ViewUserDetailsButton;
     private JPanel RegistrationPanel;
     private JButton UpdateRateButton;
     private JPanel UserInfoPanel;

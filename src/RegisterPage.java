@@ -29,60 +29,6 @@ public class RegisterPage extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
 
-    public boolean validatePassword(String password) {
-        if (password == null || password.length() < 8) {
-            return false;
-        }
-
-        boolean hasUpperCase = false;
-        boolean hasLowerCase = false;
-        boolean hasNumber = false;
-        boolean hasSpecialChar = false;
-
-        for (char c : password.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                hasUpperCase = true;
-            } else if (Character.isLowerCase(c)) {
-                hasLowerCase = true;
-            } else if (Character.isDigit(c)) {
-                hasNumber = true;
-            } else if (!Character.isLetterOrDigit(c) && c != ',') {
-                hasSpecialChar = true;
-            }
-        }
-
-        return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
-    }
-
-    public boolean validateEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        Pattern p = Pattern.compile(emailRegex);
-        if (email == null) {
-            return false;
-        }
-        return email != null && p.matcher(email).matches();
-    }
-
-    public boolean validateContactNumber(String contactNumber) {
-        if (contactNumber.length() >= 9 && contactNumber.length() <= 11) {
-            for (char c : contactNumber.toCharArray()) {
-                if (!Character.isDigit(c)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean validateName(String name) {
-        if (name == null || name.isEmpty()) {
-            return false;
-        }
-        return name.matches("[a-zA-Z]+");
-    }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -299,16 +245,16 @@ public class RegisterPage extends javax.swing.JFrame {
         }else if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || name.isEmpty() || contactNumber.isEmpty() || email.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please fill in all the fields");
             return;
-        } else if (!validateName(name)) {
+        } else if (!user.validateName(name)) {
             JOptionPane.showMessageDialog(null, "Invalid name. No special characters or numbers allowed");
             return;
-        } else if (!validatePassword(password)) {
+        } else if (!user.validatePassword(password)) {
             JOptionPane.showMessageDialog(null, "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character");
             return;
-        } else if (!validateEmail(email)) {
+        } else if (!user.validateEmail(email)) {
             JOptionPane.showMessageDialog(null, "Invalid email address. Please enter a valid email address");
             return;
-        } else if (!validateContactNumber(contactNumber)) {
+        } else if (!user.validateContactNumber(contactNumber)) {
             JOptionPane.showMessageDialog(null, "Invalid contact number. Please enter a valid contact number without any special characters");
             return;
         } else if (!user.isUsernameUnique(username)) {

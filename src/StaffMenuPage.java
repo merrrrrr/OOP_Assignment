@@ -14,14 +14,10 @@ import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.StringJoiner;
 import javax.swing.table.TableCellRenderer;
@@ -890,9 +886,14 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
         String record = String.join(",", paymentID, residentID, residentName, roomNumber, roomType, String.valueOf(amountPaid), paymentDatetime);
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Payment_Records.txt", true))) {
+        File file = new File("Payment_Records.txt");
+        boolean isEmpty = file.length() == 0;
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            if (!isEmpty) {
+                writer.newLine();
+            }
             writer.write(record);
-            writer.newLine();
         } catch (IOException e) {
             System.err.println("Error writing to Payment_Records.txt: " + e.getMessage());
         }
@@ -1207,10 +1208,15 @@ public class StaffMenuPage extends javax.swing.JFrame {
         // Create receipt details
         String receipt = String.join(",", receiptID, dateTime, residentID, residentName, roomNumber, roomType, amountPaid, staffInCharge);
 
+        File file = new File("Receipt.txt");
+        boolean isEmpty = file.length() == 0;
+
         // Write receipt details to Receipt.txt
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Receipt.txt", true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            if (!isEmpty) {
+                writer.newLine(); // Add a new line only if the file is not empty
+            }
             writer.write(receipt);
-            writer.newLine(); // Add a new line after writing the receipt
         } catch (IOException e) {
             System.err.println("Error writing to Receipt.txt: " + e.getMessage());
         }
@@ -1262,7 +1268,8 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
         if (selectedRoom != null) {
             updateRoomInfo(currentRoomNumber, selectedRoom);
-            updateChangeRoomStatus(row, "approved");
+            String requestID = (String) ManageRoomChangeTable.getValueAt(row, 0); // Assuming request ID is in the first column
+            updateChangeRoomStatus(requestID, "approved");
             updateResidentInfo(residentID, selectedRoom, newRoomType);
             ManageRoomChangeTable.setValueAt(selectedRoom, row, 10); // Update the "New Room" column
 
@@ -1281,10 +1288,12 @@ public class StaffMenuPage extends javax.swing.JFrame {
                 lines.set(row, String.join(",", details));
 
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter("Change_Room.txt"))) {
+                    StringJoiner sj = new StringJoiner("\n");
                     for (String line : lines) {
-                        writer.write(line);
-                        writer.newLine();
+                        sj.add(line);
                     }
+
+                    writer.write(sj.toString());
                 }
             } catch (IOException e) {
                 System.err.println("Error updating the file: " + e.getMessage());
@@ -1308,6 +1317,8 @@ public class StaffMenuPage extends javax.swing.JFrame {
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("Resident_Info.txt"))) {
+            StringJoiner sj = new StringJoiner(System.lineSeparator());
+
             for (String line : lines) {
                 String[] details = line.split(",");
                 if (details[0].equalsIgnoreCase(residentID)) {
@@ -1315,9 +1326,11 @@ public class StaffMenuPage extends javax.swing.JFrame {
                     details[8] = newRoomType;   // Update room type
                     line = String.join(",", details);
                 }
-                writer.write(line);
-                writer.newLine();
+
+                sj.add(line);
             }
+
+            writer.write(sj.toString());
         } catch (IOException e) {
             System.err.println("Error writing to the file: " + e.getMessage());
         }
@@ -1327,8 +1340,9 @@ public class StaffMenuPage extends javax.swing.JFrame {
     private void handleRejectButtonClick(int row) {
         int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to reject this request?", "Confirm Rejection", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (response == JOptionPane.YES_OPTION) {
-            updateChangeRoomStatus(row, "rejected");
-            ManageRoomChangeTable.setValueAt("-", row, 10); // Update the "New Room" column
+            String requestID = (String) ManageRoomChangeTable.getValueAt(row, 0); // Assuming request ID is in the first column
+            updateChangeRoomStatus(requestID, "rejected");
+            ManageRoomChangeTable.setValueAt("Completed", row, 8); // Update the "Action" column to "Completed"
             populateRoomChangeData(); // Repopulate the table
         }
     }
@@ -1363,7 +1377,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
     }
 
     // Method to update the status in Change_Room.txt
-    private void updateChangeRoomStatus(int row, String status) {
+    private void updateChangeRoomStatus(String requestID, String status) {
         List<String> lines = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("Change_Room.txt"))) {
             String line;
@@ -1375,24 +1389,35 @@ public class StaffMenuPage extends javax.swing.JFrame {
             return;
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Change_Room.txt"))) {
-            for (int i = 0; i < lines.size(); i++) {
-                String[] details = lines.get(i).split(",");
-                if (i == row) {
-                    if (details.length >= 9) {
-                        details[8] = status;
-                    } else {
-                        // Ensure the array has at least 9 elements
-                        String[] newDetails = new String[9];
-                        System.arraycopy(details, 0, newDetails, 0, details.length);
-                        newDetails[8] = status;
-                        details = new String[9];
-                        System.arraycopy(newDetails, 0, details, 0, 9);
-                    }
-                    lines.set(i, String.join(",", details).replaceAll(",null", ""));
+        boolean found = false;
+        for (int i = 0; i < lines.size(); i++) {
+            String[] details = lines.get(i).split(",");
+            if (details[0].equals(requestID)) { // Assuming request ID is in the first column
+                if (details.length >= 9) {
+                    details[8] = status;
+                } else {
+                    String[] newDetails = new String[9];
+                    System.arraycopy(details, 0, newDetails, 0, details.length);
+                    newDetails[8] = status;
+                    details = newDetails;
                 }
+                lines.set(i, String.join(",", details).replaceAll(",null", ""));
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            System.err.println("Request ID not found: " + requestID);
+            return;
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Change_Room.txt", false))) {
+            for (int i = 0; i < lines.size(); i++) {
                 writer.write(lines.get(i));
-                writer.newLine();
+                if (i < lines.size() - 1) {
+                    writer.newLine();
+                }
             }
         } catch (IOException e) {
             System.err.println("Error writing to the file: " + e.getMessage());
@@ -1400,7 +1425,12 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
         // Update the table model to reflect the new status
         DefaultTableModel model = (DefaultTableModel) ManageRoomChangeTable.getModel();
-        model.setValueAt(status, row, 8); // Assuming status is in the 9th column (index 8)
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 0).equals(requestID)) { // Assuming request ID is in the first column
+                model.setValueAt(status, i, 9); // Assuming status is in the 10th column (index 9)
+                break;
+            }
+        }
         populateRoomChangeData(); // Repopulate the table
     }
 
@@ -1418,22 +1448,24 @@ public class StaffMenuPage extends javax.swing.JFrame {
             return;
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("room_info.txt"))) {
-            for (String line : lines) {
-                String[] details = line.split(",");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("room_info.txt", false))) {
+            for (int i = 0; i < lines.size(); i++) {
+                String[] details = lines.get(i).split(",");
 
                 if (details[0].equalsIgnoreCase(oldRoomNumber)) {
                     int availability = Integer.parseInt(details[2]);
                     details[2] = String.valueOf(availability + 1); // Increase availability
-                    line = String.join(",", details);
+                    lines.set(i, String.join(",", details));
                 } else if (details[0].equalsIgnoreCase(newRoomNumber)) {
                     int availability = Integer.parseInt(details[2]);
                     details[2] = String.valueOf(availability - 1); // Decrease availability
-                    line = String.join(",", details);
+                    lines.set(i, String.join(",", details));
                 }
 
-                writer.write(line);
-                writer.newLine();
+                writer.write(lines.get(i));
+                if (i < lines.size() - 1) {
+                    writer.newLine();
+                }
             }
         } catch (IOException e) {
             System.err.println("Error writing to the file: " + e.getMessage());

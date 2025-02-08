@@ -134,6 +134,8 @@ public class LoginPage extends javax.swing.JFrame {
             String contactNumber = line[4];
             String email = line[5];
             JOptionPane.showMessageDialog(null, "Login Successful\nWelcome, " + name);
+            user.updateOverdueAmount();
+            user.updatePenaltyAmount();
 
             switch (userType) {
                 case 1:

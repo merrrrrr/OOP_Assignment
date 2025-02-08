@@ -1,4 +1,6 @@
 import java.io.*;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -69,8 +71,6 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    Scanner sc = new Scanner(System.in);
 
     public boolean register(int userType, String registerInfo) throws IOException {
         String filename = getRegisterFilename(userType);
@@ -426,6 +426,149 @@ public class User {
         }
 
         return true;
+    }
+
+    public void updateOverdueAmount() throws IOException {
+        LocalDate currentDate = LocalDate.now();
+        Month currentMonth = currentDate.getMonth();
+        BufferedReader paymentRecordReader = new BufferedReader(new FileReader("Payment_Records.txt"));
+
+        ArrayList paymentRecordList = new ArrayList();
+
+        String line;
+        while ((line = paymentRecordReader.readLine()) != null) {
+            paymentRecordList.add(line);
+        }
+
+        paymentRecordReader.close();
+
+        ArrayList<String> paidResidentList = new ArrayList<String>();
+        for (int i = 0; i < paymentRecordList.size(); i++) {
+            String parts[] = paymentRecordList.get(i).toString().split(",");
+
+            if (parts[6].substring(5,7).equals(currentMonth.toString())) {
+                paidResidentList.add(parts[1]);
+            }
+        }
+
+        BufferedReader roomTypeReader = new BufferedReader(new FileReader("Room_Type.txt"));
+        ArrayList<String> roomTypeList = new ArrayList<String>();
+
+        while ((line = roomTypeReader.readLine()) != null) {
+            roomTypeList.add(line);
+        }
+
+
+        BufferedReader residentInfoReader = new BufferedReader(new FileReader("Resident_Info.txt"));
+        ArrayList residentInfoList = new ArrayList();
+        while ((line = residentInfoReader.readLine()) != null) {
+            residentInfoList.add(line);
+        }
+
+        residentInfoReader.close();
+
+        for (int i = 0; i < residentInfoList.size(); i++) {
+            String parts[] = residentInfoList.get(i).toString().split(",");
+            String overdue = parts[9].substring(2);
+
+            if (!paidResidentList.contains(parts[0])) {
+                double overdueAmount = Double.valueOf(overdue);
+
+                for (int j = 0; j < roomTypeList.size(); j++) {
+                    String roomTypeParts[] = roomTypeList.get(j).toString().split(",");
+                    String roomType = roomTypeParts[0];
+                    String rate = roomTypeParts[2];
+
+                    if (parts[8].equals(roomType)) {
+                        overdueAmount += Double.valueOf(rate);
+                    }
+                }
+                residentInfoList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + parts[8] + ",RM" + overdueAmount);
+            }
+        }
+
+        StringJoiner sj = new StringJoiner(System.lineSeparator());
+        for (int i = 0; i < residentInfoList.size(); i++) {
+            sj.add(residentInfoList.get(i).toString());
+        }
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter("Resident_Info.txt"));
+        bw.write(sj.toString());
+        bw.close();
+
+
+    }
+
+    public void updatePenaltyAmount() throws IOException {
+        LocalDate currentDate = LocalDate.now();
+        Month currentMonth = currentDate.getMonth();
+        BufferedReader paymentRecordReader = new BufferedReader(new FileReader("Payment_Records.txt"));
+
+        ArrayList paymentRecordList = new ArrayList();
+
+        String line;
+        while ((line = paymentRecordReader.readLine()) != null) {
+            paymentRecordList.add(line);
+        }
+
+        paymentRecordReader.close();
+
+        ArrayList<String> paidResidentList = new ArrayList<String>();
+        for (int i = 0; i < paymentRecordList.size(); i++) {
+            String parts[] = paymentRecordList.get(i).toString().split(",");
+
+            if (parts[6].substring(5,7).equals(currentMonth.toString())) {
+                paidResidentList.add(parts[1]);
+            }
+        }
+
+        BufferedReader roomTypeReader = new BufferedReader(new FileReader("Room_Type.txt"));
+        ArrayList<String> roomTypeList = new ArrayList<String>();
+
+        while ((line = roomTypeReader.readLine()) != null) {
+            roomTypeList.add(line);
+        }
+
+
+        BufferedReader residentInfoReader = new BufferedReader(new FileReader("Resident_Info.txt"));
+        ArrayList residentInfoList = new ArrayList();
+        while ((line = residentInfoReader.readLine()) != null) {
+            residentInfoList.add(line);
+        }
+
+        residentInfoReader.close();
+
+        for (int i = 0; i < residentInfoList.size(); i++) {
+            String parts[] = residentInfoList.get(i).toString().split(",");
+            String overdue = parts[9].substring(2);
+
+            if (!paidResidentList.contains(parts[0]) && (currentDate.getDayOfMonth() > 5)) {
+                double overdueAmount = Double.valueOf(overdue);
+
+                for (int j = 0; j < roomTypeList.size(); j++) {
+                    String roomTypeParts[] = roomTypeList.get(j).toString().split(",");
+                    String roomType = roomTypeParts[0];
+                    String rate = roomTypeParts[2];
+                    double penaltyAmount = Double.valueOf(Double.valueOf(rate) * 0.1);
+
+                    if (parts[8].equals(roomType)) {
+                        overdueAmount += penaltyAmount;
+                    }
+                }
+                residentInfoList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + parts[8] + ",RM" + overdueAmount);
+            }
+        }
+
+        StringJoiner sj = new StringJoiner(System.lineSeparator());
+        for (int i = 0; i < residentInfoList.size(); i++) {
+            sj.add(residentInfoList.get(i).toString());
+        }
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter("Resident_Info.txt"));
+        bw.write(sj.toString());
+        bw.close();
+
+
     }
 
 }

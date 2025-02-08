@@ -4,6 +4,9 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -174,7 +177,7 @@ public class ManagerMenuPage extends JFrame {
         }
         br.close();
 
-        String[][] tableInfo = new String[lineCount][9];
+        String[][] tableInfo = new String[lineCount][10];
 
         br = new BufferedReader(new FileReader("Change_Room.txt"));
         String line;
@@ -188,9 +191,10 @@ public class ManagerMenuPage extends JFrame {
             tableInfo[i][3] = parts[3]; // gender
             tableInfo[i][4] = parts[4]; // current room number
             tableInfo[i][5] = parts[5]; // current room type
-            tableInfo[i][6] = parts[6]; // new room type
-            tableInfo[i][7] = parts[7]; // description
-            tableInfo[i][8] = parts[8]; // status
+            tableInfo[i][6] = parts[9]; // new room number
+            tableInfo[i][7] = parts[6]; // new room type
+            tableInfo[i][8] = parts[7]; // description
+            tableInfo[i][9] = parts[8]; // status
             i++;
         }
 
@@ -1160,35 +1164,12 @@ public class ManagerMenuPage extends JFrame {
             JOptionPane.showMessageDialog(null, "Room change request has already been rejected.", "Approve Room Change", JOptionPane.ERROR_MESSAGE);
             return;
         } else {
-            model.setValueAt("Approved", row, 8);
-
-            BufferedReader br = new BufferedReader(new FileReader("Change_Room.txt"));
-            String line;
-            ArrayList roomChangeList = new ArrayList();
-            while ((line = br.readLine()) != null) {
-                roomChangeList.add(line);
-            }
-
-            for (int i = 0; i < roomChangeList.size(); i++) {
-                String[] parts = roomChangeList.get(i).toString().split(",");
-                if (parts[0].equals(requestID)) {
-                    roomChangeList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + "Approved");
-                }
-            }
-
-            StringJoiner sj = new StringJoiner(System.lineSeparator());
-
-            for (int i = 0; i < roomChangeList.size(); i++) {
-                sj.add(roomChangeList.get(i).toString());
-            }
-
-            BufferedWriter bw = new BufferedWriter(new FileWriter("Change_Room.txt"));
-            bw.write(sj.toString());
-            bw.close();
+            model.setValueAt("Approved", row, 9);
 
             // update room info
             BufferedReader roomInfoReader = new BufferedReader(new FileReader("Room_Info.txt"));
             ArrayList roomInfoList = new ArrayList();
+            String line;
 
             while ((line = roomInfoReader.readLine()) != null) {
                 roomInfoList.add(line);
@@ -1205,19 +1186,43 @@ public class ManagerMenuPage extends JFrame {
             String newRoomNumber = "";
             for (int i = 0; i < roomInfoList.size(); i++) {
                 String[] parts = roomInfoList.get(i).toString().split(",");
-                newRoomNumber = parts[1];
-                if (newRoomNumber.contains(newRoomType)) {
+                newRoomType = parts[1];
+                if (newRoomType.contains(newRoomType)) {
+                    newRoomNumber = parts[0];
                     roomInfoList.set(i, parts[0] + "," + parts[1] + "," + (Integer.valueOf(parts[2]) - 1) + "," + parts[3]);
                     break;
                 }
             }
 
-            sj = new StringJoiner(System.lineSeparator());
+            StringJoiner sj = new StringJoiner(System.lineSeparator());
             for (int i = 0; i < roomInfoList.size(); i++) {
                 sj.add(roomInfoList.get(i).toString());
             }
 
-            bw = new BufferedWriter(new FileWriter("Room_Info.txt"));
+            BufferedWriter bw = new BufferedWriter(new FileWriter("Room_Info.txt"));
+            bw.write(sj.toString());
+            bw.close();
+
+            BufferedReader br = new BufferedReader(new FileReader("Change_Room.txt"));
+            ArrayList roomChangeList = new ArrayList();
+            while ((line = br.readLine()) != null) {
+                roomChangeList.add(line);
+            }
+
+            for (int i = 0; i < roomChangeList.size(); i++) {
+                String[] parts = roomChangeList.get(i).toString().split(",");
+                if (parts[0].equals(requestID)) {
+                    roomChangeList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + "Approved" + "," + newRoomNumber);
+                }
+            }
+
+            sj = new StringJoiner(System.lineSeparator());
+
+            for (int i = 0; i < roomChangeList.size(); i++) {
+                sj.add(roomChangeList.get(i).toString());
+            }
+
+            bw = new BufferedWriter(new FileWriter("Change_Room.txt"));
             bw.write(sj.toString());
             bw.close();
 
@@ -1261,7 +1266,7 @@ public class ManagerMenuPage extends JFrame {
         String residentID = RoomChangeRequestTable.getValueAt(row, 1).toString();
         String residentName = RoomChangeRequestTable.getValueAt(row, 2).toString();
 
-        model.setValueAt("Rejected", row, 8);
+        model.setValueAt("Rejected", row, 9);
 
         BufferedReader br = new BufferedReader(new FileReader("Change_Room.txt"));
         String line;
@@ -1273,7 +1278,7 @@ public class ManagerMenuPage extends JFrame {
         for (int i = 0; i < roomInfoList.size(); i++) {
             String[] parts = roomInfoList.get(i).toString().split(",");
             if (parts[0].equals(requestID)) {
-                roomInfoList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + "Rejected");
+                roomInfoList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + "Rejected" + "," + "-");
             }
         }
 
@@ -1344,7 +1349,7 @@ public class ManagerMenuPage extends JFrame {
         String line;
         while ((line = br.readLine()) != null) {
             String[] parts = line.split(",");
-            model.addRow(new Object[]{parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8]});
+            model.addRow(new Object[]{parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[9], parts[6], parts[7], parts[8]});
         }
 
         br.close();
@@ -1989,11 +1994,11 @@ public class ManagerMenuPage extends JFrame {
         RoomChangeRequestTable.setModel(new DefaultTableModel(
                 toRoomChangeTable(),
                 new String [] {
-                        "Request ID", "Resident ID", "Resident Name", "Gender", "Current Room Number", "Current Room Type", "New Room Type", "Description", "Status"
+                        "Request ID", "Resident ID", "Resident Name", "Gender", "Current Room Number", "Current Room Type", "New Room Number", "New Room Type", "Description", "Status"
                 }
         ) {
             Class[] types = new Class [] {
-                    String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class
+                    String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class
             };
 
             public Class getColumnClass(int columnIndex) {

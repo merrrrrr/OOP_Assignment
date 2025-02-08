@@ -1263,8 +1263,15 @@ public class ManagerMenuPage extends JFrame {
             return;
         }
         String requestID = RoomChangeRequestTable.getValueAt(row, 0).toString();
-        String residentID = RoomChangeRequestTable.getValueAt(row, 1).toString();
-        String residentName = RoomChangeRequestTable.getValueAt(row, 2).toString();
+        String status = RoomChangeRequestTable.getValueAt(row, 9).toString();
+
+        if (status.equalsIgnoreCase("Approved")) {
+            JOptionPane.showMessageDialog(null, "Room change request has already been approved.", "Reject Room Change", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (status.equalsIgnoreCase("Rejected")) {
+            JOptionPane.showMessageDialog(null, "Room change request has already been rejected.", "Reject Room Change", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         model.setValueAt("Rejected", row, 9);
 

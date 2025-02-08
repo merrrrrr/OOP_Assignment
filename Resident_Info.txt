@@ -1,3 +1,4 @@
-R0001,justin,Justin123!,justin ng,123122342,justin@gmail.com,Male,MS002,Single Room,RM2100.0
-R0002,kynax,Kynax1234!,ng,0172371281,kynax@gmail.com,Female,FS003,Single Room,RM2300.0
-R0003,weijian,Weijian1234!,wong,0172612212,wwj@gmail.com,Male,MT003,Triple Sharing Room,RM1050.0
+R0001,justin,Justin123!,justin ng,123122342,justin@gmail.com,Male,MD001,Double Sharing Room,RM4884.000000000001
+R0002,kynax,Kynax1234!,ng,0172371281,kynax@gmail.com,Female,FS003,Single Room,RM1098.9
+R0003,weijian,Weijian1234!,wong,0172612212,wwj@gmail.com,Male,MT003,Triple Sharing Room,RM854.7
+R0004,kum,Kum1234!,yong jun,01726182122,yongjun@gmail.com,Male,MS001,Single Room,RM3296.7000000000003

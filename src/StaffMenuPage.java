@@ -1177,15 +1177,17 @@ public class StaffMenuPage extends javax.swing.JFrame {
             return;
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Resident_Info.txt"))) {
-            for (String line : lines) {
-                String[] details = line.split(",");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Resident_Info.txt", false))) {
+            for (int i = 0; i < lines.size(); i++) {
+                String[] details = lines.get(i).split(",");
                 if (details[0].equalsIgnoreCase(residentID)) {
                     details[9] = "RM00.00"; // Assuming the overdue amount is in the 10th column (index 9)
-                    line = String.join(",", details);
+                    lines.set(i, String.join(",", details));
                 }
-                writer.write(line);
-                writer.newLine();
+                writer.write(lines.get(i));
+                if (i < lines.size() - 1) {
+                    writer.newLine();
+                }
             }
         } catch (IOException e) {
             System.err.println("Error writing to the file: " + e.getMessage());

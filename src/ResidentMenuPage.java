@@ -6,6 +6,7 @@
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -280,6 +281,10 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         changeReasonTextBox.setRows(5);
         jScrollPane2.setViewportView(changeReasonTextBox);
 
+        Dimension buttonSize = new Dimension(150, 40); // Adjust the height and width as needed
+        viewRequest.setPreferredSize(buttonSize);
+        submitButton.setPreferredSize(buttonSize);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -319,9 +324,10 @@ public class ResidentMenuPage extends javax.swing.JFrame {
                                         .addComponent(jLabel3)
                                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
-                                .addComponent(submitButton)
-                                .addComponent(viewRequest))
-                        .addGap(67, 67, 67)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(viewRequest)
+                                        .addComponent(submitButton))
+                                .addGap(67, 67, 67))
         );
 
         ResidentTab.addTab("Change Room Type Request", jPanel1);
@@ -592,7 +598,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
             while ((line = reader.readLine()) != null) {
                 String[] details = line.split(",");
                 if (details.length >= 9 && details[1].equals(residentID)) {
-                    String request = "From: " + details[4] + " To: " + details[9] + " Status: " + details[8];
+                    String request = "Old Room: " + details[4] + " \nNew Room: " + details[9] + " \nStatus: " + details[8];
                     requests.add(request);
                 }
             }
@@ -713,9 +719,14 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         String requestID = generateUniqueRequestID();
 
         // Add the new request to Change_Room.txt
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Change_Room.txt", true))) {
-            writer.write(String.join(",", requestID, residentID, residentUsername, residentGender, currentRoomNumber, currentRoomType, newRoomType, changeReason, "pending","-"));
-            writer.newLine();
+        File file = new File("Change_Room.txt");
+        boolean isEmpty = file.length() == 0;
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            if (!isEmpty) {
+                writer.newLine();
+            }
+            writer.write(String.join(",", requestID, residentID, residentUsername, residentGender, currentRoomNumber, currentRoomType, newRoomType, changeReason, "pending", "-"));
         } catch (IOException e) {
             System.err.println("Error writing to Change_Room.txt: " + e.getMessage());
         }

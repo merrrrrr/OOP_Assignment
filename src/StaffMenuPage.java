@@ -272,7 +272,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         jScrollPane2.setViewportView(ResidentPaymentTable);
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel2.setText("Enter Name to Make Payment : ");
+        jLabel2.setText("Enter details to search from table: ");
 
         SearchMakePaymentBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -335,7 +335,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         jScrollPane3.setViewportView(generateReceiptTable);
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel3.setText("Enter Name to Generate Receipt : ");
+        jLabel3.setText("Enter details to search from table: ");
 
         GenerateReceiptSearchBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -405,7 +405,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         jScrollPane1.setViewportView(ManageRoomChangeTable);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel1.setText("Enter the number of the request to approve/disapprove: ");
+        jLabel1.setText("Enter details to search from table: ");
 
         roomChangeRequestTextBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -581,7 +581,7 @@ public class ManagerMenuPage extends JFrame {
 
         } else if (choice == 5) {
             String temp = JOptionPane.showInputDialog("Enter new overdue amount: ");
-            value = "RM"  + temp;
+            value = "RM"  + String.format("%.2f", Double.valueOf(temp));
             if (temp == null) {
                 return;
             } else if (Double.valueOf(temp) < 0) {

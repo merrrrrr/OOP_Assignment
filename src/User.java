@@ -500,9 +500,10 @@ public class User {
 
                     if (parts[8].equals(roomType)) {
                         overdueAmount += Double.valueOf(rate);
+
                     }
                 }
-                residentInfoList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + parts[8] + ",RM" + overdueAmount);
+                residentInfoList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + parts[8] + ",RM" + String.format("%.2f", overdueAmount));
             }
         }
 
@@ -602,7 +603,7 @@ public class User {
                         overdueAmount += penaltyAmount;
                     }
                 }
-                residentInfoList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + parts[8] + ",RM" + overdueAmount);
+                residentInfoList.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + parts[3] + "," + parts[4] + "," + parts[5] + "," + parts[6] + "," + parts[7] + "," + parts[8] + ",RM" + String.format("%.2f", overdueAmount));
             }
         }
 

@@ -1,12 +1,12 @@
-FS001,Single Room,-1,female
-FS002,Single Room,3,female
-FS003,Single Room,1,female
+FS001,Single Room,1,female
+FS002,Single Room,1,female
+FS003,Single Room,0,female
 MS001,Single Room,0,male
-MS002,Single Room,2,male
-MS003,Single Room,2,male
+MS002,Single Room,1,male
+MS003,Single Room,1,male
 FD001,Double Sharing Room,2,female
 FD002,Double Sharing Room,2,female
-FD003,Double Sharing Room,1,female
+FD003,Double Sharing Room,2,female
 MD001,Double Sharing Room,1,male
 MD002,Double Sharing Room,2,male
 MD003,Double Sharing Room,2,male

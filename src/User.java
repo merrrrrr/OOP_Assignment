@@ -477,7 +477,7 @@ public class User {
                 for (int j = 0; j < roomTypeList.size(); j++) {
                     String roomTypeParts[] = roomTypeList.get(j).toString().split(",");
                     String roomType = roomTypeParts[0];
-                    String rate = roomTypeParts[2];
+                    String rate = roomTypeParts[1];
 
                     if (parts[8].equals(roomType)) {
                         overdueAmount += Double.valueOf(rate);
@@ -548,7 +548,7 @@ public class User {
                 for (int j = 0; j < roomTypeList.size(); j++) {
                     String roomTypeParts[] = roomTypeList.get(j).toString().split(",");
                     String roomType = roomTypeParts[0];
-                    String rate = roomTypeParts[2];
+                    String rate = roomTypeParts[1];
                     double penaltyAmount = Double.valueOf(Double.valueOf(rate) * 0.1);
 
                     if (parts[8].equals(roomType)) {

@@ -151,40 +151,7 @@ public class ManagerAddStaffPage extends javax.swing.JFrame {
 
     private void ConfirmButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
         // TODO add your handling code here:
-        BufferedReader br = new BufferedReader(new FileReader("Staff_Info.txt"));
-        int count = 0;
-        String staffID = "";
-
-        while (br.readLine() != null) {
-            count++;
-        }
-
-        br.close();
-
-        boolean isIDExist = true;
-        while (isIDExist) {
-            if (count + 1 < 10) {
-                staffID = "S" + "000" + String.valueOf(count + 1);
-            } else if (count + 1 < 100) {
-                staffID = "S" + "00" + String.valueOf(count + 1);
-            } else if (count + 1 < 1000) {
-                staffID = "S" + "0" + String.valueOf(count + 1);
-            } else {
-                staffID = "S" + String.valueOf(count + 1);
-            }
-            isIDExist = false;
-            br = new BufferedReader(new FileReader("Staff_Info.txt"));
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] staffInfo = line.split(",");
-                if (staffID.equals(staffInfo[0])) {
-                    count++;
-                    isIDExist = true;
-                    break;
-                }
-            }
-            br.close();
-        }
+        String staffID = manager.generateId("Staff_Info.txt");
 
         ManagerMenuPage managerMenuPage = new ManagerMenuPage(manager);
 
@@ -231,6 +198,12 @@ public class ManagerAddStaffPage extends javax.swing.JFrame {
 
 
         try {
+            BufferedReader br = new BufferedReader(new FileReader("Staff_Info.txt"));
+            int count = 0;
+            while (br.readLine() != null) {
+                count++;
+            }
+
             BufferedWriter bw = new BufferedWriter(new FileWriter("Staff_Info.txt", true));
 
             if (count != 0) {

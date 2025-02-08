@@ -262,7 +262,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
                         {null, null, null, null}
                 },
                 new String [] {
-                        "Resident ID","Username", "Room Number", "Room Type", "Overdue Amount", "Action"
+                        "Resident ID","Username", "Room Number", "Room Type", "Payable Amount", "Action"
                 }
         ));
         jScrollPane2.setViewportView(ResidentPaymentTable);
@@ -676,7 +676,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
 
 
     private void logOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to log out?", "Confirm Log Out", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to log out?", "Log Out", JOptionPane.YES_NO_OPTION);
         if (response == JOptionPane.YES_OPTION) {
             MainPage mp = new MainPage();
             mp.setVisible(true);
@@ -1041,13 +1041,13 @@ public class StaffMenuPage extends javax.swing.JFrame {
             button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     fireEditingStopped();
-                    String overdueAmount = (String) table.getValueAt(row, 4); // Assuming overdue amount is in the 5th column (index 4)
+                    String payableAmount = (String) table.getValueAt(row, 4);
                     String residentID = (String) table.getValueAt(row, 0);
                     String residentName = (String) table.getValueAt(row, 1);
                     String roomNumber = (String) table.getValueAt(row, 2);
                     String roomType = (String) table.getValueAt(row, 3);
-                    if ("RM00.00".equals(overdueAmount)) {
-                        JOptionPane.showMessageDialog(null, residentName + " has no overdue amount.");
+                    if ("RM00.00".equals(payableAmount)) {
+                        JOptionPane.showMessageDialog(null, residentName + " has no payable amount.");
                     } else {
                         int response = JOptionPane.showConfirmDialog(null,
                                 "Are you sure to make payment for " + residentName + "?",
@@ -1055,8 +1055,8 @@ public class StaffMenuPage extends javax.swing.JFrame {
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.QUESTION_MESSAGE);
                         if (response == JOptionPane.YES_OPTION) {
-                            updateOverdueAmount(row);
-                            addPaymentRecord(residentID, residentName, roomNumber, roomType, Double.parseDouble(overdueAmount.substring(2)));
+                            updatePayableAmount(row);
+                            addPaymentRecord(residentID, residentName, roomNumber, roomType, Double.parseDouble(payableAmount.substring(2)));
                             JOptionPane.showMessageDialog(null, "Payment made successfully for " + residentName + ".");
                         }
                     }
@@ -1159,7 +1159,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
     }
 
 
-    private void updateOverdueAmount(int row) {
+    private void updatePayableAmount(int row) {
         if (staff == null) {
             System.err.println("Staff is not initialized.");
             return;
@@ -1181,7 +1181,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
             for (int i = 0; i < lines.size(); i++) {
                 String[] details = lines.get(i).split(",");
                 if (details[0].equalsIgnoreCase(residentID)) {
-                    details[9] = "RM00.00"; // Assuming the overdue amount is in the 10th column (index 9)
+                    details[9] = "RM00.00";
                     lines.set(i, String.join(",", details));
                 }
                 writer.write(lines.get(i));

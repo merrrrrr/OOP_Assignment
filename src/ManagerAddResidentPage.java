@@ -239,6 +239,7 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
         String email = EmailField.getText();
         String gender = GenderComboBox.getSelectedItem().toString();
         String roomNumber = RoomNumberComboBox.getSelectedItem().toString();
+        String payableAmount = "";
         String roomType = "";
         if (roomNumber.charAt(1) == 'S') {
             roomType = "Single Room";
@@ -247,9 +248,9 @@ public class ManagerAddResidentPage extends javax.swing.JFrame {
         } else if (roomNumber.charAt(1) == 'T') {
             roomType = "Triple Sharing Room";
         }
-        String overdueAmount = "RM00.00";
+
         LocalDate date = LocalDate.now();
-        String line = residentID + "," +  username + "," + password + "," + name + "," + contact + "," + email + "," + gender + "," + roomNumber + "," + roomType + "," + overdueAmount + "," + date.toString();
+        String line = residentID + "," +  username + "," + password + "," + name + "," + contact + "," + email + "," + gender + "," + roomNumber + "," + roomType + "," + payableAmount + "," + date.toString();
 
         ManagerMenuPage managerMenuPage = new ManagerMenuPage(manager);
 

@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 /**
@@ -269,14 +270,16 @@ public class RegisterPage extends javax.swing.JFrame {
         }
 
         LocalDateTime datetime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formattedDate = datetime.format(formatter);
 
         if (userType == 3) {
             String gender = genderComboBox1.getSelectedItem().toString();
             String roomType = roomTypeComboBox1.getSelectedItem().toString();
-            registerInfo = username + "," + password + "," + name + "," + contactNumber + "," + email + "," + gender +  "," + roomType + "," + datetime;
+            registerInfo = username + "," + password + "," + name + "," + contactNumber + "," + email + "," + gender +  "," + roomType + "," + formattedDate;
 
         } else {
-            registerInfo = username + "," + password + "," + name + "," + contactNumber + "," + email + "," + datetime;
+            registerInfo = username + "," + password + "," + name + "," + contactNumber + "," + email + "," + formattedDate;
         }
 
         if (password.equals(confirmPassword)) {

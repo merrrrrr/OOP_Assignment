@@ -52,7 +52,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         myInfo[6] = resident.getGender();
         myInfo[7] = resident.getRoomNo();
         myInfo[8] = resident.getRoomType();
-        myInfo[9] = resident.getOverdueAmount();
+        myInfo[9] = resident.getPayableAmount();
 
         int attribute = JOptionPane.showOptionDialog(null, "Please select attribute you want to edit.", "Edit Profile", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Username", "Password", "Name", "Contact Number", "Email Address"}, "Username");
         if (attribute == JOptionPane.CLOSED_OPTION) {
@@ -202,7 +202,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         SearchBoxPaymentPage = new javax.swing.JTextField();
         confirmSearchButton = new javax.swing.JButton();
         viewReceiptButton = new javax.swing.JButton();
-        viewOverdueAmountButton = new javax.swing.JButton();
+        viewPayableAmountButton = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         editResidentUsernameBox = new javax.swing.JTextField();
         editResidentPasswordBox = new javax.swing.JTextField();
@@ -357,10 +357,10 @@ public class ResidentMenuPage extends javax.swing.JFrame {
             }
         });
 
-        viewOverdueAmountButton.setText("View Overdue Amount");
-        viewOverdueAmountButton.addActionListener(new ActionListener() {
+        viewPayableAmountButton.setText("View Payable Amount");
+        viewPayableAmountButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                viewOverdueAmountButtonActionPerformed(evt);
+                viewPayableAmountButtonActionPerformed(evt);
             }
         });
 
@@ -381,7 +381,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                                 .addComponent(viewReceiptButton)
                                                 .addGap(18, 18, 18)
-                                                .addComponent(viewOverdueAmountButton)
+                                                .addComponent(viewPayableAmountButton)
                                                 .addGap(150, 150, 150))
                                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -401,7 +401,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(viewReceiptButton)
-                                        .addComponent(viewOverdueAmountButton))
+                                        .addComponent(viewPayableAmountButton))
                                 .addContainerGap())
         );
 
@@ -623,7 +623,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
     }
 
     private void ResidentLogOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to log out?", "Confirm Log Out", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to log out?", "Log Out", JOptionPane.YES_NO_OPTION);
         if (response == JOptionPane.YES_OPTION) {
             MainPage mp = new MainPage();
             mp.setVisible(true);
@@ -670,16 +670,16 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         }
     }
 
-    private void viewOverdueAmountButtonActionPerformed(ActionEvent evt) {
+    private void viewPayableAmountButtonActionPerformed(ActionEvent evt) {
         String residentID = resident.getId();
-        String overdueAmount = "";
+        String payableAmount = "";
 
         try (BufferedReader reader = new BufferedReader(new FileReader("Resident_Info.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] details = line.split(",");
                 if (details.length >= 10 && details[0].equals(residentID)) {
-                    overdueAmount = details[9];
+                    payableAmount = details[9];
                     break;
                 }
             }
@@ -688,10 +688,10 @@ public class ResidentMenuPage extends javax.swing.JFrame {
             return;
         }
 
-        if ("RM00.00".equals(overdueAmount)) {
-            JOptionPane.showMessageDialog(this, "You have no overdue amount for now.", "Overdue Amount", JOptionPane.INFORMATION_MESSAGE);
+        if ("RM00.00".equals(payableAmount)) {
+            JOptionPane.showMessageDialog(this, "You have no payable amount for now.", "Payable Amount", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Your overdue amount is: " + overdueAmount, "Overdue Amount", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Your payable amount is: " + payableAmount, "Payable Amount", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -862,7 +862,7 @@ public class ResidentMenuPage extends javax.swing.JFrame {
     private javax.swing.JButton editResidentProfileButton;
     private javax.swing.JTextField editResidentUsernameBox;
     private javax.swing.JButton viewReceiptButton;
-    private javax.swing.JButton viewOverdueAmountButton;
+    private javax.swing.JButton viewPayableAmountButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;

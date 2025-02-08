@@ -1,3 +1,3 @@
-M0001,admin,Admin123!,ooi,0172618222,admin@apu.edu.my
-M0002,mervin,Mervin1234!,fukit,0182712712,kum@gmail.com
-M0003,manager,Manager1234!,Manager,0126718773,manager@apu.com
+M0001,admin,Admin123!,Admin,0172618222,admin@apu.edu.my
+M0003,mermer,Mervin123!,Mervin,012312412,mermer@gmail.com
+M0004,manager,Manager123!,MANAGER,1412312312,manager@apu.my

@@ -69,7 +69,7 @@ public class ManagerMenuPage extends JFrame {
                 tableInfo[i][5] = parts[6]; // gender
                 tableInfo[i][6] = parts[7]; // room number
                 tableInfo[i][7] = parts[8]; // room type
-                tableInfo[i][8] = parts[9]; // overdue amount
+                tableInfo[i][8] = parts[9]; // payable amount
 
             }
 
@@ -463,7 +463,7 @@ public class ManagerMenuPage extends JFrame {
 
             roomInfoReader.close();
 
-            changeType = new String[]{"Username", "Name", "Contact Number", "Email Address", "Room Number", "Overdue Amount"};
+            changeType = new String[]{"Username", "Name", "Contact Number", "Email Address", "Room Number", "Payable Amount"};
             int count = 0;
             line = "";
             roomInfoReader = new BufferedReader(new FileReader("Room_Info.txt"));
@@ -580,12 +580,12 @@ public class ManagerMenuPage extends JFrame {
             }
 
         } else if (choice == 5) {
-            String temp = JOptionPane.showInputDialog("Enter new overdue amount: ");
+            String temp = JOptionPane.showInputDialog("Enter new payable amount: ");
             value = "RM"  + String.format("%.2f", Double.valueOf(temp));
             if (temp == null) {
                 return;
             } else if (Double.valueOf(temp) < 0) {
-                JOptionPane.showMessageDialog(null, "Overdue amount cannot be negative.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Payable amount cannot be negative.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
@@ -1133,12 +1133,14 @@ public class ManagerMenuPage extends JFrame {
         String gender = RoomChangeRequestTable.getValueAt(row, 3).toString();
         String currentRoomNumber = RoomChangeRequestTable.getValueAt(row, 4).toString();
         String currentRoomType = RoomChangeRequestTable.getValueAt(row, 5).toString();
-        String newRoomType = RoomChangeRequestTable.getValueAt(row, 6).toString();
-        String description = RoomChangeRequestTable.getValueAt(row, 7).toString();
+        String newRoomNumber = RoomChangeRequestTable.getValueAt(row, 6).toString();
+        String newRoomType = RoomChangeRequestTable.getValueAt(row, 7).toString();
+        String description = RoomChangeRequestTable.getValueAt(row, 8).toString();
+        String status = RoomChangeRequestTable.getValueAt(row, 9).toString();
 
         String roomChangeInfo = "Request ID: " + requestID + "\nResident ID: " + residentID + "\nResident Name: " + residentName + "\nGender: " + gender
-                + "\nCurrent Room Number: " + currentRoomNumber + "\nCurrent Room Type: " + currentRoomType + "\nNew Room Type: " + newRoomType
-                + "\nDescription: " + description;
+                + "\nCurrent Room Number: " + currentRoomNumber + "\nCurrent Room Type: " + currentRoomType + "\nNew Room Number: " + newRoomNumber + "\nRequested Room Type: " + newRoomType
+                + "\nDescription: " + description + "\nStatus: " + status;
 
         JOptionPane.showMessageDialog(null, roomChangeInfo, "Room Change Information", JOptionPane.INFORMATION_MESSAGE);
     }
@@ -1154,8 +1156,9 @@ public class ManagerMenuPage extends JFrame {
         String residentID = RoomChangeRequestTable.getValueAt(row, 1).toString();
         String residentName = RoomChangeRequestTable.getValueAt(row, 2).toString();
         String currentRoomNumber = RoomChangeRequestTable.getValueAt(row, 4).toString();
-        String newRoomType = RoomChangeRequestTable.getValueAt(row, 6).toString();
+        String newRoomType = RoomChangeRequestTable.getValueAt(row, 7).toString();
         String status = RoomChangeRequestTable.getValueAt(row, 9).toString();
+        String gender = "";
 
         if (status.equalsIgnoreCase("Approved")) {
             JOptionPane.showMessageDialog(null, "Room change request has already been approved.", "Approve Room Change", JOptionPane.ERROR_MESSAGE);
@@ -1164,17 +1167,45 @@ public class ManagerMenuPage extends JFrame {
             JOptionPane.showMessageDialog(null, "Room change request has already been rejected.", "Approve Room Change", JOptionPane.ERROR_MESSAGE);
             return;
         } else {
-            model.setValueAt("Approved", row, 9);
+
+            BufferedReader residentInfoReader = new BufferedReader(new FileReader("Resident_Info.txt"));
+            String line;
+            while ((line = residentInfoReader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts[0].equals(residentID)) {
+                    gender = parts[6];
+                }
+            }
 
             // update room info
             BufferedReader roomInfoReader = new BufferedReader(new FileReader("Room_Info.txt"));
             ArrayList roomInfoList = new ArrayList();
-            String line;
 
             while ((line = roomInfoReader.readLine()) != null) {
                 roomInfoList.add(line);
             }
 
+            // create new room list
+            ArrayList<String> availableRoomList = new ArrayList<>();
+            for (int i = 0; i < roomInfoList.size(); i++) {
+                String[] parts = roomInfoList.get(i).toString().split(",");
+                String roomNumber = parts[0];
+                int availability = Integer.valueOf(parts[2]);
+                if (roomNumber.contains(newRoomType.substring(0, 1)) && availability > 0 && roomNumber.contains(gender.substring(0, 1))) {
+                    availableRoomList.add(roomNumber);
+                }
+            }
+
+            if (availableRoomList.size() == 0) {
+                JOptionPane.showMessageDialog(null, "No available room for the selected room type.", "Approve Room Change", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            String newRoomNumber = (String) JOptionPane.showInputDialog(null, "Please select new room number:", "Approve Room Change", JOptionPane.PLAIN_MESSAGE, null, availableRoomList.toArray(), availableRoomList.toArray()[0]);
+            if (newRoomNumber == null) {
+                return;
+            }
+
+            // update current room availability
             for (int i = 0; i < roomInfoList.size(); i++) {
                 String[] parts = roomInfoList.get(i).toString().split(",");
                 if (parts[0].equals(currentRoomNumber)) {
@@ -1183,16 +1214,15 @@ public class ManagerMenuPage extends JFrame {
                 }
             }
 
-            String newRoomNumber = "";
+            // update new room availability
             for (int i = 0; i < roomInfoList.size(); i++) {
                 String[] parts = roomInfoList.get(i).toString().split(",");
-                newRoomType = parts[1];
-                if (newRoomType.contains(newRoomType)) {
-                    newRoomNumber = parts[0];
+                if (parts[0].equals(newRoomNumber)) {
                     roomInfoList.set(i, parts[0] + "," + parts[1] + "," + (Integer.valueOf(parts[2]) - 1) + "," + parts[3]);
                     break;
                 }
             }
+
 
             StringJoiner sj = new StringJoiner(System.lineSeparator());
             for (int i = 0; i < roomInfoList.size(); i++) {
@@ -1229,7 +1259,7 @@ public class ManagerMenuPage extends JFrame {
             JOptionPane.showMessageDialog(null, "Room change request has been approved successfully.", "Approve Room Change", JOptionPane.INFORMATION_MESSAGE);
 
             // update resident info
-            BufferedReader residentInfoReader = new BufferedReader(new FileReader("Resident_Info.txt"));
+            residentInfoReader = new BufferedReader(new FileReader("Resident_Info.txt"));
             ArrayList residentInfoList = new ArrayList();
 
             while ((line = residentInfoReader.readLine()) != null) {
@@ -1252,6 +1282,8 @@ public class ManagerMenuPage extends JFrame {
             bw = new BufferedWriter(new FileWriter("Resident_Info.txt"));
             bw.write(sj.toString());
             bw.close();
+
+            model.setValueAt("Approved", row, 9);
         }
     }
 
@@ -1652,7 +1684,7 @@ public class ManagerMenuPage extends JFrame {
         ResidentInfoTable.setModel(new DefaultTableModel(
                 toUserInfoTable(3),
                 new String [] {
-                        "Resident ID", "Username", "Name", "Contact Number", "Email Address", "Gender", "Room Number", "Room Type", "Overdue Amount"
+                        "Resident ID", "Username", "Name", "Contact Number", "Email Address", "Gender", "Room Number", "Room Type", "Payable Amount"
                 }
         ) {
             Class[] types = new Class [] {
@@ -2001,7 +2033,7 @@ public class ManagerMenuPage extends JFrame {
         RoomChangeRequestTable.setModel(new DefaultTableModel(
                 toRoomChangeTable(),
                 new String [] {
-                        "Request ID", "Resident ID", "Resident Name", "Gender", "Current Room Number", "Current Room Type", "New Room Number", "New Room Type", "Description", "Status"
+                        "Request ID", "Resident ID", "Resident Name", "Gender", "Current Room Number", "Current Room Type", "New Room Number", "Requested Room Type", "Description", "Status"
                 }
         ) {
             Class[] types = new Class [] {
@@ -2431,8 +2463,8 @@ public class ManagerMenuPage extends JFrame {
 
     private void LogOutButtonActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
-        JOptionPane.showConfirmDialog(null, "Are you sure you want to log out?", "Log Out", JOptionPane.YES_NO_OPTION);
-        if (JOptionPane.YES_OPTION == 0) {
+        int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to log out?", "Log Out", JOptionPane.YES_NO_OPTION);
+        if (response == JOptionPane.YES_OPTION) {
             JOptionPane.showMessageDialog(null, "You have successfully logged out.\nThank you for using APU Hostel Management Payment System.", "Log Out", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
             MainPage mainPage = new MainPage();

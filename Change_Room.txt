@@ -1,5 +1,4 @@
-C001,R0003,weijian,Male,MS003,Single Room,Triple Sharing Room,alone,approved,MT003
-C002,R0003,weijian,Male,MT003,Triple Sharing Room,Double Sharing Room,need friend,rejected,-
-C003,R0003,weijian,Male,MT003,Triple Sharing Room,Double Sharing Room,need friend,rejected,-
-C004,R0002,kynax,Female,FS002,Single Room,Single Room,i want back to my own life,Rejected,-
-C005,R0001,justin,Male,MS002,Single Room,Double Sharing Room,i need a partner,Approved,MD001
+C001,R0002,khong,Male,MS003,Single Room,Single Room,Single room is too expensive,Approved,MS002
+C002,R0001,kynax,Male,MD001,Double Sharing Room,Single Room,Double sharing room is too small,Rejected,-
+C003,R0002,khong,Male,MS002,Single Room,Triple Sharing Room,I want to stay together with my friends. They are in MT001.,Approved,MT001
+C004,R0002,khong,Male,MS002,Single Room,Double Sharing Room,Budget problem,Approved,MD001

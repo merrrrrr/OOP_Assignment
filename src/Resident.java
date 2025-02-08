@@ -1,4 +1,3 @@
-import java.io.*;
 import java.util.*;
 
 public class Resident extends User {
@@ -6,7 +5,7 @@ public class Resident extends User {
     private String gender;
     private String roomNo;
     private String username;
-    private String overdueAmount;
+    private String payableAmount;
     private String createdDate;
     private boolean isLoggedIn = false;
     private Scanner sc = new Scanner(System.in);
@@ -15,12 +14,12 @@ public class Resident extends User {
 
     }
 
-    public Resident(String id, String username, String password, String name, String contactNumber, String email, String gender, String roomNo, String roomType, String overdueAmount) {
+    public Resident(String id, String username, String password, String name, String contactNumber, String email, String gender, String roomNo, String roomType, String payableAmount) {
         super(id, username, password, name, contactNumber, email);
         this.gender = gender;
         this.roomType = roomType;
         this.roomNo = roomNo;
-        this.overdueAmount = overdueAmount;
+        this.payableAmount = payableAmount;
     }
 
 
@@ -48,12 +47,12 @@ public class Resident extends User {
         this.roomNo = roomNo;
     }
 
-    public String getOverdueAmount() {
-        return overdueAmount;
+    public String getPayableAmount() {
+        return payableAmount;
     }
 
-    public void setOverdueAmount(String overdueAmount) {
-        this.overdueAmount = overdueAmount;
+    public void setPayableAmount(String payableAmount) {
+        this.payableAmount = payableAmount;
     }
 
 
@@ -67,6 +66,6 @@ public class Resident extends User {
                 ", roomNo=" + roomNo +
                 ", contactNumber=" + getContactNumber() +
                 ", email=" + getEmail() +
-                ", overdueAmount=" + overdueAmount + "}";
+                ", payableAmount=" + payableAmount + "}";
     }
 }

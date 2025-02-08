@@ -678,9 +678,10 @@ public class StaffMenuPage extends javax.swing.JFrame {
     private void logOutButtonActionPerformed(java.awt.event.ActionEvent evt) {
         int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to log out?", "Log Out", JOptionPane.YES_NO_OPTION);
         if (response == JOptionPane.YES_OPTION) {
-            MainPage mp = new MainPage();
-            mp.setVisible(true);
+            JOptionPane.showMessageDialog(null, "You have successfully logged out.\nThank you for using APU Hostel Management Fees Payment System.", "Log Out", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
+            MainPage mainPage = new MainPage();
+            mainPage.setVisible(true);
         }
     }
     private void confirmButtonMPActionPerformed(java.awt.event.ActionEvent evt) {

@@ -33,7 +33,7 @@ public class MainPage extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Welcome to APU Hostel Management Payment System!");
+        jLabel1.setText("Welcome to APU Hostel Management Fees Payment System!");
 
         jLabel2.setText("Please Select Your User Type");
 

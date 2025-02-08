@@ -430,12 +430,31 @@ public class User {
 
     public void updateOverdueAmount() throws IOException {
         LocalDate currentDate = LocalDate.now();
-        Month currentMonth = currentDate.getMonth();
-        BufferedReader paymentRecordReader = new BufferedReader(new FileReader("Payment_Records.txt"));
+        int currentMonth = currentDate.getMonthValue();
+        int currentYear = currentDate.getYear();
 
-        ArrayList paymentRecordList = new ArrayList();
+        BufferedReader overdueReader = new BufferedReader(new FileReader("Overdue_Update.txt"));
+
+        ArrayList<String> overdueList = new ArrayList<>();
 
         String line;
+        while ((line = overdueReader.readLine()) != null) {
+            overdueList.add(line);
+
+            String parts[] = line.split(",");
+            String chargeType = parts[0];
+            int updateMonth = Integer.valueOf(parts[1]);
+            int updateYear = Integer.valueOf(parts[2]);
+
+            if ((updateMonth == currentMonth) && (updateYear == currentYear) && chargeType.equals("Overdue")) {
+                return;
+            }
+        }
+
+        BufferedReader paymentRecordReader = new BufferedReader(new FileReader("Payment_Records.txt"));
+
+        ArrayList<String> paymentRecordList = new ArrayList<>();
+
         while ((line = paymentRecordReader.readLine()) != null) {
             paymentRecordList.add(line);
         }
@@ -446,7 +465,7 @@ public class User {
         for (int i = 0; i < paymentRecordList.size(); i++) {
             String parts[] = paymentRecordList.get(i).toString().split(",");
 
-            if (parts[6].substring(5,7).equals(currentMonth.toString())) {
+            if (parts[6].substring(5,7).equals(String.valueOf(currentMonth))) {
                 paidResidentList.add(parts[1]);
             }
         }
@@ -496,17 +515,45 @@ public class User {
         bw.write(sj.toString());
         bw.close();
 
+        BufferedReader br = new BufferedReader(new FileReader("Overdue_Update.txt"));
+        bw = new BufferedWriter(new FileWriter("Overdue_Update.txt", true));
 
+        if (br.read() != -1) {
+            bw.newLine();
+        }
+        bw.write("Overdue," + currentMonth + "," + currentYear);
+
+        br.close();
+        bw.close();
     }
 
     public void updatePenaltyAmount() throws IOException {
         LocalDate currentDate = LocalDate.now();
-        Month currentMonth = currentDate.getMonth();
+        int currentMonth = currentDate.getMonthValue();
+        int currentYear = currentDate.getYear();
+
+        BufferedReader overdueReader = new BufferedReader(new FileReader("Overdue_Update.txt"));
+
+        ArrayList<String> overdueList = new ArrayList<>();
+
+        String line;
+        while ((line = overdueReader.readLine()) != null) {
+            overdueList.add(line);
+
+            String parts[] = line.split(",");
+            String chargeType = parts[0];
+            int updateMonth = Integer.valueOf(parts[1]);
+            int updateYear = Integer.valueOf(parts[2]);
+
+            if ((updateMonth == currentMonth) && (updateYear == currentYear) && chargeType.equals("Penalty")) {
+                return;
+            }
+        }
+
         BufferedReader paymentRecordReader = new BufferedReader(new FileReader("Payment_Records.txt"));
 
         ArrayList paymentRecordList = new ArrayList();
 
-        String line;
         while ((line = paymentRecordReader.readLine()) != null) {
             paymentRecordList.add(line);
         }
@@ -517,7 +564,7 @@ public class User {
         for (int i = 0; i < paymentRecordList.size(); i++) {
             String parts[] = paymentRecordList.get(i).toString().split(",");
 
-            if (parts[6].substring(5,7).equals(currentMonth.toString())) {
+            if (parts[6].substring(5,7).equals(String.valueOf(currentMonth))) {
                 paidResidentList.add(parts[1]);
             }
         }
@@ -568,7 +615,16 @@ public class User {
         bw.write(sj.toString());
         bw.close();
 
+        BufferedReader br = new BufferedReader(new FileReader("Overdue_Update.txt"));
+        bw = new BufferedWriter(new FileWriter("Overdue_Update.txt", true));
 
+        if (br.read() != -1) {
+            bw.newLine();
+        }
+        bw.write("Penalty," + currentMonth + "," + currentYear);
+
+        br.close();
+        bw.close();
     }
 
 }

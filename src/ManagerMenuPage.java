@@ -1155,7 +1155,7 @@ public class ManagerMenuPage extends JFrame {
         String residentName = RoomChangeRequestTable.getValueAt(row, 2).toString();
         String currentRoomNumber = RoomChangeRequestTable.getValueAt(row, 4).toString();
         String newRoomType = RoomChangeRequestTable.getValueAt(row, 6).toString();
-        String status = RoomChangeRequestTable.getValueAt(row, 8).toString();
+        String status = RoomChangeRequestTable.getValueAt(row, 9).toString();
 
         if (status.equalsIgnoreCase("Approved")) {
             JOptionPane.showMessageDialog(null, "Room change request has already been approved.", "Approve Room Change", JOptionPane.ERROR_MESSAGE);

@@ -1269,7 +1269,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         if (selectedRoom != null) {
             updateRoomInfo(currentRoomNumber, selectedRoom);
             String requestID = (String) ManageRoomChangeTable.getValueAt(row, 0); // Assuming request ID is in the first column
-            updateChangeRoomStatus(requestID, "approved");
+            updateChangeRoomStatus(requestID, "Approved");
             updateResidentInfo(residentID, selectedRoom, newRoomType);
             ManageRoomChangeTable.setValueAt(selectedRoom, row, 10); // Update the "New Room" column
 
@@ -1341,7 +1341,7 @@ public class StaffMenuPage extends javax.swing.JFrame {
         int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to reject this request?", "Confirm Rejection", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (response == JOptionPane.YES_OPTION) {
             String requestID = (String) ManageRoomChangeTable.getValueAt(row, 0); // Assuming request ID is in the first column
-            updateChangeRoomStatus(requestID, "rejected");
+            updateChangeRoomStatus(requestID, "Rejected");
             ManageRoomChangeTable.setValueAt("Completed", row, 8); // Update the "Action" column to "Completed"
             populateRoomChangeData(); // Repopulate the table
         }

@@ -39,8 +39,6 @@ public class ResidentMenuPage extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
 
-
-
     public void editProfile() throws IOException {
         String[] myInfo = new String[11];
         myInfo[0] = resident.getId();

@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 
 public class LoginPage extends javax.swing.JFrame {
@@ -144,12 +142,14 @@ public class LoginPage extends javax.swing.JFrame {
                     managerMenuPage.setVisible(true);
                     this.dispose();
                     break;
+
                 case 2:
                     Staff staff = new Staff(id, username, password, name, contactNumber, email);
                     StaffMenuPage staffMenuPage = new StaffMenuPage(staff);
                     staffMenuPage.setVisible(true);
                     this.dispose();
                     break;
+
                 case 3:
                     String gender = line[6];
                     String roomNumber = line[7];

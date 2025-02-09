@@ -1,17 +1,10 @@
-import java.util.*;
-
 public class Resident extends User {
     private String roomType;
     private String gender;
     private String roomNo;
-    private String username;
     private String payableAmount;
-    private String createdDate;
-    private boolean isLoggedIn = false;
-    private Scanner sc = new Scanner(System.in);
 
     public Resident() {
-
     }
 
     public Resident(String id, String username, String password, String name, String contactNumber, String email, String gender, String roomNo, String roomType, String payableAmount) {

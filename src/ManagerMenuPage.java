@@ -4,9 +4,6 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -429,10 +426,12 @@ public class ManagerMenuPage extends JFrame {
         DefaultTableModel model = (DefaultTableModel) userInfoTable.get(1);
         JTable table = (JTable) userInfoTable.get(2);
         int row = table.getSelectedRow();
+
         if (row == -1) {
             JOptionPane.showMessageDialog(null, "No row selected. Please select a row.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         String id = table.getValueAt(row, 0).toString();
         String filename = (String) userInfoTable.get(3);
 
@@ -447,13 +446,16 @@ public class ManagerMenuPage extends JFrame {
             BufferedReader roomInfoReader = new BufferedReader(new FileReader("Room_Info.txt"));
             String gender = table.getValueAt(row, 5).toString();
             String line = "";
+
             while ((line = roomInfoReader.readLine()) != null) {
                 String[] roomInfo = line.split(",");
                 int availability = Integer.valueOf(roomInfo[2]);
+
                 if (gender.equals("Male") && Integer.valueOf(roomInfo[2]) != 0) {
                     if (roomInfo[0].toString().charAt(0) == 'M') {
                         availableRoomsList.add(roomInfo[0]);
                     }
+
                 } else if (gender.equals("Female") && Integer.valueOf(roomInfo[2]) != 0) {
                     if (roomInfo[0].toString().charAt(0) == 'F') {
                         availableRoomsList.add(roomInfo[0]);
@@ -486,6 +488,7 @@ public class ManagerMenuPage extends JFrame {
                 JOptionPane.showMessageDialog(null, "Username already exists. Please enter other username.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
         } else if (choice == 1) {
             value = JOptionPane.showInputDialog("Enter new name: ");
             if (value == null) {
@@ -494,6 +497,7 @@ public class ManagerMenuPage extends JFrame {
                 JOptionPane.showMessageDialog(null, "Invalid name. Please enter a valid name.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
         } else if (choice == 2) {
             value = JOptionPane.showInputDialog("Enter new contact number: ");
             if (value == null) {
@@ -505,6 +509,7 @@ public class ManagerMenuPage extends JFrame {
                 JOptionPane.showMessageDialog(null, "Contact number already exists. Please enter other contact number.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
         } else if (choice == 3) {
             value = JOptionPane.showInputDialog("Enter new email address: ");
             if (value == null) {
@@ -516,9 +521,11 @@ public class ManagerMenuPage extends JFrame {
                 JOptionPane.showMessageDialog(null, "Email address already exists. Please enter other email address.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
         } else if (choice == 4) {
             String[] availableRooms = availableRoomsList.toArray(new String[0]);
             value = JOptionPane.showInputDialog(null, "Select new room number:", "Edit Room Number", JOptionPane.PLAIN_MESSAGE, null, availableRooms, availableRooms[0]).toString();
+
             if (value == null) {
                 return;
             }
@@ -535,8 +542,10 @@ public class ManagerMenuPage extends JFrame {
             String newRoomNumber = value;
 
             BufferedReader roomInfoReader = new BufferedReader(new FileReader("Room_Info.txt"));
+
             ArrayList roomInfoList = new ArrayList();
             String line;
+
             while ((line = roomInfoReader.readLine()) != null) {
                 roomInfoList.add(line);
             }
@@ -582,8 +591,10 @@ public class ManagerMenuPage extends JFrame {
         } else if (choice == 5) {
             String temp = JOptionPane.showInputDialog("Enter new payable amount: ");
             value = "RM"  + String.format("%.2f", Double.valueOf(temp));
+
             if (temp == null) {
                 return;
+
             } else if (Double.valueOf(temp) < 0) {
                 JOptionPane.showMessageDialog(null, "Payable amount cannot be negative.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -681,21 +692,18 @@ public class ManagerMenuPage extends JFrame {
         }
 
         String registrationFilename = (String) getUserRegistrationTable().get(3);
-        BufferedReader RegistrationFileReader = new BufferedReader(new FileReader(registrationFilename));
+        BufferedReader registrationFileReader = new BufferedReader(new FileReader(registrationFilename));
 
         String line;
         String[] registeredUser = null;
         ArrayList registrationList = new ArrayList();
-        int count = 0;
 
-        while ((line = RegistrationFileReader.readLine()) != null) {
+        while ((line = registrationFileReader.readLine()) != null) {
             registrationList.add(line);
-            count++;
 
             if (line.split(",")[0].equals(selectedUsername)) {
                 registeredUser = line.split(",");
             }
-
         }
 
         for (int i = 0; i < registrationList.size(); i++) {
@@ -704,7 +712,7 @@ public class ManagerMenuPage extends JFrame {
             }
          }
 
-        RegistrationFileReader.close();
+        registrationFileReader.close();
 
         // get info filename
         String infoFilename = "";

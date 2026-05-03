@@ -1,4 +1,4 @@
-# APU Hostel Management Fee Payemnt System
+# APU Hostel Management Fee Payment System
 
 - This project includes:
 - 1. User Management (Login, Register, Update User Information, Delete User, Search User)
